@@ -1,7 +1,7 @@
 import type { Config } from "stylelint";
 
 const config: Config = {
-  extends: ['stylelint-config-standard'],
+  extends: ['stylelint-config-standard', 'stylelint-config-css-modules'],
   ignoreFiles: ['**/fonts/', '**/images/'],
   plugins: ['stylelint-order'],
   rules: {
