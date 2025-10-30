@@ -10,9 +10,8 @@ import styles from './app-header.module.css';
 export const AppHeader = (): React.JSX.Element => {
   return (
     <header className={styles.header}>
-      <nav className={`${styles.menu} p-4`}>
+      <nav className={`${styles.menu} pt-4 pb-4`}>
         <div className={`${styles.menu_part}`}>
-          {/* Тут должны быть ссылки, а не например кнопки или абзацы */}
           <a href="/" className={`${styles.link} ${styles.link_active} p-5`}>
             <BurgerIcon type="primary" />
             <p className="text text_type_main-default ml-2">Конструктор</p>
