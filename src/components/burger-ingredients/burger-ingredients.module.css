@@ -13,3 +13,17 @@
   text-align: center;
   list-style-type: none;
 }
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 32px;
+  margin: 0;
+  padding: 24px 16px 40px;
+  list-style: none;
+}
+
+.sections {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
