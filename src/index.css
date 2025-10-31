@@ -19,3 +19,9 @@ body {
 * {
   box-sizing: border-box;
 }
+
+.list-reset {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
