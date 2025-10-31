@@ -1,4 +1,5 @@
 import { CurrencyIcon, Counter } from '@krgaa/react-developer-burger-ui-components';
+import { memo } from 'react';
 
 import type { TIngredient } from '@utils/types.ts';
 
@@ -6,13 +7,15 @@ import styles from './burger-ingredient.module.css';
 
 type TBurgerIngredientProps = {
   ingredient: TIngredient;
+  onClick?: (ingredient: TIngredient) => void;
 };
 
-export const BurgerIngredient = ({
+export const BurgerIngredient = memo(function BurgerIngredient({
   ingredient,
-}: TBurgerIngredientProps): React.JSX.Element => {
+  onClick,
+}: TBurgerIngredientProps): React.JSX.Element {
   return (
-    <article className={styles.card}>
+    <article className={styles.card} onClick={() => onClick?.(ingredient)}>
       <Counter count={1} />
 
       <img
@@ -33,4 +36,4 @@ export const BurgerIngredient = ({
       </h3>
     </article>
   );
-};
+});

@@ -2,6 +2,8 @@ import { Tab } from '@krgaa/react-developer-burger-ui-components';
 import { useState, useCallback } from 'react';
 
 import { BurgerIngredient } from '@components/burger-ingredients/burger-ingredient/burger-ingredient';
+import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
+import { Modal } from '@components/modal/modal.tsx';
 
 import type { TIngredient } from '@utils/types';
 
@@ -14,14 +16,24 @@ type TBurgerIngredientsProps = {
 export const BurgerIngredients = ({
   ingredients,
 }: TBurgerIngredientsProps): React.JSX.Element => {
-  console.log(ingredients);
   const [activeTab, setActiveTab] = useState<TIngredient['type']>('bun');
-
-  const isTabActive = (tabName: TIngredient['type']): boolean => activeTab === tabName;
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [ingredientToShow, setIngredientToShow] = useState<TIngredient | null>(null);
 
   const handleTabClick = useCallback((tabName: TIngredient['type']): void => {
     setActiveTab(tabName);
   }, []);
+
+  const handleIngredientClick = useCallback((ingredient: TIngredient): void => {
+    setIngredientToShow(ingredient);
+    setIsModalVisible(true);
+  }, []);
+
+  const handleModalClose = (): void => {
+    setIsModalVisible(false);
+  };
+
+  const isTabActive = (tabName: TIngredient['type']): boolean => activeTab === tabName;
 
   const [buns, sauces, mains] = ingredients.reduce(
     (acc: [TIngredient[], TIngredient[], TIngredient[]], ingredient) => {
@@ -89,13 +101,22 @@ export const BurgerIngredients = ({
             <ul className={`${styles.list}`}>
               {section.items.map((ingredient: TIngredient) => (
                 <li key={ingredient._id}>
-                  <BurgerIngredient ingredient={ingredient} />
+                  <BurgerIngredient
+                    ingredient={ingredient}
+                    onClick={handleIngredientClick}
+                  />
                 </li>
               ))}
             </ul>
           </section>
         ))}
       </div>
+
+      {isModalVisible && ingredientToShow && (
+        <Modal title="Детали ингредиента" onClose={handleModalClose}>
+          <IngredientDetails ingredient={ingredientToShow} />
+        </Modal>
+      )}
     </section>
   );
 };
