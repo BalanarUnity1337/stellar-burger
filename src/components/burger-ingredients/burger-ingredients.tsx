@@ -83,7 +83,7 @@ export const BurgerIngredients = ({
 
       <div className={`mt-10 custom-scroll ${styles.sections}`}>
         {Object.values(sections).map((section) => (
-          <div key={section.title}>
+          <section key={section.title}>
             <h2 className={`text text_type_main-medium`}>{section.title}</h2>
 
             <ul className={`${styles.list}`}>
@@ -93,7 +93,7 @@ export const BurgerIngredients = ({
                 </li>
               ))}
             </ul>
-          </div>
+          </section>
         ))}
       </div>
     </section>
