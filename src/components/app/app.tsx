@@ -21,8 +21,20 @@ export const App = (): React.JSX.Element => {
     setState((prev) => ({ ...prev, isFetching: true, isError: false }));
 
     fetch(INGREDIENTS_API_URL)
-      .then((response): Promise<TApiResponse<TIngredient[]>> => response.json())
+      .then((response): Promise<TApiResponse<TIngredient[]>> => {
+        if (!response.ok) {
+          return Promise.reject(new Error(`Ошибка ${response.status}`));
+        }
+
+        return response.json();
+      })
       .then((result) => {
+        if (!result.success) {
+          return Promise.reject(
+            new Error(`API method result status: ${result.success}`)
+          );
+        }
+
         setState((prev) => ({ ...prev, isFetching: false, ingredients: result.data }));
       })
       .catch((_e) => {
