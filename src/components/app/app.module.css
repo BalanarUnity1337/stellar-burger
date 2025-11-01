@@ -10,6 +10,9 @@
 .title {
   width: 100%;
   max-width: 1280px;
+}
+
+:global(.text).title {
   margin-right: auto;
   margin-left: auto;
 }
