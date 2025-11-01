@@ -1,0 +1,16 @@
+.controls {
+  display: flex;
+  margin-left: auto;
+  column-gap: 40px;
+}
+
+.cost {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.cost_icon {
+  width: 36px;
+  height: 36px;
+}

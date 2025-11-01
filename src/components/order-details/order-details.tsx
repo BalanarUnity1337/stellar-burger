@@ -1,4 +1,4 @@
-import { CheckMarkIcon } from '@krgaa/react-developer-burger-ui-components';
+import { OrderCheck } from '@components/icons/order-check/order-check.tsx';
 
 import styles from './order-details.module.css';
 
@@ -13,7 +13,7 @@ export const OrderDetails = ({ orderId }: TOrderDetailsProps): React.JSX.Element
       <p className={`text text_type_main-medium mt-8`}>идентификатор заказа</p>
 
       <div className={`${styles.icon}`}>
-        <CheckMarkIcon type="secondary" />
+        <OrderCheck />
       </div>
 
       <p className={`text text_type_main-default`}>Ваш заказ начали готовить</p>

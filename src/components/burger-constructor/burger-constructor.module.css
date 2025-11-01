@@ -6,11 +6,11 @@
 }
 
 .inner_ingredients {
+  composes: list-reset from global;
   display: flex;
   flex-direction: column;
   row-gap: 16px;
   overflow-y: auto;
-  composes: list-reset from global;
   scrollbar-gutter: stable;
 }
 
@@ -22,21 +22,4 @@
 
 .drag_icon {
   cursor: pointer;
-}
-
-.order_controls {
-  display: flex;
-  margin-left: auto;
-  column-gap: 40px;
-}
-
-.order_cost {
-  display: flex;
-  align-items: center;
-  column-gap: 8px;
-}
-
-.order_cost_icon {
-  width: 36px;
-  height: 36px;
 }

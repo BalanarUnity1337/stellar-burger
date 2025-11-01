@@ -1,9 +1,7 @@
 import { Tab } from '@krgaa/react-developer-burger-ui-components';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 
-import { BurgerIngredient } from '@components/burger-ingredients/burger-ingredient/burger-ingredient';
-import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
-import { Modal } from '@components/modal/modal.tsx';
+import { BurgerIngredientsSection } from '@components/burger-ingredients/burger-ingredients-section/burger-ingredients-section.tsx';
 
 import type { TIngredient } from '@utils/types';
 
@@ -13,80 +11,48 @@ type TBurgerIngredientsProps = {
   ingredients: TIngredient[];
 };
 
+type TSections = Record<TIngredient['type'], TIngredient[]>;
+
+const sectionTitles: Record<TIngredient['type'], string> = {
+  bun: 'Булки',
+  sauce: 'Соусы',
+  main: 'Начинки',
+};
+
 export const BurgerIngredients = ({
   ingredients,
 }: TBurgerIngredientsProps): React.JSX.Element => {
   const [activeTab, setActiveTab] = useState<TIngredient['type']>('bun');
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [ingredientToShow, setIngredientToShow] = useState<TIngredient | null>(null);
 
   const handleTabClick = useCallback((tabName: TIngredient['type']): void => {
     setActiveTab(tabName);
   }, []);
 
-  const handleIngredientClick = useCallback((ingredient: TIngredient): void => {
-    setIngredientToShow(ingredient);
-    setIsModalVisible(true);
-  }, []);
-
-  const handleModalClose = (): void => {
-    setIsModalVisible(false);
-  };
-
   const isTabActive = (tabName: TIngredient['type']): boolean => activeTab === tabName;
 
-  const [buns, sauces, mains] = ingredients.reduce(
-    (acc: [TIngredient[], TIngredient[], TIngredient[]], ingredient) => {
-      switch (ingredient.type) {
-        case 'bun': {
-          return [[...acc[0], ingredient], acc[1], acc[2]];
-        }
+  const sections: TSections = useMemo(
+    () =>
+      ingredients.reduce((acc, ingredient) => {
+        acc[ingredient.type] = [...(acc[ingredient.type] ?? []), ingredient];
 
-        case 'sauce': {
-          return [acc[0], [...acc[1], ingredient], acc[2]];
-        }
-
-        case 'main': {
-          return [acc[0], acc[1], [...acc[2], ingredient]];
-        }
-
-        default: {
-          return acc;
-        }
-      }
-    },
-    [[], [], []]
+        return acc;
+      }, {} as TSections),
+    [ingredients]
   );
-
-  const sections: Record<TIngredient['type'], { title: string; items: TIngredient[] }> =
-    {
-      bun: {
-        title: 'Булки',
-        items: buns,
-      },
-      sauce: {
-        title: 'Соусы',
-        items: sauces,
-      },
-      main: {
-        title: 'Начинки',
-        items: mains,
-      },
-    };
 
   return (
     <section className={styles.burger_ingredients}>
       <nav>
         <ul className={styles.menu}>
-          {(Object.keys(sections) as TIngredient['type'][]).map((tabName) => (
-            <li key={tabName}>
+          {(Object.keys(sectionTitles) as TIngredient['type'][]).map((key) => (
+            <li key={key}>
               <Tab
-                key={tabName}
-                value={tabName}
-                active={isTabActive(tabName)}
+                key={key}
+                value={key}
+                active={isTabActive(key)}
                 onClick={handleTabClick as (value: string) => void}
               >
-                {sections[tabName].title}
+                {sectionTitles[key]}
               </Tab>
             </li>
           ))}
@@ -94,29 +60,14 @@ export const BurgerIngredients = ({
       </nav>
 
       <div className={`mt-10 custom-scroll ${styles.sections}`}>
-        {Object.values(sections).map((section) => (
-          <section key={section.title}>
-            <h2 className={`text text_type_main-medium`}>{section.title}</h2>
-
-            <ul className={`${styles.list}`}>
-              {section.items.map((ingredient: TIngredient) => (
-                <li key={ingredient._id}>
-                  <BurgerIngredient
-                    ingredient={ingredient}
-                    onClick={handleIngredientClick}
-                  />
-                </li>
-              ))}
-            </ul>
-          </section>
+        {(Object.keys(sections) as TIngredient['type'][]).map((key) => (
+          <BurgerIngredientsSection
+            key={key}
+            title={sectionTitles[key]}
+            items={sections[key]}
+          />
         ))}
       </div>
-
-      {isModalVisible && ingredientToShow && (
-        <Modal title="Детали ингредиента" onClose={handleModalClose}>
-          <IngredientDetails ingredient={ingredientToShow} />
-        </Modal>
-      )}
     </section>
   );
 };

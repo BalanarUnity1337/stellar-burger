@@ -1,0 +1,25 @@
+@keyframes rotate {
+  0%,
+  100% {
+    transform: rotateZ(0deg) scale(1);
+  }
+
+  50% {
+    transform: rotateZ(45deg) scale(0.9);
+  }
+}
+
+.shape_animation_small {
+  transform-origin: 50% 50%;
+  animation: rotate 10s ease-in-out infinite;
+}
+
+.shape_animation_medium {
+  transform-origin: 50% 50%;
+  animation: rotate 15s ease-in-out infinite;
+}
+
+.shape_animation_large {
+  transform-origin: 50% 50%;
+  animation: rotate 20s ease-in-out infinite;
+}
