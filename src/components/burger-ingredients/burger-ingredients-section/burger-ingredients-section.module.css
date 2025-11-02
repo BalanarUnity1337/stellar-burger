@@ -1,0 +1,10 @@
+.list {
+  composes: list-reset from global;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 32px;
+}
+
+:global(.list-reset).list {
+  padding: 24px 16px 40px;
+}

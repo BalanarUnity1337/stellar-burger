@@ -5,30 +5,29 @@
 .menu {
   display: flex;
   align-items: center;
-  max-width: 1240px;
-  height: 56px;
+  max-width: 1280px;
+  height: 88px;
   margin: 0 auto;
 }
 
-.menu_part_left {
+.menu_part {
   display: flex;
   flex-basis: 35%;
 }
 
+.menu_part_right {
+  justify-content: flex-end;
+}
+
 .link {
   display: flex;
+  align-items: center;
   color: var(--text-inactive-color);
   text-decoration: none;
 }
 
 .link_active {
   color: var(--text-primary-color);
-}
-
-.link_position_last {
-  display: flex;
-  flex-basis: 35%;
-  justify-content: flex-end;
 }
 
 .logo {

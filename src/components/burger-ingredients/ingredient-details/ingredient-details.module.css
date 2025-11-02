@@ -1,0 +1,26 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  row-gap: 32px;
+}
+
+.photo_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 16px;
+  margin: 0;
+}
+
+.photo {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  grid-column-gap: 20px;
+  color: var(--text-inactive-color);
+}
