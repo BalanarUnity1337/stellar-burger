@@ -1,8 +1,8 @@
-import { memo, useCallback, useState } from 'react';
+import { setSelectedIngredient } from '@/store/slices/selected-ingredient.ts';
+import { memo, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { BurgerIngredient } from '@components/burger-ingredients/burger-ingredient/burger-ingredient.tsx';
-import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
-import { Modal } from '@components/modal/modal.tsx';
 
 import type { TIngredient } from '@shared/types.ts';
 
@@ -17,17 +17,14 @@ export const BurgerIngredientsSection = memo(function BurgerIngredientsSection({
   title,
   items,
 }: TBurgerIngredientsSectionProps): React.JSX.Element {
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [ingredientToShow, setIngredientToShow] = useState<TIngredient | null>(null);
+  const dispatch = useDispatch();
 
-  const handleIngredientClick = useCallback((ingredient: TIngredient): void => {
-    setIngredientToShow(ingredient);
-    setIsModalVisible(true);
-  }, []);
-
-  const handleModalClose = (): void => {
-    setIsModalVisible(false);
-  };
+  const handleIngredientClick = useCallback(
+    (ingredient: TIngredient): void => {
+      dispatch(setSelectedIngredient(ingredient));
+    },
+    [dispatch]
+  );
 
   return (
     <>
@@ -45,12 +42,6 @@ export const BurgerIngredientsSection = memo(function BurgerIngredientsSection({
           ))}
         </ul>
       </section>
-
-      {isModalVisible && ingredientToShow && (
-        <Modal title="Детали ингредиента" onClose={handleModalClose}>
-          <IngredientDetails ingredient={ingredientToShow} />
-        </Modal>
-      )}
     </>
   );
 });

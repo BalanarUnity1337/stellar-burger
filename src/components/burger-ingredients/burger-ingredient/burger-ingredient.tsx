@@ -14,8 +14,14 @@ export const BurgerIngredient = memo(function BurgerIngredient({
   ingredient,
   onClick,
 }: TBurgerIngredientProps): React.JSX.Element {
+  const handleClick = (e: React.MouseEvent<HTMLElement>): void => {
+    e.stopPropagation();
+
+    onClick?.(ingredient);
+  };
+
   return (
-    <article className={styles.card} onClick={() => onClick?.(ingredient)}>
+    <article className={styles.card} onClick={handleClick}>
       <Counter count={1} />
 
       <img

@@ -1,8 +1,15 @@
 import { useGetIngredientsQuery } from '@/api/ingredients.ts';
+import {
+  resetSelectedIngredient,
+  selectSelectedIngredient,
+} from '@/store/slices/selected-ingredient.ts';
 import { Tab, Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { useState, useCallback, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { BurgerIngredientsSection } from '@components/burger-ingredients/burger-ingredients-section/burger-ingredients-section.tsx';
+import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
+import { Modal } from '@components/modal/modal.tsx';
 
 import type { TIngredient } from '@shared/types.ts';
 
@@ -17,7 +24,11 @@ const sectionTitles: Record<TIngredient['type'], string> = {
 };
 
 export const BurgerIngredients = (): React.JSX.Element => {
+  const dispatch = useDispatch();
+  const selectedIngredient = useSelector(selectSelectedIngredient);
+
   const [activeTab, setActiveTab] = useState<TIngredient['type']>('bun');
+
   const { data: ingredients, isFetching, isSuccess, isError } = useGetIngredientsQuery();
 
   const handleTabClick = useCallback((tabName: TIngredient['type']): void => {
@@ -80,5 +91,15 @@ export const BurgerIngredients = (): React.JSX.Element => {
     }
   }, [sections, isFetching, isSuccess, isError, activeTab]);
 
-  return <section className={styles.burger_ingredients}>{content}</section>;
+  return (
+    <>
+      <section className={styles.burger_ingredients}>{content}</section>
+
+      {selectedIngredient && (
+        <Modal onClose={() => dispatch(resetSelectedIngredient())}>
+          <IngredientDetails ingredient={selectedIngredient} />
+        </Modal>
+      )}
+    </>
+  );
 };
