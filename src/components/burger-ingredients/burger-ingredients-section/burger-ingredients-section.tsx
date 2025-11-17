@@ -4,7 +4,7 @@ import { BurgerIngredient } from '@components/burger-ingredients/burger-ingredie
 import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
 import { Modal } from '@components/modal/modal.tsx';
 
-import type { TIngredient } from '@utils/types.ts';
+import type { TIngredient } from '@shared/types.ts';
 
 import styles from './burger-ingredients-section.module.css';
 

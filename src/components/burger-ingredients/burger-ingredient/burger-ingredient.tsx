@@ -1,7 +1,7 @@
 import { CurrencyIcon, Counter } from '@krgaa/react-developer-burger-ui-components';
 import { memo } from 'react';
 
-import type { TIngredient } from '@utils/types.ts';
+import type { TIngredient } from '@shared/types.ts';
 
 import styles from './burger-ingredient.module.css';
 

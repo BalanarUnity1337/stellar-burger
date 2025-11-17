@@ -6,7 +6,7 @@ import { memo } from 'react';
 
 import { BurgerConstructorOrder } from '@components/burger-constructor/burger-constructor-order/burger-constructor-order.tsx';
 
-import type { TIngredient } from '@utils/types';
+import type { TIngredient } from '@shared/types.ts';
 
 import styles from './burger-constructor.module.css';
 
