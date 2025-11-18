@@ -1,5 +1,7 @@
+import { selectTotalCost } from '@/store/slices/burger-constructor.ts';
 import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
@@ -7,14 +9,13 @@ import { OrderDetails } from '@components/order-details/order-details.tsx';
 import styles from './burger-constructor-order.module.css';
 
 type TBurgerConstructorOrderProps = {
-  totalCost: number;
   className?: string;
 };
 
 export const BurgerConstructorOrder = ({
-  totalCost = 0,
   className = '',
 }: TBurgerConstructorOrderProps): React.JSX.Element => {
+  const totalCost = useSelector(selectTotalCost);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const handleSubmitOrder = (): void => {

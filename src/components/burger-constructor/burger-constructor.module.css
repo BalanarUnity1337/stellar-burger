@@ -13,13 +13,3 @@
   overflow-y: auto;
   scrollbar-gutter: stable;
 }
-
-.ingredient_item {
-  display: flex;
-  align-items: center;
-  column-gap: 8px;
-}
-
-.drag_icon {
-  cursor: pointer;
-}

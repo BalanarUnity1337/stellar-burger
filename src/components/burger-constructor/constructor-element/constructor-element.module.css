@@ -1,0 +1,15 @@
+.constructorElement {
+  display: grid;
+  grid-template-columns: 24px auto;
+  align-items: center;
+  grid-column-gap: 8px;
+}
+
+.dragIcon {
+  grid-area: 1 / 1 / -1 / 2;
+  cursor: pointer;
+}
+
+.elementInfo {
+  grid-area: 1 / 2 / -1 / -1;
+}

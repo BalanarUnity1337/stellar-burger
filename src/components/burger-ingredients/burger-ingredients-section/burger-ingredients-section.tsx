@@ -3,6 +3,7 @@ import { memo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { BurgerIngredient } from '@components/burger-ingredients/burger-ingredient/burger-ingredient.tsx';
+import { DraggableIngredient } from '@components/burger-ingredients/burger-ingredient/draggable-ingredient/draggable-ingredient.tsx';
 
 import type { TIngredient } from '@shared/types.ts';
 
@@ -27,21 +28,24 @@ export const BurgerIngredientsSection = memo(function BurgerIngredientsSection({
   );
 
   return (
-    <>
-      <section>
-        <h2 className={`text text_type_main-medium`}>{title}</h2>
+    <section>
+      <h2 className={`text text_type_main-medium`}>{title}</h2>
 
-        <ul className={`${styles.list}`}>
-          {items.map((ingredient: TIngredient) => (
-            <li key={ingredient._id}>
+      <ul className={`${styles.list}`}>
+        {items.map((ingredient: TIngredient) => (
+          <li key={ingredient._id}>
+            <DraggableIngredient
+              ingredient={ingredient}
+              type={ingredient.type === 'bun' ? 'bun' : 'ingredient'}
+            >
               <BurgerIngredient
                 ingredient={ingredient}
                 onClick={handleIngredientClick}
               />
-            </li>
-          ))}
-        </ul>
-      </section>
-    </>
+            </DraggableIngredient>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 });

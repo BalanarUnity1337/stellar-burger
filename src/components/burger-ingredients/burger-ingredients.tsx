@@ -11,13 +11,13 @@ import { BurgerIngredientsSection } from '@components/burger-ingredients/burger-
 import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
 import { Modal } from '@components/modal/modal.tsx';
 
-import type { TIngredient } from '@shared/types.ts';
+import type { TIngredient, TIngredientType } from '@shared/types.ts';
 
 import styles from './burger-ingredients.module.css';
 
-type TSections = Record<TIngredient['type'], TIngredient[]>;
+type TSections = Record<TIngredientType, TIngredient[]>;
 
-const sectionTitles: Record<TIngredient['type'], string> = {
+const sectionTitles: Record<TIngredientType, string> = {
   bun: 'Булки',
   sauce: 'Соусы',
   main: 'Начинки',
@@ -27,11 +27,11 @@ export const BurgerIngredients = (): React.JSX.Element => {
   const dispatch = useDispatch();
   const selectedIngredient = useSelector(selectSelectedIngredient);
 
-  const [activeTab, setActiveTab] = useState<TIngredient['type']>('bun');
+  const [activeTab, setActiveTab] = useState<TIngredientType>('bun');
 
   const { data: ingredients, isFetching, isSuccess, isError } = useGetIngredientsQuery();
 
-  const handleTabClick = useCallback((tabName: TIngredient['type']): void => {
+  const handleTabClick = useCallback((tabName: TIngredientType): void => {
     setActiveTab(tabName);
   }, []);
 
@@ -63,7 +63,7 @@ export const BurgerIngredients = (): React.JSX.Element => {
         <>
           <nav>
             <ul className={styles.menu}>
-              {(Object.keys(sectionTitles) as TIngredient['type'][]).map((tabName) => (
+              {(Object.keys(sectionTitles) as TIngredientType[]).map((tabName) => (
                 <li key={tabName}>
                   <Tab
                     value={tabName}
@@ -78,7 +78,7 @@ export const BurgerIngredients = (): React.JSX.Element => {
           </nav>
 
           <div className={`mt-10 custom-scroll ${styles.sections}`}>
-            {(Object.keys(sections) as TIngredient['type'][]).map((key) => (
+            {(Object.keys(sections) as TIngredientType[]).map((key) => (
               <BurgerIngredientsSection
                 key={key}
                 title={sectionTitles[key]}

@@ -1,8 +1,12 @@
 import { baseApi } from '@/api';
-import { selectedIngredientSlice } from '@/store/slices';
+import { burgerConstructorSlice, selectedIngredientSlice } from '@/store/slices';
 import { configureStore, combineSlices } from '@reduxjs/toolkit';
 
-export const rootReducer = combineSlices(baseApi, selectedIngredientSlice);
+export const rootReducer = combineSlices(
+  baseApi,
+  selectedIngredientSlice,
+  burgerConstructorSlice
+);
 
 export const store = configureStore({
   reducer: rootReducer,

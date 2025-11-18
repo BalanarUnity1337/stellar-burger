@@ -1,68 +1,110 @@
 import {
-  ConstructorElement,
-  DragIcon,
-} from '@krgaa/react-developer-burger-ui-components';
-import { memo } from 'react';
+  addBurgerIngredient,
+  deleteBurgerIngredient,
+  selectBun,
+  selectBurgerIngredients,
+  setBun,
+} from '@/store/slices/burger-constructor.ts';
+import { useCallback, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { BurgerConstructorOrder } from '@components/burger-constructor/burger-constructor-order/burger-constructor-order.tsx';
+import { ConstructorDropTarget } from '@components/burger-constructor/constructor-drop-target/constructor-drop-target.tsx';
+import { ConstructorElement } from '@components/burger-constructor/constructor-element/constructor-element.tsx';
 
-import type { TIngredient } from '@shared/types.ts';
+import type {
+  BurgerConstructorDnDType,
+  TConstructorIngredient,
+  TIngredient,
+} from '@shared/types.ts';
 
 import styles from './burger-constructor.module.css';
 
-type TBurgerConstructorProps = {
-  ingredients: TIngredient[];
-};
+export const BurgerConstructor = (): React.JSX.Element => {
+  const dispatch = useDispatch();
+  const selectedBun = useSelector(selectBun);
+  const ingredients = useSelector(selectBurgerIngredients);
 
-const MemoConstructorElement = memo(ConstructorElement);
-
-export const BurgerConstructor = ({
-  ingredients,
-}: TBurgerConstructorProps): React.JSX.Element => {
-  const bun = ingredients.find((ingredient) => ingredient.type === 'bun')!;
-  const innerIngredients = ingredients.filter((ingredient) =>
-    (['main', 'sauce'] as TIngredient['type'][]).includes(ingredient.type)
+  const handleIngredientDrop = useCallback(
+    (ingredient: TIngredient, type: BurgerConstructorDnDType) => {
+      if (type === 'bun') {
+        dispatch(setBun(ingredient));
+      } else if (type === 'ingredient') {
+        dispatch(addBurgerIngredient(ingredient));
+      }
+    },
+    [dispatch]
   );
-  const totalCost = innerIngredients.reduce(
-    (acc, ingredient) => acc + ingredient.price,
-    0
+
+  const handleIngredientDelete = useCallback(
+    (ingredient: TConstructorIngredient) => {
+      dispatch(deleteBurgerIngredient(ingredient.uid));
+    },
+    [dispatch]
+  );
+
+  const ingredientsListContent = useMemo(
+    () =>
+      ingredients.length > 0 ? (
+        <ul className={`custom-scroll ${styles.inner_ingredients}`}>
+          {ingredients.map((ingredient) => (
+            <li key={ingredient.uid}>
+              <ConstructorElement
+                ingredient={ingredient}
+                isSortable={true}
+                onDelete={handleIngredientDelete}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : null,
+    [ingredients]
   );
 
   return (
     <section className={`pl-4 ${styles.burger_constructor}`}>
-      <MemoConstructorElement
-        extraClass="mb-4 ml-8"
-        text={`${bun.name} (верх)`}
-        thumbnail={bun.image}
-        price={bun.price}
-        type="top"
-        isLocked={true}
-      />
-
-      <ul className={`custom-scroll ${styles.inner_ingredients}`}>
-        {innerIngredients.map((ingredient) => (
-          <li key={ingredient._id} className={styles.ingredient_item}>
-            <DragIcon className={styles.drag_icon} type="primary" />
-
-            <MemoConstructorElement
-              text={ingredient.name}
-              thumbnail={ingredient.image}
-              price={ingredient.price}
+      <ConstructorDropTarget
+        acceptType="bun"
+        position="top"
+        placeholderText="Перетащите булку сюда"
+        extraClass={`mb-4`}
+        droppedContent={
+          selectedBun && (
+            <ConstructorElement
+              ingredient={selectedBun}
+              position="top"
+              isLocked={true}
             />
-          </li>
-        ))}
-      </ul>
-
-      <MemoConstructorElement
-        extraClass="mt-4 ml-8"
-        text={`${bun.name} (низ)`}
-        thumbnail={bun.image}
-        price={bun.price}
-        type="bottom"
-        isLocked={true}
+          )
+        }
+        onDrop={handleIngredientDrop}
       />
 
-      <BurgerConstructorOrder className={`mt-10`} totalCost={totalCost} />
+      <ConstructorDropTarget
+        acceptType="ingredient"
+        placeholderText="Перетащите соус или начинку сюда"
+        droppedContent={ingredientsListContent}
+        onDrop={handleIngredientDrop}
+      />
+
+      <ConstructorDropTarget
+        acceptType="bun"
+        position="bottom"
+        placeholderText="Перетащите булку сюда"
+        extraClass={`mt-4`}
+        droppedContent={
+          selectedBun && (
+            <ConstructorElement
+              ingredient={selectedBun}
+              position="bottom"
+              isLocked={true}
+            />
+          )
+        }
+        onDrop={handleIngredientDrop}
+      />
+
+      <BurgerConstructorOrder className={`mt-10`} />
     </section>
   );
 };
