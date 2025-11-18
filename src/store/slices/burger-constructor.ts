@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { mapIngredientToConstructorIngredient } from '@shared/utils.ts';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -43,16 +43,51 @@ const burgerConstructorSlice = createSlice({
   selectors: {
     selectBun: (state) => state.bun,
     selectBurgerIngredients: (state) => state.ingredients,
-    selectTotalCost: (state) =>
-      (state.bun?.price ?? 0) * 2 +
-      state.ingredients.reduce((acc, item) => acc + item.price, 0),
+    selectTotalCost: createSelector(
+      [
+        (state: TBurgerConstructorState): TConstructorIngredient | null => state.bun,
+        (state: TBurgerConstructorState): TConstructorIngredient[] => state.ingredients,
+      ],
+      (bun, ingredients) => {
+        const bunPrice = bun?.price ?? 0;
+        const ingredientsPrice = ingredients.reduce(
+          (acc, ingredient) => acc + ingredient.price,
+          0
+        );
+
+        return bunPrice * 2 + ingredientsPrice;
+      }
+    ),
+    selectIngredientsQtyMap: createSelector(
+      [
+        (state: TBurgerConstructorState): TConstructorIngredient | null => state.bun,
+        (state: TBurgerConstructorState): TConstructorIngredient[] => state.ingredients,
+      ],
+      (bun, ingredients) => {
+        const result: Record<string, number> = {};
+
+        if (bun != null) {
+          result[bun._id] = 2;
+        }
+
+        ingredients.forEach((ingredient) => {
+          result[ingredient._id] = (result[ingredient._id] ?? 0) + 1;
+        });
+
+        return result;
+      }
+    ),
   },
 });
 
 export const { setBun, addBurgerIngredient, deleteBurgerIngredient } =
   burgerConstructorSlice.actions;
 
-export const { selectBun, selectBurgerIngredients, selectTotalCost } =
-  burgerConstructorSlice.selectors;
+export const {
+  selectBun,
+  selectBurgerIngredients,
+  selectTotalCost,
+  selectIngredientsQtyMap,
+} = burgerConstructorSlice.selectors;
 
 export default burgerConstructorSlice;

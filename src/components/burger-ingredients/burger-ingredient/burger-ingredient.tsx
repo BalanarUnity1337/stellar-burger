@@ -1,5 +1,7 @@
+import { selectIngredientsQtyMap } from '@/store/slices/burger-constructor.ts';
 import { CurrencyIcon, Counter } from '@krgaa/react-developer-burger-ui-components';
 import { memo } from 'react';
+import { useSelector } from 'react-redux';
 
 import type { TIngredient } from '@shared/types.ts';
 
@@ -14,6 +16,8 @@ export const BurgerIngredient = memo(function BurgerIngredient({
   ingredient,
   onClick,
 }: TBurgerIngredientProps): React.JSX.Element {
+  const ingredientsQty = useSelector(selectIngredientsQtyMap);
+
   const handleClick = (e: React.MouseEvent<HTMLElement>): void => {
     e.stopPropagation();
 
@@ -22,7 +26,9 @@ export const BurgerIngredient = memo(function BurgerIngredient({
 
   return (
     <article className={styles.card} onClick={handleClick}>
-      <Counter count={1} />
+      {ingredientsQty[ingredient._id] && (
+        <Counter count={ingredientsQty[ingredient._id]} />
+      )}
 
       <img
         className={`${styles.photo}`}
