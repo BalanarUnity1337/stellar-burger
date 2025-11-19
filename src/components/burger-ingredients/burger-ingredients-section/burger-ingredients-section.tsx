@@ -5,18 +5,22 @@ import { useDispatch } from 'react-redux';
 import { BurgerIngredient } from '@components/burger-ingredients/burger-ingredient/burger-ingredient.tsx';
 import { DraggableIngredient } from '@components/burger-ingredients/burger-ingredient/draggable-ingredient/draggable-ingredient.tsx';
 
-import type { TIngredient } from '@shared/types.ts';
+import type { TIngredient, TIngredientType } from '@shared/types.ts';
 
 import styles from './burger-ingredients-section.module.css';
 
 type TBurgerIngredientsSectionProps = {
   title: string;
   items: TIngredient[];
+  headerId: TIngredientType;
+  setHeaderRef?: (key: TIngredientType, ref: HTMLHeadingElement) => void;
 };
 
 export const BurgerIngredientsSection = memo(function BurgerIngredientsSection({
   title,
   items,
+  headerId,
+  setHeaderRef,
 }: TBurgerIngredientsSectionProps): React.JSX.Element {
   const dispatch = useDispatch();
 
@@ -29,7 +33,15 @@ export const BurgerIngredientsSection = memo(function BurgerIngredientsSection({
 
   return (
     <section>
-      <h2 className={`text text_type_main-medium`}>{title}</h2>
+      <h2
+        id={headerId}
+        ref={(el) => {
+          setHeaderRef?.(headerId, el!);
+        }}
+        className={`text text_type_main-medium`}
+      >
+        {title}
+      </h2>
 
       <ul className={`${styles.list}`}>
         {items.map((ingredient: TIngredient) => (
