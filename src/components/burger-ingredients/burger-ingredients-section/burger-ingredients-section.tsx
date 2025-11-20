@@ -1,9 +1,9 @@
-import { setSelectedIngredient } from '@/store/slices/selected-ingredient.ts';
 import { memo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { BurgerIngredient } from '@components/burger-ingredients/burger-ingredient/burger-ingredient.tsx';
 import { DraggableIngredient } from '@components/burger-ingredients/burger-ingredient/draggable-ingredient/draggable-ingredient.tsx';
+import { setSelectedIngredient } from '@services/store/slices/selected-ingredient.ts';
 
 import type { TIngredient, TIngredientType } from '@shared/types.ts';
 

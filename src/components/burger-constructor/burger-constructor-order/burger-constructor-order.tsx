@@ -1,16 +1,16 @@
-import { useCreateOrderMutation } from '@/api/order';
-import {
-  clearBurgerConstructor,
-  selectBun,
-  selectBurgerIngredients,
-  selectTotalCost,
-} from '@/store/slices/burger-constructor.ts';
 import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
+import { useCreateOrderMutation } from '@services/store/api/order';
+import {
+  clearBurgerConstructor,
+  selectBun,
+  selectBurgerIngredients,
+  selectTotalCost,
+} from '@services/store/slices/burger-constructor.ts';
 
 import styles from './burger-constructor-order.module.css';
 

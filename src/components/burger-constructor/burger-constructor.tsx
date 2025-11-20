@@ -1,3 +1,9 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { BurgerConstructorOrder } from '@components/burger-constructor/burger-constructor-order/burger-constructor-order.tsx';
+import { ConstructorDropTarget } from '@components/burger-constructor/constructor-drop-target/constructor-drop-target.tsx';
+import { ConstructorElement } from '@components/burger-constructor/constructor-element/constructor-element.tsx';
 import {
   addBurgerIngredient,
   deleteBurgerIngredient,
@@ -5,13 +11,7 @@ import {
   selectBun,
   selectBurgerIngredients,
   setBun,
-} from '@/store/slices/burger-constructor.ts';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { BurgerConstructorOrder } from '@components/burger-constructor/burger-constructor-order/burger-constructor-order.tsx';
-import { ConstructorDropTarget } from '@components/burger-constructor/constructor-drop-target/constructor-drop-target.tsx';
-import { ConstructorElement } from '@components/burger-constructor/constructor-element/constructor-element.tsx';
+} from '@services/store/slices/burger-constructor.ts';
 
 import type {
   BurgerConstructorDnDType,

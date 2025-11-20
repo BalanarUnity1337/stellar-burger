@@ -1,7 +1,8 @@
-import { selectIngredientsQtyMap } from '@/store/slices/burger-constructor.ts';
 import { CurrencyIcon, Counter } from '@krgaa/react-developer-burger-ui-components';
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
+
+import { selectIngredientsQtyMap } from '@services/store/slices/burger-constructor.ts';
 
 import type { TIngredient } from '@shared/types.ts';
 

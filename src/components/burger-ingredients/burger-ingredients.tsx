@@ -1,8 +1,3 @@
-import { useGetIngredientsQuery } from '@/api/ingredients.ts';
-import {
-  resetSelectedIngredient,
-  selectSelectedIngredient,
-} from '@/store/slices/selected-ingredient.ts';
 import { Tab, Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { throttle } from 'lodash-es';
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
@@ -11,6 +6,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BurgerIngredientsSection } from '@components/burger-ingredients/burger-ingredients-section/burger-ingredients-section.tsx';
 import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
 import { Modal } from '@components/modal/modal.tsx';
+import { useGetIngredientsQuery } from '@services/store/api/ingredients.ts';
+import {
+  resetSelectedIngredient,
+  selectSelectedIngredient,
+} from '@services/store/slices/selected-ingredient.ts';
 
 import type { TIngredient, TIngredientType } from '@shared/types.ts';
 
