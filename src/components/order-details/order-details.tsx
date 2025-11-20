@@ -3,7 +3,7 @@ import { OrderCheck } from '@components/icons/order-check/order-check.tsx';
 import styles from './order-details.module.css';
 
 type TOrderDetailsProps = {
-  orderId: string;
+  orderId: string | number;
 };
 
 export const OrderDetails = ({ orderId }: TOrderDetailsProps): React.JSX.Element => {

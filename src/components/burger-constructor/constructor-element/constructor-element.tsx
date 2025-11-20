@@ -1,61 +1,67 @@
-import {
-  ConstructorElement as UiConstructorElement,
-  DragIcon,
-} from '@krgaa/react-developer-burger-ui-components';
-import { memo, useCallback, useMemo } from 'react';
+import { memo } from 'react';
 
-import type { TConstructorIngredient } from '@shared/types.ts';
+import { ConstructorElementUi } from '@components/burger-constructor/constructor-element/constructor-element-ui/constructor-element-ui.tsx';
+import { SortableConstructorElement } from '@components/burger-constructor/constructor-element/sortable-constructor-element/sortable-constructor-element.tsx';
 
-import styles from './constructor-element.module.css';
+import type {
+  TConstructorIngredient,
+  TEndMoveElementPayload,
+  TMoveElementPayload,
+} from '@shared/types.ts';
 
-type TConstructorElementProps = {
+type TBaseProps = {
   ingredient: TConstructorIngredient;
-  isSortable?: boolean;
-  isLocked?: boolean;
   position?: 'top' | 'bottom';
+  isLocked?: boolean;
   onDelete?: (ingredient: TConstructorIngredient) => void;
 };
 
-const MemoConstructorElement = memo(UiConstructorElement);
+type TSortableProps = TBaseProps & {
+  isSortable: true;
+  index: number;
+  onMoveElement: (payload: TMoveElementPayload) => void;
+  onEndMove: (payload: TEndMoveElementPayload) => void;
+};
 
-export const ConstructorElement = ({
-  ingredient,
-  position,
-  isSortable,
-  isLocked,
-  onDelete,
-}: TConstructorElementProps): React.JSX.Element => {
-  const text = useMemo(() => {
-    if (ingredient.type === 'bun') {
-      if (position === 'top') {
-        return `${ingredient.name} (верх)`;
-      }
+type TNonSortableProps = TBaseProps & {
+  isSortable: false;
+};
 
-      if (position === 'bottom') {
-        return `${ingredient.name} (низ)`;
-      }
-    }
+type TConstructorElementProps = TSortableProps | TNonSortableProps;
 
-    return ingredient.name;
-  }, [ingredient.type, ingredient.name]);
+export const ConstructorElement = memo(function ConstructorElement(
+  props: TConstructorElementProps
+) {
+  const { ingredient, isSortable, isLocked, onDelete, position } = props;
 
-  const handleClose = useCallback(() => {
-    onDelete?.(ingredient);
-  }, [ingredient, onDelete]);
+  if (isSortable) {
+    const { index, onMoveElement, onEndMove } = props;
+
+    return (
+      <SortableConstructorElement
+        id={ingredient.uid}
+        index={index}
+        moveElement={onMoveElement}
+        onEndMove={onEndMove}
+      >
+        <ConstructorElementUi
+          ingredient={ingredient}
+          isLocked={isLocked}
+          position={position}
+          isSortable={isSortable}
+          onDelete={onDelete}
+        />
+      </SortableConstructorElement>
+    );
+  }
 
   return (
-    <div className={`${styles.constructorElement}`}>
-      {isSortable && <DragIcon className={`${styles.dragIcon}`} type="primary" />}
-
-      <MemoConstructorElement
-        text={text}
-        thumbnail={ingredient.image}
-        price={ingredient.price}
-        type={position}
-        isLocked={isLocked}
-        extraClass={`${styles.elementInfo}`}
-        handleClose={handleClose}
-      />
-    </div>
+    <ConstructorElementUi
+      ingredient={ingredient}
+      isLocked={isLocked}
+      onDelete={onDelete}
+      position={position}
+      isSortable={isSortable}
+    />
   );
-};
+});

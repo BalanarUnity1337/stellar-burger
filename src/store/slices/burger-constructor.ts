@@ -2,7 +2,11 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { mapIngredientToConstructorIngredient } from '@shared/utils.ts';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { TConstructorIngredient, TIngredient } from '@shared/types.ts';
+import type {
+  TConstructorIngredient,
+  TEndMoveElementPayload,
+  TIngredient,
+} from '@shared/types.ts';
 
 type TBurgerConstructorState = {
   bun: TConstructorIngredient | null;
@@ -38,6 +42,24 @@ const burgerConstructorSlice = createSlice({
       state.ingredients = state.ingredients.filter(
         (item) => item.uid !== action.payload
       );
+    },
+    clearBurgerConstructor: (state) => {
+      state.bun = null;
+      state.ingredients = [];
+    },
+    moveIngredient: (state, action: PayloadAction<TEndMoveElementPayload>) => {
+      const { dragItemId, targetIndex } = action.payload;
+
+      const dragIndex = state.ingredients.findIndex(
+        (ingredient) => ingredient.uid === dragItemId
+      );
+
+      const newIngredients = [...state.ingredients];
+
+      const [moved] = newIngredients.splice(dragIndex, 1);
+      newIngredients.splice(targetIndex, 0, moved);
+
+      state.ingredients = [...newIngredients];
     },
   },
   selectors: {
@@ -80,8 +102,13 @@ const burgerConstructorSlice = createSlice({
   },
 });
 
-export const { setBun, addBurgerIngredient, deleteBurgerIngredient } =
-  burgerConstructorSlice.actions;
+export const {
+  setBun,
+  addBurgerIngredient,
+  deleteBurgerIngredient,
+  moveIngredient,
+  clearBurgerConstructor,
+} = burgerConstructorSlice.actions;
 
 export const {
   selectBun,

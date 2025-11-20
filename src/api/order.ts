@@ -1,0 +1,20 @@
+import { baseApi } from '@/api';
+
+import type {
+  TCreateOrderApiRequestParams,
+  TCreateOrderApiResponse,
+} from '@shared/types.ts';
+
+const orderApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    createOrder: build.mutation<TCreateOrderApiResponse, TCreateOrderApiRequestParams>({
+      query: (body) => ({
+        url: 'orders',
+        method: 'POST',
+        body,
+      }),
+    }),
+  }),
+});
+
+export const { useCreateOrderMutation } = orderApi;

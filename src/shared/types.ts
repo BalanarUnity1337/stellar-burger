@@ -30,3 +30,25 @@ export type TApiResponse<T> = {
 };
 
 export type BurgerConstructorDnDType = 'ingredient' | 'bun';
+
+export type TCreateOrderApiRequestParams = {
+  ingredients: string[];
+};
+
+export type TCreateOrderApiResponse = {
+  name: string;
+  order: {
+    number: number;
+  };
+  success: boolean;
+};
+
+export type TMoveElementPayload = {
+  dragIndex: number;
+  hoverIndex: number;
+};
+
+export type TEndMoveElementPayload = {
+  dragItemId: string;
+  targetIndex: number;
+};

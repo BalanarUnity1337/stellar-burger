@@ -1,11 +1,12 @@
 import {
   addBurgerIngredient,
   deleteBurgerIngredient,
+  moveIngredient,
   selectBun,
   selectBurgerIngredients,
   setBun,
 } from '@/store/slices/burger-constructor.ts';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { BurgerConstructorOrder } from '@components/burger-constructor/burger-constructor-order/burger-constructor-order.tsx';
@@ -15,7 +16,9 @@ import { ConstructorElement } from '@components/burger-constructor/constructor-e
 import type {
   BurgerConstructorDnDType,
   TConstructorIngredient,
+  TEndMoveElementPayload,
   TIngredient,
+  TMoveElementPayload,
 } from '@shared/types.ts';
 
 import styles from './burger-constructor.module.css';
@@ -24,6 +27,11 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const dispatch = useDispatch();
   const selectedBun = useSelector(selectBun);
   const ingredients = useSelector(selectBurgerIngredients);
+  const [localIngredients, setLocalIngredients] = useState<TConstructorIngredient[]>([]);
+
+  useEffect(() => {
+    setLocalIngredients(ingredients);
+  }, [ingredients]);
 
   const handleIngredientDrop = useCallback(
     (ingredient: TIngredient, type: BurgerConstructorDnDType) => {
@@ -43,22 +51,46 @@ export const BurgerConstructor = (): React.JSX.Element => {
     [dispatch]
   );
 
+  const handleIngredientMove = useCallback(
+    ({ dragIndex, hoverIndex }: TMoveElementPayload) => {
+      setLocalIngredients((prev) => {
+        const newIngredients = [...prev];
+        const [removed] = newIngredients.splice(dragIndex, 1);
+
+        newIngredients.splice(hoverIndex, 0, removed);
+
+        return newIngredients;
+      });
+    },
+    [dispatch]
+  );
+
+  const handleIngredientEndMove = useCallback(
+    (payload: TEndMoveElementPayload) => {
+      dispatch(moveIngredient(payload));
+    },
+    [dispatch]
+  );
+
   const ingredientsListContent = useMemo(
     () =>
-      ingredients.length > 0 ? (
+      localIngredients.length > 0 ? (
         <ul className={`custom-scroll ${styles.inner_ingredients}`}>
-          {ingredients.map((ingredient) => (
+          {localIngredients.map((ingredient, index) => (
             <li key={ingredient.uid}>
               <ConstructorElement
                 ingredient={ingredient}
+                index={index}
                 isSortable={true}
                 onDelete={handleIngredientDelete}
+                onMoveElement={handleIngredientMove}
+                onEndMove={handleIngredientEndMove}
               />
             </li>
           ))}
         </ul>
       ) : null,
-    [ingredients]
+    [localIngredients]
   );
 
   return (
@@ -68,41 +100,42 @@ export const BurgerConstructor = (): React.JSX.Element => {
         position="top"
         placeholderText="Перетащите булку сюда"
         extraClass={`mb-4`}
-        droppedContent={
-          selectedBun && (
-            <ConstructorElement
-              ingredient={selectedBun}
-              position="top"
-              isLocked={true}
-            />
-          )
-        }
         onDrop={handleIngredientDrop}
-      />
+      >
+        {selectedBun && (
+          <ConstructorElement
+            ingredient={selectedBun}
+            position="top"
+            isLocked={true}
+            isSortable={false}
+          />
+        )}
+      </ConstructorDropTarget>
 
       <ConstructorDropTarget
         acceptType="ingredient"
         placeholderText="Перетащите соус или начинку сюда"
-        droppedContent={ingredientsListContent}
         onDrop={handleIngredientDrop}
-      />
+      >
+        {ingredientsListContent}
+      </ConstructorDropTarget>
 
       <ConstructorDropTarget
         acceptType="bun"
         position="bottom"
         placeholderText="Перетащите булку сюда"
         extraClass={`mt-4`}
-        droppedContent={
-          selectedBun && (
-            <ConstructorElement
-              ingredient={selectedBun}
-              position="bottom"
-              isLocked={true}
-            />
-          )
-        }
         onDrop={handleIngredientDrop}
-      />
+      >
+        {selectedBun && (
+          <ConstructorElement
+            ingredient={selectedBun}
+            position="bottom"
+            isLocked={true}
+            isSortable={false}
+          />
+        )}
+      </ConstructorDropTarget>
 
       <BurgerConstructorOrder className={`mt-10`} />
     </section>

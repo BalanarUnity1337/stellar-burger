@@ -1,7 +1,13 @@
-import { selectTotalCost } from '@/store/slices/burger-constructor.ts';
+import { useCreateOrderMutation } from '@/api/order';
+import {
+  clearBurgerConstructor,
+  selectBun,
+  selectBurgerIngredients,
+  selectTotalCost,
+} from '@/store/slices/burger-constructor.ts';
 import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
@@ -15,16 +21,66 @@ type TBurgerConstructorOrderProps = {
 export const BurgerConstructorOrder = ({
   className = '',
 }: TBurgerConstructorOrderProps): React.JSX.Element => {
+  const dispatch = useDispatch();
   const totalCost = useSelector(selectTotalCost);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const burgerBun = useSelector(selectBun);
+  const burgerIngredients = useSelector(selectBurgerIngredients);
+  const [createOrder, { reset, isLoading }] = useCreateOrderMutation();
+
+  const [state, setState] = useState({
+    orderId: null as number | null,
+    isProcessing: false,
+    error: '',
+    isModalVisible: false,
+  });
+
+  const isSubmitButtonDisabled = useMemo(
+    () =>
+      burgerBun == null ||
+      burgerIngredients.length === 0 ||
+      isLoading ||
+      state.isProcessing,
+    [burgerBun, burgerIngredients, isLoading, state.isProcessing]
+  );
 
   const handleSubmitOrder = (): void => {
-    setIsModalVisible(true);
+    if (!isSubmitButtonDisabled) {
+      setState((prev) => ({ ...prev, error: '', isProcessing: true }));
+
+      const ingredients: string[] = [
+        burgerBun!._id,
+        ...burgerIngredients.map((ingredient) => ingredient._id),
+        burgerBun!._id,
+      ];
+
+      createOrder({ ingredients })
+        .unwrap()
+        .then((response) => {
+          setState((prev) => ({
+            ...prev,
+            orderId: response.order.number,
+            isModalVisible: true,
+          }));
+        })
+        .catch((_e) => {
+          setState((prev) => ({
+            ...prev,
+            error: 'Произошла ошибка при создании заказа',
+          }));
+        })
+        .finally(() => {
+          setState((prev) => ({ ...prev, isProcessing: false }));
+        });
+    }
   };
 
   const handleModalClose = (): void => {
-    setIsModalVisible(false);
+    setState((prev) => ({ ...prev, isModalVisible: false }));
+    dispatch(clearBurgerConstructor());
+    reset();
   };
+
+  const { orderId, error, isModalVisible } = state;
 
   return (
     <>
@@ -34,14 +90,21 @@ export const BurgerConstructorOrder = ({
           <CurrencyIcon type="primary" className={`${styles.cost_icon}`} />
         </output>
 
-        <Button htmlType="button" size="large" onClick={handleSubmitOrder}>
+        <Button
+          disabled={isSubmitButtonDisabled}
+          htmlType="button"
+          size="large"
+          onClick={handleSubmitOrder}
+        >
           Оформить заказ
         </Button>
       </div>
 
-      {isModalVisible && (
+      {error && <p className={` ${styles.error}`}>{error}</p>}
+
+      {isModalVisible && orderId != null && (
         <Modal onClose={handleModalClose}>
-          <OrderDetails orderId="034536" />
+          <OrderDetails orderId={orderId} />
         </Modal>
       )}
     </>

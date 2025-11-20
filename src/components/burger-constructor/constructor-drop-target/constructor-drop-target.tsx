@@ -6,11 +6,11 @@ import type { BurgerConstructorDnDType, TIngredient } from '@shared/types.ts';
 import styles from './constructor-drop-target.module.css';
 
 type TConstructorEmptyElementProps = {
+  children: React.ReactNode;
   position?: 'top' | 'bottom';
   acceptType: BurgerConstructorDnDType;
   placeholderText?: string;
   extraClass?: string;
-  droppedContent?: React.ReactNode;
   onDrop?: (ingredient: TIngredient, type: BurgerConstructorDnDType) => void;
 };
 
@@ -25,11 +25,11 @@ type TDropItemProps = {
 };
 
 export const ConstructorDropTarget = ({
+  children,
   position,
   acceptType,
   extraClass,
   placeholderText,
-  droppedContent,
   onDrop,
 }: TConstructorEmptyElementProps): React.JSX.Element => {
   const [{ isCanDrop, isOver }, dropConnector] = useDrop(() => ({
@@ -59,9 +59,7 @@ export const ConstructorDropTarget = ({
 
   return (
     <div ref={dropRef} className={className}>
-      {droppedContent ?? (
-        <div className={`${styles.placeholder}`}>{placeholderText}</div>
-      )}
+      {children ?? <div className={`${styles.placeholder}`}>{placeholderText}</div>}
     </div>
   );
 };
