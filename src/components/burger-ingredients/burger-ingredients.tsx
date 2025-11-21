@@ -1,38 +1,99 @@
-import { Tab } from '@krgaa/react-developer-burger-ui-components';
-import { useState, useCallback, useMemo } from 'react';
+import { Tab, Preloader } from '@krgaa/react-developer-burger-ui-components';
+import { throttle } from 'lodash-es';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { BurgerIngredientsSection } from '@components/burger-ingredients/burger-ingredients-section/burger-ingredients-section.tsx';
+import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
+import { Modal } from '@components/modal/modal.tsx';
+import { useGetIngredientsQuery } from '@services/store/api/ingredients.ts';
+import {
+  resetSelectedIngredient,
+  selectSelectedIngredient,
+} from '@services/store/slices/selected-ingredient.ts';
 
-import type { TIngredient } from '@utils/types';
+import type { TIngredient, TIngredientType } from '@shared/types.ts';
 
 import styles from './burger-ingredients.module.css';
 
-type TBurgerIngredientsProps = {
-  ingredients: TIngredient[];
-};
+type TSections = Record<TIngredientType, TIngredient[]>;
 
-type TSections = Record<TIngredient['type'], TIngredient[]>;
-
-const sectionTitles: Record<TIngredient['type'], string> = {
+const sectionTitles: Record<TIngredientType, string> = {
   bun: 'Булки',
   sauce: 'Соусы',
   main: 'Начинки',
 };
 
-export const BurgerIngredients = ({
-  ingredients,
-}: TBurgerIngredientsProps): React.JSX.Element => {
-  const [activeTab, setActiveTab] = useState<TIngredient['type']>('bun');
+export const BurgerIngredients = (): React.JSX.Element => {
+  const dispatch = useDispatch();
+  const selectedIngredient = useSelector(selectSelectedIngredient);
+  const tabsRef = useRef<HTMLElement | null>(null);
+  const headersRefs = useRef<
+    Partial<Record<TIngredientType, HTMLHeadingElement | null>>
+  >({});
 
-  const handleTabClick = useCallback((tabName: TIngredient['type']): void => {
+  const [activeTab, setActiveTab] = useState<TIngredientType>('bun');
+
+  const { data: ingredients, isLoading, isSuccess, isError } = useGetIngredientsQuery();
+
+  const setHeaderRef = useCallback(
+    (key: TIngredientType, headerRef: HTMLHeadingElement) => {
+      headersRefs.current[key] = headerRef;
+    },
+    []
+  );
+
+  const handleTabClick = useCallback((tabName: TIngredientType): void => {
     setActiveTab(tabName);
+
+    headersRefs.current[tabName]?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'start',
+    });
   }, []);
 
-  const isTabActive = (tabName: TIngredient['type']): boolean => activeTab === tabName;
+  const handleScroll = useCallback(() => {
+    if (tabsRef.current == null) {
+      return;
+    }
+
+    const tabsBottom = tabsRef.current.getBoundingClientRect().bottom;
+
+    const closestHeader = {
+      key: null as TIngredientType | null,
+      distance: Infinity,
+    };
+
+    (Object.keys(headersRefs.current) as TIngredientType[]).forEach((key) => {
+      const header = headersRefs.current[key];
+
+      if (header != null) {
+        const distance = Math.abs(tabsBottom - header.getBoundingClientRect().top);
+
+        if (distance < closestHeader.distance) {
+          closestHeader.key = key;
+          closestHeader.distance = distance;
+        }
+      }
+    });
+
+    if (closestHeader.key != null) {
+      setActiveTab(() => closestHeader.key!);
+    }
+  }, []);
+
+  const throttledHandleScroll = useRef(throttle(handleScroll, 100)).current;
+
+  useEffect(() => {
+    return (): void => {
+      throttledHandleScroll.cancel();
+    };
+  }, []);
 
   const sections: TSections = useMemo(
     () =>
-      ingredients.reduce((acc, ingredient) => {
+      (ingredients ?? []).reduce((acc, ingredient) => {
         acc[ingredient.type] = [...(acc[ingredient.type] ?? []), ingredient];
 
         return acc;
@@ -40,34 +101,66 @@ export const BurgerIngredients = ({
     [ingredients]
   );
 
-  return (
-    <section className={styles.burger_ingredients}>
-      <nav>
-        <ul className={styles.menu}>
-          {(Object.keys(sectionTitles) as TIngredient['type'][]).map((key) => (
-            <li key={key}>
-              <Tab
-                key={key}
-                value={key}
-                active={isTabActive(key)}
-                onClick={handleTabClick as (value: string) => void}
-              >
-                {sectionTitles[key]}
-              </Tab>
-            </li>
-          ))}
-        </ul>
-      </nav>
+  const content = useMemo(() => {
+    if (isLoading) {
+      return <Preloader />;
+    }
 
-      <div className={`mt-10 custom-scroll ${styles.sections}`}>
-        {(Object.keys(sections) as TIngredient['type'][]).map((key) => (
-          <BurgerIngredientsSection
-            key={key}
-            title={sectionTitles[key]}
-            items={sections[key]}
-          />
-        ))}
-      </div>
-    </section>
+    if (isError) {
+      return (
+        <p className={`text text_type_main-large mt-20`}>
+          Произошла ошибка при загрузке ингредиентов
+        </p>
+      );
+    }
+
+    if (isSuccess && ingredients?.length > 0) {
+      return (
+        <>
+          <nav ref={tabsRef}>
+            <ul className={styles.menu}>
+              {(Object.keys(sections) as TIngredientType[]).map((tabName) => (
+                <li key={tabName}>
+                  <Tab
+                    value={tabName}
+                    active={tabName === activeTab}
+                    onClick={handleTabClick as (value: string) => void}
+                  >
+                    {sectionTitles[tabName]}
+                  </Tab>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div
+            className={`pt-10 custom-scroll ${styles.sections}`}
+            onScroll={throttledHandleScroll}
+          >
+            {(Object.keys(sections) as TIngredientType[]).map((key) => (
+              <BurgerIngredientsSection
+                key={key}
+                title={sectionTitles[key]}
+                items={sections[key]}
+                setHeaderRef={setHeaderRef}
+                headerId={key}
+              />
+            ))}
+          </div>
+        </>
+      );
+    }
+  }, [sections, isLoading, isSuccess, isError, activeTab]);
+
+  return (
+    <>
+      <section className={styles.burger_ingredients}>{content}</section>
+
+      {selectedIngredient && (
+        <Modal onClose={() => dispatch(resetSelectedIngredient())}>
+          <IngredientDetails ingredient={selectedIngredient} />
+        </Modal>
+      )}
+    </>
   );
 };

@@ -1,0 +1,41 @@
+.dropTarget {
+  display: flex;
+  width: 100%;
+  min-height: 80px;
+  border-radius: 8px;
+  outline: 2px dashed transparent;
+  transition:
+    background-color 0.2s ease-in-out,
+    outline-color 0.2s ease-in-out;
+}
+
+.placeholder {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  max-width: 536px;
+  background-color: var(--background-element);
+  border-radius: var(--common-border-radius-s);
+  composes: text text_type_main-default ml-8 from global;
+}
+
+.dropTarget_top {
+  .placeholder {
+    border-radius: var(--top-constructor-item-border-radius);
+  }
+}
+
+.dropTarget_bottom {
+  .placeholder {
+    border-radius: var(--bottom-constructor-item-border-radius);
+  }
+}
+
+.canDrop {
+  outline-color: var(--colors-interface-accent);
+}
+
+.isOver {
+  opacity: 0.7;
+}

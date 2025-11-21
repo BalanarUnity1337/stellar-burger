@@ -1,0 +1,16 @@
+.element {
+  display: grid;
+  grid-template-columns: 24px auto;
+  align-items: center;
+  grid-column-gap: 8px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.dragIcon {
+  grid-area: 1 / 1 / -1 / 2;
+  cursor: move;
+}
+
+.elementInfo {
+  grid-area: 1 / 2 / -1 / -1;
+}

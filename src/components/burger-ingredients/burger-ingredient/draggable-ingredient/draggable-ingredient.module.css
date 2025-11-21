@@ -1,0 +1,7 @@
+.draggableIngredient {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.isDragging {
+  opacity: 0.3;
+}

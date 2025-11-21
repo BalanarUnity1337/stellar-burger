@@ -1,56 +1,63 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { BurgerIngredient } from '@components/burger-ingredients/burger-ingredient/burger-ingredient.tsx';
-import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
-import { Modal } from '@components/modal/modal.tsx';
+import { DraggableIngredient } from '@components/burger-ingredients/burger-ingredient/draggable-ingredient/draggable-ingredient.tsx';
+import { setSelectedIngredient } from '@services/store/slices/selected-ingredient.ts';
 
-import type { TIngredient } from '@utils/types.ts';
+import type { TIngredient, TIngredientType } from '@shared/types.ts';
 
 import styles from './burger-ingredients-section.module.css';
 
 type TBurgerIngredientsSectionProps = {
   title: string;
   items: TIngredient[];
+  headerId: TIngredientType;
+  setHeaderRef?: (key: TIngredientType, ref: HTMLHeadingElement) => void;
 };
 
 export const BurgerIngredientsSection = memo(function BurgerIngredientsSection({
   title,
   items,
+  headerId,
+  setHeaderRef,
 }: TBurgerIngredientsSectionProps): React.JSX.Element {
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [ingredientToShow, setIngredientToShow] = useState<TIngredient | null>(null);
+  const dispatch = useDispatch();
 
-  const handleIngredientClick = useCallback((ingredient: TIngredient): void => {
-    setIngredientToShow(ingredient);
-    setIsModalVisible(true);
-  }, []);
-
-  const handleModalClose = (): void => {
-    setIsModalVisible(false);
-  };
+  const handleIngredientClick = useCallback(
+    (ingredient: TIngredient): void => {
+      dispatch(setSelectedIngredient(ingredient));
+    },
+    [dispatch]
+  );
 
   return (
-    <>
-      <section>
-        <h2 className={`text text_type_main-medium`}>{title}</h2>
+    <section>
+      <h2
+        id={headerId}
+        ref={(el) => {
+          setHeaderRef?.(headerId, el!);
+        }}
+        className={`text text_type_main-medium`}
+      >
+        {title}
+      </h2>
 
-        <ul className={`${styles.list}`}>
-          {items.map((ingredient: TIngredient) => (
-            <li key={ingredient._id}>
+      <ul className={`${styles.list}`}>
+        {items.map((ingredient: TIngredient) => (
+          <li key={ingredient._id}>
+            <DraggableIngredient
+              ingredient={ingredient}
+              type={ingredient.type === 'bun' ? 'bun' : 'ingredient'}
+            >
               <BurgerIngredient
                 ingredient={ingredient}
                 onClick={handleIngredientClick}
               />
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {isModalVisible && ingredientToShow && (
-        <Modal title="Детали ингредиента" onClose={handleModalClose}>
-          <IngredientDetails ingredient={ingredientToShow} />
-        </Modal>
-      )}
-    </>
+            </DraggableIngredient>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 });
