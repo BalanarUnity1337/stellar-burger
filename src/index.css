@@ -25,3 +25,14 @@ body {
   padding: 0;
   list-style: none;
 }
+
+.link {
+  color: var(--colors-interface-accent);
+  text-decoration: none;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    text-decoration: underline;
+    opacity: 0.9;
+  }
+}
