@@ -1,4 +1,4 @@
-import { Routes } from '@/router/routes.ts';
+import { RouterPaths } from '@/router/path.ts';
 import {
   Button,
   Input,
@@ -40,7 +40,7 @@ export const RegisterForm = (): React.JSX.Element => {
     () => (
       <Text isInactive={true}>
         Уже зарегистрированы?
-        <Link className={`link ml-2`} to={Routes.login}>
+        <Link className={`link ml-2`} to={RouterPaths.login}>
           Войти
         </Link>
       </Text>

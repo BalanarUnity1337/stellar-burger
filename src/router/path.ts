@@ -1,4 +1,4 @@
-export const Routes = {
+export const RouterPaths = {
   index: '/',
   login: '/login',
   register: '/register',

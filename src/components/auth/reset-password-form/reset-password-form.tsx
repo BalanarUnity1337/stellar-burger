@@ -1,4 +1,4 @@
-import { Routes } from '@/router/routes.ts';
+import { RouterPaths } from '@/router/path.ts';
 import {
   PasswordInput,
   Input,
@@ -39,7 +39,7 @@ export const ResetPasswordForm = (): React.JSX.Element => {
     () => (
       <Text isInactive={true}>
         Вспомнили пароль?
-        <Link className={`link ml-2`} to={Routes.login}>
+        <Link className={`link ml-2`} to={RouterPaths.login}>
           Войти
         </Link>
       </Text>

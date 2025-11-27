@@ -1,4 +1,4 @@
-import { Routes } from '@/router/routes.ts';
+import { RouterPaths } from '@/router/path.ts';
 import { Input, Button } from '@krgaa/react-developer-burger-ui-components';
 import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router';
@@ -34,7 +34,7 @@ export const ForgotPasswordForm = (): React.JSX.Element => {
     () => (
       <Text isInactive={true}>
         Вспомнили пароль?
-        <Link className={`link ml-2`} to={Routes.login}>
+        <Link className={`link ml-2`} to={RouterPaths.login}>
           Войти
         </Link>
       </Text>
