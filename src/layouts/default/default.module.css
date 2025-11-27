@@ -1,0 +1,16 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  color: var(--text-primary-color);
+  background-color: var(--background-alt);
+}
+
+.main {
+  width: 100%;
+  max-width: 1280px;
+  height: calc(100vh - var(--header-height));
+  margin: 0 auto;
+  composes: pl-5 pr-5 from global;
+}

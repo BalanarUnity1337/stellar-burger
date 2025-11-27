@@ -5,7 +5,6 @@ export const Routes = {
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
   profile: '/profile',
-  ingredients: '/ingredients',
   ingredientPage: '/ingredients/:id',
   notFound: '*',
 };

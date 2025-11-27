@@ -4,7 +4,6 @@ import { createRoot } from 'react-dom/client';
 import { Provider as ReduxProvider } from 'react-redux';
 import { RouterProvider } from 'react-router/dom';
 
-import { App } from '@components/app/app';
 import { store } from '@services/store';
 
 import './index.css';
@@ -12,10 +11,7 @@ import './index.css';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ReduxProvider store={store}>
-      {/*// @ts-expect-error TODO: Разобраться с ошибкой */}
-      <RouterProvider router={router}>
-        <App />
-      </RouterProvider>
+      <RouterProvider router={router} />
     </ReduxProvider>
   </StrictMode>
 );
