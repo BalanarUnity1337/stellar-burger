@@ -12,7 +12,7 @@ import {
   selectSelectedIngredient,
 } from '@services/store/slices/selected-ingredient.ts';
 
-import type { TIngredient, TIngredientType } from '@shared/types.ts';
+import type { TIngredient, TIngredientType } from '@shared/types/entities.ts';
 
 import styles from './burger-ingredients.module.css';
 

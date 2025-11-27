@@ -1,13 +1,14 @@
 import { baseApi } from '@services/store/api/index.ts';
 
-import type { TApiResponse, TIngredient } from '@shared/types.ts';
+import type { TApiCommonResponse } from '@shared/types/api.ts';
+import type { TIngredient } from '@shared/types/entities.ts';
 
 const ingredientsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getIngredients: build.query<TIngredient[], void>({
       query: () => ({ url: 'ingredients' }),
       providesTags: ['Ingredients'],
-      transformResponse: (response: TApiResponse<TIngredient[]>) => response.data,
+      transformResponse: (response: TApiCommonResponse<TIngredient[]>) => response.data,
     }),
   }),
 });

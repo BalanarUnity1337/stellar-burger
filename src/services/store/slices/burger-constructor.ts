@@ -2,11 +2,8 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { mapIngredientToConstructorIngredient } from '@shared/utils.ts';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type {
-  TConstructorIngredient,
-  TEndMoveElementPayload,
-  TIngredient,
-} from '@shared/types.ts';
+import type { TConstructorIngredient, TIngredient } from '@shared/types/entities.ts';
+import type { TEndMoveElementPayload } from '@shared/types/global.ts';
 
 type TBurgerConstructorState = {
   bun: TConstructorIngredient | null;

@@ -5,7 +5,7 @@ import { BurgerIngredient } from '@components/burger-ingredients/burger-ingredie
 import { DraggableIngredient } from '@components/burger-ingredients/burger-ingredient/draggable-ingredient/draggable-ingredient.tsx';
 import { setSelectedIngredient } from '@services/store/slices/selected-ingredient.ts';
 
-import type { TIngredient, TIngredientType } from '@shared/types.ts';
+import type { TIngredient, TIngredientType } from '@shared/types/entities.ts';
 
 import styles from './burger-ingredients-section.module.css';
 

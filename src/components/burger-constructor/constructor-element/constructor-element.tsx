@@ -3,11 +3,11 @@ import { memo } from 'react';
 import { ConstructorElementUi } from '@components/burger-constructor/constructor-element/constructor-element-ui/constructor-element-ui.tsx';
 import { SortableConstructorElement } from '@components/burger-constructor/constructor-element/sortable-constructor-element/sortable-constructor-element.tsx';
 
+import type { TConstructorIngredient } from '@shared/types/entities.ts';
 import type {
-  TConstructorIngredient,
   TEndMoveElementPayload,
   TMoveElementPayload,
-} from '@shared/types.ts';
+} from '@shared/types/global.ts';
 
 type TBaseProps = {
   ingredient: TConstructorIngredient;

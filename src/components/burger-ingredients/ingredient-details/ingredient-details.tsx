@@ -1,4 +1,4 @@
-import type { TIngredient } from '@shared/types.ts';
+import type { TIngredient } from '@shared/types/entities.ts';
 
 import styles from './ingredient-details.module.css';
 
