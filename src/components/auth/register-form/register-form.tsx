@@ -1,10 +1,11 @@
+import { useForm } from '@/hooks';
 import { RouterPaths } from '@/router/path.ts';
 import {
   Button,
   Input,
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router';
 
 import { AuthContainer } from '@components/auth/auth-container/auth-container.tsx';
@@ -12,20 +13,11 @@ import { FormWrapper } from '@components/auth/form-wrapper/form-wrapper.tsx';
 import { Text } from '@components/ui/text/text.tsx';
 
 export const RegisterForm = (): React.JSX.Element => {
-  const [state, setState] = useState({
+  const { formState, onFormInputChange } = useForm({
     name: '',
     email: '',
     password: '',
   });
-
-  const onInputChange = useCallback((e: React.SyntheticEvent) => {
-    const target = e.target as HTMLInputElement;
-
-    setState((prev) => ({
-      ...prev,
-      [target.name]: target.value,
-    }));
-  }, []);
 
   const slotButtonsContent = useMemo(
     () => (
@@ -57,23 +49,23 @@ export const RegisterForm = (): React.JSX.Element => {
       >
         <Input
           name="name"
-          value={state.name}
+          value={formState.name}
           placeholder="Имя"
           type="text"
-          onChange={onInputChange}
+          onChange={onFormInputChange}
         />
         <Input
           name="email"
-          value={state.email}
+          value={formState.email}
           placeholder="E-mail"
           type="email"
-          onChange={onInputChange}
+          onChange={onFormInputChange}
         />
         <PasswordInput
           name="password"
-          value={state.password}
+          value={formState.password}
           placeholder="Пароль"
-          onChange={onInputChange}
+          onChange={onFormInputChange}
         />
       </FormWrapper>
     </AuthContainer>
