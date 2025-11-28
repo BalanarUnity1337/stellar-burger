@@ -18,7 +18,6 @@ export const router = createBrowserRouter([
     Component: RootLayout,
     children: [
       { index: true, Component: IndexPage },
-      { path: RouterPaths.ingredientPage, Component: IngredientPage },
       { path: RouterPaths.login, Component: LoginPage },
       { path: RouterPaths.register, Component: RegisterPage },
       { path: RouterPaths.forgotPassword, Component: ForgotPasswordPage },
@@ -28,6 +27,7 @@ export const router = createBrowserRouter([
         Component: ProfileLayout,
         children: [{ index: true, Component: ProfilePage }],
       },
+      { path: RouterPaths.ingredientPage, Component: IngredientPage },
     ],
   },
   {

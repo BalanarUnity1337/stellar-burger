@@ -20,7 +20,7 @@ export const FormWrapper = ({
   return (
     <section className={`${styles.wrapper}`}>
       <header className={`${styles.header}`}>
-        {<h2 className={`${styles.title}`}>{title}</h2>}
+        <h2 className={`${styles.title}`}>{title}</h2>
       </header>
 
       <form className={`${styles.form}`} onSubmit={handleSubmit}>
