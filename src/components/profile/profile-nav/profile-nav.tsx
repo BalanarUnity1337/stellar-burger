@@ -41,6 +41,7 @@ export const ProfileNav = (): React.JSX.Element => {
         </button>
       </nav>
 
+      {/* @TODO: При добавлении роута <История заказов> сделать динамическое изменение описания страницы */}
       <Text isInactive={true} extraClass={`${styles.navText}`}>
         В этом разделе вы можете изменить свои персональные данные
       </Text>
