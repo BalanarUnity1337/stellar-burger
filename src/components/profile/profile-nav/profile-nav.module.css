@@ -1,0 +1,33 @@
+.nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  color: var(--text-inactive-color);
+  text-decoration: none;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+  composes: text text_type_main-medium from global;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: var(--colors-interface-accent);
+  }
+}
+
+.navLink_active {
+  color: var(--text-primary-color);
+  pointer-events: none;
+}
+
+.navText {
+  composes: mt-20 from global;
+  opacity: 0.4;
+}

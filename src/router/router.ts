@@ -1,5 +1,6 @@
-import { DefaultLayout } from '@/layouts/default/default.tsx';
-import { RouterPaths } from '@/router/path.ts';
+import { ProfileLayout } from '@/layouts/profile/profile.tsx';
+import { RootLayout } from '@/layouts/root/root.tsx';
+import { RouterPaths } from '@/router/paths.ts';
 import { createBrowserRouter } from 'react-router';
 
 import { ForgotPasswordPage } from '@pages/forgot-password/forgot-password.tsx';
@@ -14,15 +15,19 @@ import { ResetPasswordPage } from '@pages/reset-password/reset-password.tsx';
 export const router = createBrowserRouter([
   {
     path: RouterPaths.index,
-    Component: DefaultLayout,
+    Component: RootLayout,
     children: [
       { index: true, Component: IndexPage },
       { path: RouterPaths.ingredientPage, Component: IngredientPage },
-      { path: RouterPaths.profile, Component: ProfilePage },
       { path: RouterPaths.login, Component: LoginPage },
       { path: RouterPaths.register, Component: RegisterPage },
       { path: RouterPaths.forgotPassword, Component: ForgotPasswordPage },
       { path: RouterPaths.resetPassword, Component: ResetPasswordPage },
+      {
+        path: RouterPaths.profile,
+        Component: ProfileLayout,
+        children: [{ index: true, Component: ProfilePage }],
+      },
     ],
   },
   {

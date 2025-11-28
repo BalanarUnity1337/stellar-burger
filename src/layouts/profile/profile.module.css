@@ -1,0 +1,6 @@
+.layout {
+  composes: pt-30 from global;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  grid-column-gap: 60px;
+}

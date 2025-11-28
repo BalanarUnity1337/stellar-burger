@@ -2,9 +2,9 @@ import { Outlet } from 'react-router';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
 
-import styles from './default.module.css';
+import styles from './root.module.css';
 
-export const DefaultLayout = (): React.JSX.Element => {
+export const RootLayout = (): React.JSX.Element => {
   return (
     <div className={`${styles.layout}`}>
       <AppHeader />
