@@ -13,6 +13,7 @@
 .menu_part {
   display: flex;
   flex-basis: 35%;
+  column-gap: 8px;
 }
 
 .menu_part_right {
@@ -20,6 +21,7 @@
 }
 
 .link {
+  composes: p-5 from global;
   display: flex;
   align-items: center;
   color: var(--text-inactive-color);

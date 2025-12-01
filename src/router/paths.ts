@@ -5,7 +5,9 @@ export const RouterPaths = {
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
   profile: '/profile',
+  orders: '/profile/orders',
   ingredientPage: '/ingredients/:id',
+  feed: '/feed',
   notFound: '*',
 };
 

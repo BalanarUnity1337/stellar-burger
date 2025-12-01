@@ -1,5 +1,5 @@
 import { useForm } from '@/hooks';
-import { RouterPaths } from '@/router/paths.ts';
+import { RouterPaths } from '@/router';
 import { Input, Button } from '@krgaa/react-developer-burger-ui-components';
 import { useMemo } from 'react';
 import { Link } from 'react-router';

@@ -1,26 +1,41 @@
+import { RouterPaths } from '@/router';
 import {
   BurgerIcon,
   ListIcon,
   Logo,
   ProfileIcon,
 } from '@krgaa/react-developer-burger-ui-components';
+import { NavLink } from 'react-router';
+
+import type { NavLinkRenderProps } from 'react-router-dom';
 
 import styles from './app-header.module.css';
 
 export const AppHeader = (): React.JSX.Element => {
+  const getLinkClassName = ({ isActive }: NavLinkRenderProps): string =>
+    `${styles.link} ${isActive ? styles.link_active : ''}`;
+
   return (
     <header className={styles.header}>
       <nav className={`${styles.menu} pt-4 pb-4`}>
         <div className={`${styles.menu_part}`}>
-          <a href="/" className={`${styles.link} ${styles.link_active} p-5`}>
-            <BurgerIcon type="primary" />
-            <p className="text text_type_main-default ml-2">Конструктор</p>
-          </a>
+          <NavLink className={getLinkClassName} to={RouterPaths.index}>
+            {({ isActive }) => (
+              <>
+                <BurgerIcon type={isActive ? 'primary' : 'secondary'} />
+                <p className="text text_type_main-default ml-2">Конструктор</p>
+              </>
+            )}
+          </NavLink>
 
-          <a href="/feed" className={`${styles.link} ml-2 p-5`}>
-            <ListIcon type="secondary" />
-            <p className="text text_type_main-default ml-2">Лента заказов</p>
-          </a>
+          <NavLink className={getLinkClassName} to={RouterPaths.feed}>
+            {({ isActive }) => (
+              <>
+                <ListIcon type={isActive ? 'primary' : 'secondary'} />
+                <p className="text text_type_main-default ml-2">Лента заказов</p>
+              </>
+            )}
+          </NavLink>
         </div>
 
         <div className={styles.logo}>
@@ -28,10 +43,14 @@ export const AppHeader = (): React.JSX.Element => {
         </div>
 
         <div className={`${styles.menu_part} ${styles.menu_part_right}`}>
-          <a href="/profile" className={`${styles.link} p-5`}>
-            <ProfileIcon type="secondary" />
-            <p className="text text_type_main-default ml-2">Личный кабинет</p>
-          </a>
+          <NavLink className={getLinkClassName} to={RouterPaths.profile}>
+            {({ isActive }) => (
+              <>
+                <ProfileIcon type={isActive ? 'primary' : 'secondary'} />
+                <p className="text text_type_main-default ml-2">Личный кабинет</p>
+              </>
+            )}
+          </NavLink>
         </div>
       </nav>
     </header>

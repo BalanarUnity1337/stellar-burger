@@ -1,5 +1,5 @@
 import { useForm } from '@/hooks';
-import { RouterPaths } from '@/router/paths.ts';
+import { RouterPaths } from '@/router';
 import {
   PasswordInput,
   Input,

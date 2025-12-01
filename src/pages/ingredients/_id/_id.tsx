@@ -1,5 +1,5 @@
 import { Preloader } from '@krgaa/react-developer-burger-ui-components';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
 import { Text } from '@components/ui/text/text.tsx';
