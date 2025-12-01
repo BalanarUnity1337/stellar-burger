@@ -1,23 +1,33 @@
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { ProfileLayout } from '@/layouts/profile/profile.tsx';
+import { RootLayout } from '@/layouts/root/root.tsx';
+import { RouterPaths } from '@/router';
+import { Routes, Route } from 'react-router';
 
-import { BurgerConstructor } from '@components/burger-constructor/burger-constructor.tsx';
-import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients.tsx';
-import { PageTitle } from '@components/ui/page-title/page-title.tsx';
-
-import styles from './app.module.css';
+import { ForgotPasswordPage } from '@pages/forgot-password/forgot-password.tsx';
+import { IndexPage } from '@pages/index';
+import { IngredientPage } from '@pages/ingredients/_id/_id.tsx';
+import { LoginPage } from '@pages/login/login.tsx';
+import { NotFoundPage } from '@pages/not-found/not-found.tsx';
+import { ProfilePage } from '@pages/profile/profile.tsx';
+import { RegisterPage } from '@pages/register/register.tsx';
+import { ResetPasswordPage } from '@pages/reset-password/reset-password.tsx';
 
 export const App = (): React.JSX.Element => {
   return (
-    <section className={`${styles.wrapper}`}>
-      <PageTitle>Соберите бургер</PageTitle>
+    <Routes>
+      <Route path={RouterPaths.index} Component={RootLayout}>
+        <Route index={true} Component={IndexPage} />
+        <Route path={RouterPaths.login} Component={LoginPage} />
+        <Route path={RouterPaths.register} Component={RegisterPage} />
+        <Route path={RouterPaths.forgotPassword} Component={ForgotPasswordPage} />
+        <Route path={RouterPaths.resetPassword} Component={ResetPasswordPage} />
+        <Route path={RouterPaths.ingredientPage} Component={IngredientPage} />
+        <Route path={RouterPaths.profile} Component={ProfileLayout}>
+          <Route index={true} Component={ProfilePage} />
+        </Route>
 
-      <div className={`${styles.content}`}>
-        <DndProvider backend={HTML5Backend}>
-          <BurgerIngredients />
-          <BurgerConstructor />
-        </DndProvider>
-      </div>
-    </section>
+        <Route path={RouterPaths.notFound} Component={NotFoundPage} />
+      </Route>
+    </Routes>
   );
 };

@@ -1,1 +1,1 @@
-export * from './router.ts';
+export { RouterPaths, createIngredientPageRoute } from './paths.ts';

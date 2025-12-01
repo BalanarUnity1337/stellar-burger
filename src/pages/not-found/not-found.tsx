@@ -1,4 +1,4 @@
-import { RouterPaths } from '@/router/paths.ts';
+import { RouterPaths } from '@/router';
 import { Button } from '@krgaa/react-developer-burger-ui-components';
 import { useNavigate } from 'react-router';
 

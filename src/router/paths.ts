@@ -8,3 +8,6 @@ export const RouterPaths = {
   ingredientPage: '/ingredients/:id',
   notFound: '*',
 };
+
+export const createIngredientPageRoute = (id: string): string =>
+  RouterPaths.ingredientPage.replace(':id', id);
