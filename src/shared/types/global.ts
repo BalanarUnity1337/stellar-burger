@@ -1,3 +1,5 @@
+import type { Location } from 'react-router';
+
 export type TAccessToken = string;
 export type TRefreshToken = string;
 
@@ -12,3 +14,7 @@ export type TEndMoveElementPayload = {
 };
 
 export type BurgerConstructorDnDType = 'ingredient' | 'bun';
+
+export type TBackgroundLocationState = {
+  background?: Location;
+};

@@ -1,4 +1,3 @@
-import { RouterPaths } from '@/router';
 import { useNavigate, useParams } from 'react-router';
 
 import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
@@ -12,14 +11,10 @@ export const IngredientModal = (): React.JSX.Element => {
 
   const ingredient = ingredients?.find((ingredient) => ingredient._id === id) ?? null;
 
-  const handleModalClose = (): void => {
-    void navigate(RouterPaths.index, { replace: true });
-  };
-
   return (
     <>
       {ingredient && (
-        <Modal onClose={handleModalClose}>
+        <Modal onClose={() => void navigate(-1)}>
           <IngredientDetails ingredient={ingredient} />
         </Modal>
       )}

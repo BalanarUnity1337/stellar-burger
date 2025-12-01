@@ -1,16 +1,9 @@
 import { Tab, Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { throttle } from 'lodash-es';
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { BurgerIngredientsSection } from '@components/burger-ingredients/burger-ingredients-section/burger-ingredients-section.tsx';
-import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
-import { Modal } from '@components/modal/modal.tsx';
 import { useGetIngredientsQuery } from '@services/store/api/ingredients.ts';
-import {
-  resetSelectedIngredient,
-  selectSelectedIngredient,
-} from '@services/store/slices/selected-ingredient.ts';
 
 import type { TIngredient, TIngredientType } from '@shared/types/entities.ts';
 
@@ -25,8 +18,6 @@ const sectionTitles: Record<TIngredientType, string> = {
 };
 
 export const BurgerIngredients = (): React.JSX.Element => {
-  const dispatch = useDispatch();
-  const selectedIngredient = useSelector(selectSelectedIngredient);
   const tabsRef = useRef<HTMLElement | null>(null);
   const headersRefs = useRef<
     Partial<Record<TIngredientType, HTMLHeadingElement | null>>
@@ -155,12 +146,6 @@ export const BurgerIngredients = (): React.JSX.Element => {
   return (
     <>
       <section className={styles.burger_ingredients}>{content}</section>
-
-      {selectedIngredient && (
-        <Modal onClose={() => dispatch(resetSelectedIngredient())}>
-          <IngredientDetails ingredient={selectedIngredient} />
-        </Modal>
-      )}
     </>
   );
 };
