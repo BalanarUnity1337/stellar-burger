@@ -20,6 +20,11 @@
   &:hover {
     color: var(--colors-interface-accent);
   }
+
+  &[disabled] {
+    color: var(--colors-button-inactive);
+    pointer-events: none;
+  }
 }
 
 .navLink_active {

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
-import { useCreateOrderMutation } from '@services/store/api/order';
+import { useCreateOrderMutation } from '@services/store/api';
 import {
   clearBurgerConstructor,
   selectBun,

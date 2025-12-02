@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router';
 
 import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
 import { Modal } from '@components/modal/modal.tsx';
-import { useGetIngredientsQuery } from '@services/store/api/ingredients.ts';
+import { useGetIngredientsQuery } from '@services/store/api';
 
 export const IngredientModal = (): React.JSX.Element => {
   const navigate = useNavigate();

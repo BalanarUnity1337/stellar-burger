@@ -5,6 +5,8 @@ type TAuthFormProps = {
   children: React.ReactNode;
   slotButtons: React.ReactNode;
   slotFooter?: React.ReactNode;
+  slotErrors?: React.ReactNode;
+  onSubmit?: () => void | Promise<void>;
 };
 
 export const FormWrapper = ({
@@ -12,9 +14,13 @@ export const FormWrapper = ({
   children,
   slotButtons,
   slotFooter,
+  slotErrors,
+  onSubmit,
 }: TAuthFormProps): React.JSX.Element => {
   const handleSubmit = (e: React.SyntheticEvent): void => {
     e.preventDefault();
+
+    void onSubmit?.();
   };
 
   return (
@@ -25,6 +31,8 @@ export const FormWrapper = ({
 
       <form className={`${styles.form}`} onSubmit={handleSubmit}>
         <div className={`${styles.formInputs}`}>{children}</div>
+
+        {slotErrors && <div className={`${styles.errors}`}>{slotErrors}</div>}
 
         <div className={`${styles.buttons}`}>{slotButtons}</div>
       </form>

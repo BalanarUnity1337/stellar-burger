@@ -18,7 +18,6 @@
   composes: mt-6 from global;
   display: flex;
   flex-direction: column;
-  row-gap: 24px;
 }
 
 .formInputs {
@@ -27,7 +26,12 @@
   row-gap: 24px;
 }
 
+.errors {
+  composes: mt-4 pl-2 pr-2 from global;
+}
+
 .buttons {
+  composes: mt-6 from global;
   display: flex;
   justify-content: center;
 }

@@ -5,38 +5,81 @@ import {
   Input,
   Button,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useMemo } from 'react';
-import { Link } from 'react-router';
+import { RESET_PASSWORD_KEY } from '@shared/constants.ts';
+import { normalizeApiError } from '@shared/utils';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router';
 
 import { AuthContainer } from '@components/auth/auth-container/auth-container.tsx';
 import { FormWrapper } from '@components/auth/form-wrapper/form-wrapper.tsx';
 import { Text } from '@components/ui/text/text.tsx';
+import { useSetNewPasswordMutation } from '@services/store/api';
+
+import type { TSetNewPasswordApiRequestParams } from '@shared/types/api.ts';
 
 export const ResetPasswordForm = (): React.JSX.Element => {
+  const navigate = useNavigate();
+
   const { formState, onFormInputChange } = useForm({
     password: '',
     token: '',
   });
 
-  const slotButtonsContent = useMemo(
-    () => (
-      <Button htmlType="submit" type="primary" size="medium">
-        Сохранить
-      </Button>
-    ),
-    []
+  const [formError, setFormError] = useState('');
+
+  const [setNewPassword, { isLoading }] = useSetNewPasswordMutation();
+
+  const handleFormSubmit = async (): Promise<void> => {
+    try {
+      setFormError('');
+
+      const data = await setNewPassword(
+        formState satisfies TSetNewPasswordApiRequestParams
+      ).unwrap();
+
+      if (data.success) {
+        localStorage.removeItem(RESET_PASSWORD_KEY);
+
+        await navigate(RouterPaths.login, { replace: true });
+      }
+    } catch (e) {
+      const apiError = normalizeApiError(e);
+
+      setFormError(apiError.status === 404 ? 'Указан неверный код' : apiError.message!);
+    }
+  };
+
+  const isSubmitButtonDisabled =
+    isLoading || Object.values(formState).some((value) => value.length === 0);
+
+  const slotButtonsContent = (
+    <Button
+      htmlType="submit"
+      type="primary"
+      size="medium"
+      disabled={isSubmitButtonDisabled}
+    >
+      Сохранить
+    </Button>
   );
 
-  const slotFooterContent = useMemo(
-    () => (
-      <Text isInactive={true}>
-        Вспомнили пароль?
-        <Link className={`link ml-2`} to={RouterPaths.login}>
-          Войти
-        </Link>
-      </Text>
-    ),
-    []
+  const slotErrorsContent = (
+    <>
+      {formError && (
+        <Text color="error" size="small">
+          {formError}
+        </Text>
+      )}
+    </>
+  );
+
+  const slotFooterContent = (
+    <Text color="inactive">
+      Вспомнили пароль?
+      <Link className={`link ml-2`} to={RouterPaths.login}>
+        Войти
+      </Link>
+    </Text>
   );
 
   return (
@@ -45,6 +88,8 @@ export const ResetPasswordForm = (): React.JSX.Element => {
         title="Восстановление пароля"
         slotButtons={slotButtonsContent}
         slotFooter={slotFooterContent}
+        slotErrors={slotErrorsContent}
+        onSubmit={handleFormSubmit}
       >
         <PasswordInput
           name="password"
@@ -52,6 +97,7 @@ export const ResetPasswordForm = (): React.JSX.Element => {
           placeholder="Введите новый пароль"
           onChange={onFormInputChange}
         />
+
         <Input
           name="token"
           type="text"

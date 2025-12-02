@@ -1,9 +1,11 @@
+import { useInitAuth } from '@/hooks';
 import { ProfileLayout } from '@/layouts/profile/profile.tsx';
 import { RootLayout } from '@/layouts/root/root.tsx';
 import { RouterPaths } from '@/router';
 import { Routes, Route, useLocation } from 'react-router';
 
 import { IngredientModal } from '@components/burger-ingredients/ingredient-modal/ingredient-modal.tsx';
+import { ProtectedRouteElement } from '@components/protected-route-element/protected-route-element.tsx';
 import { FeedPage } from '@pages/feed/feed.tsx';
 import { ForgotPasswordPage } from '@pages/forgot-password/forgot-password.tsx';
 import { IndexPage } from '@pages/index';
@@ -22,6 +24,8 @@ export const App = (): React.JSX.Element => {
   const background = (location.state as TBackgroundLocationState | undefined)
     ?.background;
 
+  useInitAuth();
+
   return (
     <>
       <Routes location={background ?? location}>
@@ -31,7 +35,10 @@ export const App = (): React.JSX.Element => {
           <Route path={RouterPaths.register} Component={RegisterPage} />
           <Route path={RouterPaths.forgotPassword} Component={ForgotPasswordPage} />
           <Route path={RouterPaths.resetPassword} Component={ResetPasswordPage} />
-          <Route path={RouterPaths.profile} Component={ProfileLayout}>
+          <Route
+            path={RouterPaths.profile}
+            element={<ProtectedRouteElement element={<ProfileLayout />} />}
+          >
             <Route index={true} Component={ProfilePage} />
             <Route path={RouterPaths.orders} Component={OrdersPage} />
           </Route>

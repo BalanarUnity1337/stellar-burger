@@ -31,11 +31,11 @@ export type TRegisterApiResponse = {
   refreshToken: TRefreshToken;
 };
 
-export type TTokenApiRequestParams = {
+export type TUpdateTokenApiRequestParams = {
   token: TRefreshToken;
 };
 
-export type TTokenApiResponse = {
+export type TUpdateTokenApiResponse = {
   success: boolean;
   accessToken: TAccessToken;
   refreshToken: TRefreshToken;
@@ -46,6 +46,41 @@ export type TLogoutApiRequestParams = {
 };
 
 export type TLogoutApiResponse = {
+  success: boolean;
+  message: string;
+};
+
+export type TGetUserInfoApiResponse = {
+  success: boolean;
+  user: TUser;
+};
+
+export type TUpdateUserInfoApiRequestParams = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+export type TUpdateUserInfoApiResponse = {
+  success: boolean;
+  user: TUser;
+};
+
+export type TResetPasswordApiRequestParams = {
+  email: string;
+};
+
+export type TResetPasswordApiResponse = {
+  success: boolean;
+  message: string;
+};
+
+export type TSetNewPasswordApiRequestParams = {
+  password: string;
+  token: string;
+};
+
+export type TSetNewPasswordApiResponse = {
   success: boolean;
   message: string;
 };

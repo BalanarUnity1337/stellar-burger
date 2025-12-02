@@ -4,14 +4,19 @@ import {
   Input,
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
+import { useSelector } from 'react-redux';
+
+import { selectUser } from '@services/store/slices/auth.ts';
 
 import styles from './profile-edit.module.css';
 
 export const ProfileEdit = (): React.JSX.Element => {
+  const userInfo = useSelector(selectUser);
+
   const { formState, onFormInputChange } = useForm({
-    name: 'Марк',
-    email: 'vanesdemon96@gmail.com',
-    password: '123456',
+    name: userInfo!.name,
+    email: userInfo!.email,
+    password: '',
   });
 
   const {

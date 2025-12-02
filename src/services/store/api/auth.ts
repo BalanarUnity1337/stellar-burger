@@ -1,21 +1,29 @@
 import { baseApi } from '@services/store/api';
 
 import type {
+  TGetUserInfoApiResponse,
   TLoginApiRequestParams,
   TLoginApiResponse,
   TLogoutApiRequestParams,
   TLogoutApiResponse,
   TRegisterApiRequestParams,
   TRegisterApiResponse,
-  TTokenApiRequestParams,
-  TTokenApiResponse,
+  TResetPasswordApiRequestParams,
+  TResetPasswordApiResponse,
+  TSetNewPasswordApiRequestParams,
+  TSetNewPasswordApiResponse,
+  TUpdateTokenApiRequestParams,
+  TUpdateTokenApiResponse,
+  TUpdateUserInfoApiRequestParams,
+  TUpdateUserInfoApiResponse,
 } from '@shared/types/api.ts';
+import type { TUser } from '@shared/types/entities.ts';
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     login: build.mutation<TLoginApiResponse, TLoginApiRequestParams>({
       query: (body) => ({
-        url: 'login',
+        url: 'auth/login',
         method: 'POST',
         body,
       }),
@@ -23,15 +31,15 @@ const authApi = baseApi.injectEndpoints({
 
     register: build.mutation<TRegisterApiResponse, TRegisterApiRequestParams>({
       query: (body) => ({
-        url: 'register',
+        url: 'auth/register',
         method: 'POST',
         body,
       }),
     }),
 
-    token: build.mutation<TTokenApiResponse, TTokenApiRequestParams>({
+    updateToken: build.mutation<TUpdateTokenApiResponse, TUpdateTokenApiRequestParams>({
       query: (body) => ({
-        url: 'token',
+        url: 'auth/token',
         method: 'POST',
         body,
       }),
@@ -39,7 +47,58 @@ const authApi = baseApi.injectEndpoints({
 
     logout: build.mutation<TLogoutApiResponse, TLogoutApiRequestParams>({
       query: (body) => ({
-        url: 'logout',
+        url: 'auth/logout',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    getUserInfo: build.query<TUser, void>({
+      query: () => ({
+        url: 'auth/user',
+      }),
+
+      onQueryStarted: async (_params, { queryFulfilled }) => {
+        try {
+          const data = await queryFulfilled;
+
+          console.log(data);
+        } catch (e) {
+          console.log(e);
+        }
+      },
+
+      transformResponse: (response: TGetUserInfoApiResponse) => response.user,
+    }),
+
+    updateUserInfo: build.mutation<
+      TUpdateUserInfoApiResponse,
+      TUpdateUserInfoApiRequestParams
+    >({
+      query: (body) => ({
+        url: 'auth/user',
+        method: 'PATCH',
+        body,
+      }),
+    }),
+
+    resetPassword: build.mutation<
+      TResetPasswordApiResponse,
+      TResetPasswordApiRequestParams
+    >({
+      query: (body) => ({
+        url: 'password-reset',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    setNewPassword: build.mutation<
+      TSetNewPasswordApiResponse,
+      TSetNewPasswordApiRequestParams
+    >({
+      query: (body) => ({
+        url: 'password-reset/reset',
         method: 'POST',
         body,
       }),
@@ -47,4 +106,12 @@ const authApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useRegisterMutation } = authApi;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useLogoutMutation,
+  useUpdateTokenMutation,
+  useResetPasswordMutation,
+  useSetNewPasswordMutation,
+  useLazyGetUserInfoQuery,
+} = authApi;

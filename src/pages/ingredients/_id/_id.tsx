@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 
 import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
 import { Text } from '@components/ui/text/text.tsx';
-import { useGetIngredientsQuery } from '@services/store/api/ingredients.ts';
+import { useGetIngredientsQuery } from '@services/store/api';
 
 import styles from './_id.module.css';
 

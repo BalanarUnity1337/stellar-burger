@@ -1,5 +1,5 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { mapIngredientToConstructorIngredient } from '@shared/utils.ts';
+import { mapIngredientToConstructorIngredient } from '@shared/utils';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { TConstructorIngredient, TIngredient } from '@shared/types/entities.ts';
