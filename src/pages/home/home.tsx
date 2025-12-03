@@ -5,9 +5,9 @@ import { BurgerConstructor } from '@components/burger-constructor/burger-constru
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients.tsx';
 import { PageTitle } from '@components/ui/page-title/page-title.tsx';
 
-import styles from './index.module.css';
+import styles from './home.module.css';
 
-export const IndexPage = (): React.JSX.Element => {
+export const HomePage = (): React.JSX.Element => {
   return (
     <section className={`${styles.page}`}>
       <PageTitle>Соберите бургер</PageTitle>

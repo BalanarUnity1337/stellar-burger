@@ -19,7 +19,7 @@ export const AppHeader = (): React.JSX.Element => {
     <header className={styles.header}>
       <nav className={`${styles.menu} pt-4 pb-4`}>
         <div className={`${styles.menu_part}`}>
-          <NavLink className={getLinkClassName} to={RouterPaths.index}>
+          <NavLink className={getLinkClassName} to={RouterPaths.home}>
             {({ isActive }) => (
               <>
                 <BurgerIcon type={isActive ? 'primary' : 'secondary'} />

@@ -1,7 +1,7 @@
 import styles from './form-wrapper.module.css';
 
 type TAuthFormProps = {
-  title: string;
+  title?: string;
   children: React.ReactNode;
   slotButtons: React.ReactNode;
   slotFooter?: React.ReactNode;
@@ -25,9 +25,11 @@ export const FormWrapper = ({
 
   return (
     <section className={`${styles.wrapper}`}>
-      <header className={`${styles.header}`}>
-        <h2 className={`${styles.title}`}>{title}</h2>
-      </header>
+      {title && (
+        <header className={`${styles.header}`}>
+          <h2 className={`${styles.title}`}>{title}</h2>
+        </header>
+      )}
 
       <form className={`${styles.form}`} onSubmit={handleSubmit}>
         <div className={`${styles.formInputs}`}>{children}</div>

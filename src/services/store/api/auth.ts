@@ -1,4 +1,7 @@
+import { REFRESH_TOKEN_KEY } from '@shared/constants.ts';
+
 import { baseApi } from '@services/store/api';
+import { resetAuth, setAccessToken, setUser } from '@services/store/slices/auth.ts';
 
 import type {
   TGetUserInfoApiResponse,
@@ -27,6 +30,21 @@ const authApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+
+      onQueryStarted: async (_params, { queryFulfilled, dispatch }) => {
+        try {
+          const { data } = await queryFulfilled;
+
+          if (data.success) {
+            dispatch(setUser(data.user));
+            dispatch(setAccessToken(data.accessToken));
+
+            localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      },
     }),
 
     register: build.mutation<TRegisterApiResponse, TRegisterApiRequestParams>({
@@ -35,6 +53,21 @@ const authApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+
+      onQueryStarted: async (_params, { queryFulfilled, dispatch }) => {
+        try {
+          const { data } = await queryFulfilled;
+
+          if (data.success) {
+            dispatch(setUser(data.user));
+            dispatch(setAccessToken(data.accessToken));
+
+            localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      },
     }),
 
     updateToken: build.mutation<TUpdateTokenApiResponse, TUpdateTokenApiRequestParams>({
@@ -43,6 +76,21 @@ const authApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+
+      onQueryStarted: async (_params, { queryFulfilled, dispatch }) => {
+        try {
+          const { data: tokens } = await queryFulfilled;
+
+          if (tokens.success) {
+            dispatch(setAccessToken(tokens.accessToken));
+            localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
+          }
+        } catch (e) {
+          localStorage.removeItem(REFRESH_TOKEN_KEY);
+
+          console.error(e);
+        }
+      },
     }),
 
     logout: build.mutation<TLogoutApiResponse, TLogoutApiRequestParams>({
@@ -51,6 +99,21 @@ const authApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+
+      onQueryStarted: async (_params, { queryFulfilled, dispatch }) => {
+        try {
+          const { data } = await queryFulfilled;
+
+          if (data.success) {
+            dispatch(resetAuth());
+            localStorage.removeItem(REFRESH_TOKEN_KEY);
+          }
+        } catch (e) {
+          localStorage.removeItem(REFRESH_TOKEN_KEY);
+
+          console.error(e);
+        }
+      },
     }),
 
     getUserInfo: build.query<TUser, void>({
@@ -58,17 +121,19 @@ const authApi = baseApi.injectEndpoints({
         url: 'auth/user',
       }),
 
-      onQueryStarted: async (_params, { queryFulfilled }) => {
-        try {
-          const data = await queryFulfilled;
-
-          console.log(data);
-        } catch (e) {
-          console.log(e);
-        }
-      },
+      providesTags: ['User'],
 
       transformResponse: (response: TGetUserInfoApiResponse) => response.user,
+
+      onQueryStarted: async (_params, { queryFulfilled, dispatch }) => {
+        try {
+          const { data: user } = await queryFulfilled;
+
+          dispatch(setUser(user));
+        } catch (e) {
+          console.error(e);
+        }
+      },
     }),
 
     updateUserInfo: build.mutation<
@@ -80,6 +145,8 @@ const authApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body,
       }),
+
+      invalidatesTags: ['User'],
     }),
 
     resetPassword: build.mutation<
@@ -114,4 +181,5 @@ export const {
   useResetPasswordMutation,
   useSetNewPasswordMutation,
   useLazyGetUserInfoQuery,
+  useUpdateUserInfoMutation,
 } = authApi;

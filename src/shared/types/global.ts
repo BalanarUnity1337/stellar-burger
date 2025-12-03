@@ -15,6 +15,14 @@ export type TEndMoveElementPayload = {
 
 export type BurgerConstructorDnDType = 'ingredient' | 'bun';
 
-export type TBackgroundLocationState = {
-  background?: Location;
-};
+export type TBackgroundLocationState =
+  | {
+      background?: Location;
+    }
+  | undefined;
+
+export type TRedirectLocationState =
+  | {
+      redirect?: string;
+    }
+  | undefined;

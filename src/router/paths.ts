@@ -1,5 +1,5 @@
 export const RouterPaths = {
-  index: '/',
+  home: '/',
   login: '/login',
   register: '/register',
   forgotPassword: '/forgot-password',

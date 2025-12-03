@@ -1,6 +1,7 @@
 .dropTarget {
   display: flex;
   width: 100%;
+  max-width: 582px;
   min-height: 80px;
   border-radius: 8px;
   outline: 2px dashed transparent;

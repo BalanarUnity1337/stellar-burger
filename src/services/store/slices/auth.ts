@@ -22,11 +22,11 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    authRequest: (state) => {
+    authInitStart: (state) => {
       state.isLoading = true;
     },
 
-    authRequestFulfilled: (state) => {
+    authInitFinish: (state) => {
       state.isLoading = false;
     },
 
@@ -53,7 +53,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, setAccessToken, resetAuth, authRequest, authRequestFulfilled } =
+export const { setUser, setAccessToken, resetAuth, authInitStart, authInitFinish } =
   authSlice.actions;
 
 export const { selectIsAuthLoading, selectIsAuthenticated, selectUser } =

@@ -4,14 +4,10 @@ import { useDispatch } from 'react-redux';
 
 import { useLazyGetUserInfoQuery, useUpdateTokenMutation } from '@services/store/api';
 import {
-  authRequest,
-  authRequestFulfilled,
+  authInitStart,
+  authInitFinish,
   resetAuth,
-  setAccessToken,
-  setUser,
 } from '@services/store/slices/auth.ts';
-
-import type { TUpdateTokenApiRequestParams } from '@shared/types/api.ts';
 
 export const useInitAuth = (): void => {
   const dispatch = useDispatch();
@@ -19,9 +15,9 @@ export const useInitAuth = (): void => {
   const [getUserInfo] = useLazyGetUserInfoQuery();
   const [updateToken] = useUpdateTokenMutation();
 
-  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-
   useEffect(() => {
+    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+
     if (refreshToken == null) {
       dispatch(resetAuth());
 
@@ -30,22 +26,15 @@ export const useInitAuth = (): void => {
 
     const init = async (): Promise<void> => {
       try {
-        dispatch(authRequest());
+        dispatch(authInitStart());
 
-        const tokens = await updateToken({
-          token: refreshToken,
-        } satisfies TUpdateTokenApiRequestParams).unwrap();
+        await updateToken({ token: refreshToken }).unwrap();
 
-        dispatch(setAccessToken(tokens.accessToken));
-        localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
-
-        const userInfo = await getUserInfo().unwrap();
-
-        dispatch(setUser(userInfo));
-      } catch (_e) {
-        localStorage.removeItem(REFRESH_TOKEN_KEY);
+        await getUserInfo().unwrap();
+      } catch (e) {
+        console.error(e);
       } finally {
-        dispatch(authRequestFulfilled());
+        dispatch(authInitFinish());
       }
     };
 

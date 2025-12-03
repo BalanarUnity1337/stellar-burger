@@ -143,9 +143,5 @@ export const BurgerIngredients = (): React.JSX.Element => {
     }
   }, [sections, isLoading, isSuccess, isError, activeTab]);
 
-  return (
-    <>
-      <section className={styles.burger_ingredients}>{content}</section>
-    </>
-  );
+  return <section className={styles.burger_ingredients}>{content}</section>;
 };

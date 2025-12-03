@@ -11,11 +11,9 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 
 import { AuthContainer } from '@components/auth/auth-container/auth-container.tsx';
-import { FormWrapper } from '@components/auth/form-wrapper/form-wrapper.tsx';
+import { FormWrapper } from '@components/form-wrapper/form-wrapper.tsx';
 import { Text } from '@components/ui/text/text.tsx';
 import { useSetNewPasswordMutation } from '@services/store/api';
-
-import type { TSetNewPasswordApiRequestParams } from '@shared/types/api.ts';
 
 export const ResetPasswordForm = (): React.JSX.Element => {
   const navigate = useNavigate();
@@ -33,9 +31,7 @@ export const ResetPasswordForm = (): React.JSX.Element => {
     try {
       setFormError('');
 
-      const data = await setNewPassword(
-        formState satisfies TSetNewPasswordApiRequestParams
-      ).unwrap();
+      const data = await setNewPassword(formState).unwrap();
 
       if (data.success) {
         localStorage.removeItem(RESET_PASSWORD_KEY);
@@ -58,19 +54,16 @@ export const ResetPasswordForm = (): React.JSX.Element => {
       type="primary"
       size="medium"
       disabled={isSubmitButtonDisabled}
+      extraClass={`ml-auto mr-auto`}
     >
       Сохранить
     </Button>
   );
 
-  const slotErrorsContent = (
-    <>
-      {formError && (
-        <Text color="error" size="small">
-          {formError}
-        </Text>
-      )}
-    </>
+  const slotErrorsContent = formError && (
+    <Text color="error" size="small">
+      {formError}
+    </Text>
   );
 
   const slotFooterContent = (

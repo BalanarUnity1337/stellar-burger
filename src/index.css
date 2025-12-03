@@ -40,3 +40,19 @@ body {
     opacity: 0.9;
   }
 }
+
+.fullscreen-loader {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.mr-auto {
+  margin-right: auto;
+}

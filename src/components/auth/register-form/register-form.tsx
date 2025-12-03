@@ -5,23 +5,21 @@ import {
   Input,
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
-import { REFRESH_TOKEN_KEY } from '@shared/constants.ts';
 import { normalizeApiError } from '@shared/utils';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 
 import { AuthContainer } from '@components/auth/auth-container/auth-container.tsx';
-import { FormWrapper } from '@components/auth/form-wrapper/form-wrapper.tsx';
+import { FormWrapper } from '@components/form-wrapper/form-wrapper.tsx';
 import { Text } from '@components/ui/text/text.tsx';
 import { useRegisterMutation } from '@services/store/api';
-import { setAccessToken, setUser } from '@services/store/slices/auth.ts';
 
-import type { TRegisterApiRequestParams } from '@shared/types/api.ts';
+import type { TRedirectLocationState } from '@shared/types/global.ts';
+import type { Location } from 'react-router';
 
 export const RegisterForm = (): React.JSX.Element => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const location = useLocation() as Location<TRedirectLocationState>;
 
   const { formState, onFormInputChange } = useForm({
     name: '',
@@ -37,16 +35,13 @@ export const RegisterForm = (): React.JSX.Element => {
     try {
       setFormError('');
 
-      const data = await register(
-        formState satisfies TRegisterApiRequestParams
-      ).unwrap();
+      const data = await register(formState).unwrap();
 
-      dispatch(setUser(data.user));
-      dispatch(setAccessToken(data.accessToken));
+      if (data.success) {
+        const redirectPath = location.state?.redirect;
 
-      localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
-
-      await navigate(RouterPaths.index);
+        await navigate(redirectPath ?? RouterPaths.home);
+      }
     } catch (e) {
       const apiError = normalizeApiError(e);
 
@@ -65,25 +60,22 @@ export const RegisterForm = (): React.JSX.Element => {
       type="primary"
       size="medium"
       disabled={isSubmitButtonDisabled}
+      extraClass={`ml-auto mr-auto`}
     >
       Зарегистрироваться
     </Button>
   );
 
-  const slotErrorsContent = (
-    <>
-      {formError && (
-        <Text color="error" size="small">
-          {formError}
-        </Text>
-      )}
-    </>
+  const slotErrorsContent = formError && (
+    <Text color="error" size="small">
+      {formError}
+    </Text>
   );
 
   const slotFooterContent = (
     <Text color="inactive">
       Уже зарегистрированы?
-      <Link className={`link ml-2`} to={RouterPaths.login}>
+      <Link className={`link ml-2`} to={RouterPaths.login} state={{ ...location.state }}>
         Войти
       </Link>
     </Text>

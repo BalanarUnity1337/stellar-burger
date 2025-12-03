@@ -4,7 +4,7 @@ import { IngredientDetails } from '@components/burger-ingredients/ingredient-det
 import { Modal } from '@components/modal/modal.tsx';
 import { useGetIngredientsQuery } from '@services/store/api';
 
-export const IngredientModal = (): React.JSX.Element => {
+export const IngredientModal = (): React.JSX.Element | null => {
   const navigate = useNavigate();
   const { data: ingredients } = useGetIngredientsQuery();
   const { id } = useParams();
@@ -12,12 +12,10 @@ export const IngredientModal = (): React.JSX.Element => {
   const ingredient = ingredients?.find((ingredient) => ingredient._id === id) ?? null;
 
   return (
-    <>
-      {ingredient && (
-        <Modal onClose={() => void navigate(-1)}>
-          <IngredientDetails ingredient={ingredient} />
-        </Modal>
-      )}
-    </>
+    ingredient && (
+      <Modal onClose={() => void navigate(-1)}>
+        <IngredientDetails ingredient={ingredient} />
+      </Modal>
+    )
   );
 };

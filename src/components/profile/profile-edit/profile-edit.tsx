@@ -1,19 +1,23 @@
 import { useForm, useToggleFieldEdit } from '@/hooks';
 import {
+  Button,
   EmailInput,
   Input,
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
+import { normalizeApiError } from '@shared/utils';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { FormWrapper } from '@components/form-wrapper/form-wrapper.tsx';
+import { Text } from '@components/ui/text/text.tsx';
+import { useUpdateUserInfoMutation } from '@services/store/api';
 import { selectUser } from '@services/store/slices/auth.ts';
-
-import styles from './profile-edit.module.css';
 
 export const ProfileEdit = (): React.JSX.Element => {
   const userInfo = useSelector(selectUser);
 
-  const { formState, onFormInputChange } = useForm({
+  const { formState, onFormInputChange, isFormDirty, resetForm } = useForm({
     name: userInfo!.name,
     email: userInfo!.email,
     password: '',
@@ -25,12 +29,50 @@ export const ProfileEdit = (): React.JSX.Element => {
     ref: nameFieldRef,
   } = useToggleFieldEdit(false);
 
-  const onFormSubmit = (e: React.SyntheticEvent): void => {
-    e.preventDefault();
+  const [formError, setFormError] = useState('');
+
+  const [updateUserInfo, { isLoading }] = useUpdateUserInfoMutation();
+
+  const handleFormSubmit = async (): Promise<void> => {
+    try {
+      setFormError('');
+
+      const data = await updateUserInfo(formState).unwrap();
+
+      if (data.success) {
+        resetForm({ ...data.user, password: '' });
+      }
+    } catch (e) {
+      const apiError = normalizeApiError(e);
+
+      setFormError(apiError.message!);
+    }
   };
 
+  const slotButtonsContent = isFormDirty && (
+    <>
+      <Button htmlType="reset" type="secondary" extraClass="ml-auto" onClick={resetForm}>
+        Отмена
+      </Button>
+
+      <Button htmlType="submit" type="primary" disabled={isLoading} extraClass="ml-5">
+        Сохранить
+      </Button>
+    </>
+  );
+
+  const slotErrorsContent = formError && (
+    <Text color="error" size="small">
+      {formError}
+    </Text>
+  );
+
   return (
-    <form className={`${styles.form}`} onSubmit={onFormSubmit}>
+    <FormWrapper
+      slotButtons={slotButtonsContent}
+      slotErrors={slotErrorsContent}
+      onSubmit={handleFormSubmit}
+    >
       <Input
         ref={nameFieldRef}
         name="name"
@@ -41,6 +83,7 @@ export const ProfileEdit = (): React.JSX.Element => {
         icon="EditIcon"
         disabled={!isCanEditNameField}
         onIconClick={toggleNameFieldEdit}
+        onBlur={toggleNameFieldEdit}
       />
 
       <EmailInput
@@ -58,6 +101,6 @@ export const ProfileEdit = (): React.JSX.Element => {
         onChange={onFormInputChange}
         icon="EditIcon"
       />
-    </form>
+    </FormWrapper>
   );
 };

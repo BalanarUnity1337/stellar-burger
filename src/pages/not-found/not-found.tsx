@@ -10,7 +10,7 @@ export const NotFoundPage = (): React.JSX.Element => {
   const navigate = useNavigate();
 
   const backToHome = (): void => {
-    void navigate(RouterPaths.index, { replace: true });
+    void navigate(RouterPaths.home, { replace: true });
   };
 
   return (

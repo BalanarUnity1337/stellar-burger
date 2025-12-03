@@ -33,7 +33,6 @@
 .buttons {
   composes: mt-6 from global;
   display: flex;
-  justify-content: center;
 }
 
 .footer {

@@ -1,11 +1,9 @@
 import { RouterPaths } from '@/router';
 import { REFRESH_TOKEN_KEY } from '@shared/constants.ts';
-import { useDispatch } from 'react-redux';
 import { NavLink, useLocation, useNavigate } from 'react-router';
 
 import { Text } from '@components/ui/text/text.tsx';
 import { useLogoutMutation } from '@services/store/api';
-import { resetAuth } from '@services/store/slices/auth.ts';
 
 import styles from './profile-nav.module.css';
 
@@ -23,7 +21,6 @@ const links = [
 ];
 
 export const ProfileNav = (): React.JSX.Element => {
-  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const [logout, { isLoading: isLogoutProcessing }] = useLogoutMutation();
@@ -35,14 +32,10 @@ export const ProfileNav = (): React.JSX.Element => {
       const data = await logout({ token: refreshToken ?? '' }).unwrap();
 
       if (data.success) {
-        dispatch(resetAuth());
-
-        localStorage.removeItem(REFRESH_TOKEN_KEY);
-
         await navigate(RouterPaths.login);
       }
-    } catch (_e) {
-      localStorage.removeItem(REFRESH_TOKEN_KEY);
+    } catch (e) {
+      console.error(e);
     }
   };
 
