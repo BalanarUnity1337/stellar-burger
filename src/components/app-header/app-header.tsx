@@ -7,7 +7,7 @@ import {
 } from '@krgaa/react-developer-burger-ui-components';
 import { NavLink } from 'react-router';
 
-import type { NavLinkRenderProps } from 'react-router-dom';
+import type { NavLinkRenderProps } from 'react-router';
 
 import styles from './app-header.module.css';
 
