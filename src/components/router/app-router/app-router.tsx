@@ -5,7 +5,6 @@ import { Route, Routes, useLocation } from 'react-router';
 
 import { IngredientModal } from '@components/burger-ingredients/ingredient-modal/ingredient-modal.tsx';
 import { ProtectedRoute } from '@components/router/protected-route/protected-route.tsx';
-import { RedirectIfAuth } from '@components/router/redirect-if-auth/redirect-if-auth.tsx';
 import { FeedPage } from '@pages/feed/feed.tsx';
 import { ForgotPasswordPage } from '@pages/forgot-password/forgot-password.tsx';
 import { HomePage } from '@pages/home/home.tsx';
@@ -31,19 +30,21 @@ export const AppRouter = (): React.JSX.Element => {
           <Route index={true} Component={HomePage} />
           <Route
             path={RouterPaths.login}
-            element={<RedirectIfAuth element={<LoginPage />} />}
+            element={<ProtectedRoute onlyAuth={false} element={<LoginPage />} />}
           />
           <Route
             path={RouterPaths.register}
-            element={<RedirectIfAuth element={<RegisterPage />} />}
+            element={<ProtectedRoute onlyAuth={false} element={<RegisterPage />} />}
           />
           <Route
             path={RouterPaths.forgotPassword}
-            element={<RedirectIfAuth element={<ForgotPasswordPage />} />}
+            element={
+              <ProtectedRoute onlyAuth={false} element={<ForgotPasswordPage />} />
+            }
           />
           <Route
             path={RouterPaths.resetPassword}
-            element={<RedirectIfAuth element={<ResetPasswordPage />} />}
+            element={<ProtectedRoute onlyAuth={false} element={<ResetPasswordPage />} />}
           />
           <Route
             path={RouterPaths.profile}

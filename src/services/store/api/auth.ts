@@ -1,7 +1,7 @@
-import { REFRESH_TOKEN_KEY } from '@shared/constants.ts';
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@shared/constants.ts';
 
 import { baseApi } from '@services/store/api';
-import { resetAuth, setAccessToken, setUser } from '@services/store/slices/auth.ts';
+import { resetAuth, setUser } from '@services/store/slices/auth.ts';
 
 import type {
   TGetUserInfoApiResponse,
@@ -15,8 +15,6 @@ import type {
   TResetPasswordApiResponse,
   TSetNewPasswordApiRequestParams,
   TSetNewPasswordApiResponse,
-  TUpdateTokenApiRequestParams,
-  TUpdateTokenApiResponse,
   TUpdateUserInfoApiRequestParams,
   TUpdateUserInfoApiResponse,
 } from '@shared/types/api.ts';
@@ -37,8 +35,8 @@ const authApi = baseApi.injectEndpoints({
 
           if (data.success) {
             dispatch(setUser(data.user));
-            dispatch(setAccessToken(data.accessToken));
 
+            localStorage.setItem(ACCESS_TOKEN_KEY, data.accessToken);
             localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
           }
         } catch (e) {
@@ -60,34 +58,11 @@ const authApi = baseApi.injectEndpoints({
 
           if (data.success) {
             dispatch(setUser(data.user));
-            dispatch(setAccessToken(data.accessToken));
 
+            localStorage.setItem(ACCESS_TOKEN_KEY, data.accessToken);
             localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
           }
         } catch (e) {
-          console.error(e);
-        }
-      },
-    }),
-
-    updateToken: build.mutation<TUpdateTokenApiResponse, TUpdateTokenApiRequestParams>({
-      query: (body) => ({
-        url: 'auth/token',
-        method: 'POST',
-        body,
-      }),
-
-      onQueryStarted: async (_params, { queryFulfilled, dispatch }) => {
-        try {
-          const { data: tokens } = await queryFulfilled;
-
-          if (tokens.success) {
-            dispatch(setAccessToken(tokens.accessToken));
-            localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
-          }
-        } catch (e) {
-          localStorage.removeItem(REFRESH_TOKEN_KEY);
-
           console.error(e);
         }
       },
@@ -177,7 +152,6 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useLogoutMutation,
-  useUpdateTokenMutation,
   useResetPasswordMutation,
   useSetNewPasswordMutation,
   useLazyGetUserInfoQuery,

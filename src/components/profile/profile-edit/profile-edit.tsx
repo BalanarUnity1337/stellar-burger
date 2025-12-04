@@ -51,7 +51,12 @@ export const ProfileEdit = (): React.JSX.Element => {
 
   const slotButtonsContent = isFormDirty && (
     <>
-      <Button htmlType="reset" type="secondary" extraClass="ml-auto" onClick={resetForm}>
+      <Button
+        htmlType="reset"
+        type="secondary"
+        extraClass="ml-auto"
+        onClick={() => resetForm()}
+      >
         Отмена
       </Button>
 

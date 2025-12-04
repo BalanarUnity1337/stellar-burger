@@ -1,11 +1,16 @@
 import { RouterPaths } from '@/router';
-import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
+import {
+  Button,
+  CurrencyIcon,
+  Preloader,
+} from '@krgaa/react-developer-burger-ui-components';
 import { useReducer } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
+import { Text } from '@components/ui/text/text.tsx';
 import { useCreateOrderMutation } from '@services/store/api';
 import { selectIsAuthenticated } from '@services/store/slices/auth.ts';
 import {
@@ -23,8 +28,8 @@ type TBurgerConstructorOrderProps = {
 
 type TOrderState = {
   orderId: number | null;
-  isProcessing: boolean;
   error: string;
+  isProcessing: boolean;
   isModalVisible: boolean;
 };
 
@@ -37,15 +42,10 @@ type TPayloadAction =
 const orderReducer = (state: TOrderState, action: TPayloadAction): TOrderState => {
   switch (action.type) {
     case 'ORDER_REQUEST': {
-      return { ...state, isProcessing: true };
+      return { ...state, isProcessing: true, isModalVisible: true };
     }
     case 'ORDER_SUCCESS': {
-      return {
-        ...state,
-        orderId: action.payload,
-        isProcessing: false,
-        isModalVisible: true,
-      };
+      return { ...state, orderId: action.payload, isProcessing: false };
     }
     case 'ORDER_ERROR': {
       return { ...state, error: action.payload, isProcessing: false };
@@ -89,6 +89,7 @@ export const BurgerConstructorOrder = ({
   const handleSubmitOrder = async (): Promise<void> => {
     if (!isSubmitButtonDisabled) {
       stateReducer({ type: 'ORDER_REQUEST' });
+      dispatch(clearBurgerConstructor());
 
       const ingredients: string[] = [
         burgerBun._id,
@@ -131,11 +132,38 @@ export const BurgerConstructorOrder = ({
   const handleModalClose = (): void => {
     stateReducer({ type: 'CLOSE_MODAL' });
 
-    dispatch(clearBurgerConstructor());
     reset();
   };
 
-  const { orderId, error, isModalVisible } = state;
+  const { orderId, isProcessing, error } = state;
+
+  const getModalContent = (): React.ReactElement | null => {
+    if (isProcessing) {
+      return (
+        <>
+          <Text color="primary" size="large" extraClass={`mb-10`}>
+            Оформляем заказ
+          </Text>
+
+          <Preloader />
+        </>
+      );
+    }
+
+    if (error) {
+      return (
+        <Text color="error" size="medium">
+          {error}
+        </Text>
+      );
+    }
+
+    if (orderId != null) {
+      return <OrderDetails orderId={orderId} />;
+    }
+
+    return null;
+  };
 
   return (
     <>
@@ -151,16 +179,12 @@ export const BurgerConstructorOrder = ({
           size="large"
           onClick={onSubmit}
         >
-          Оформить заказ
+          {isProcessing ? 'Оформление заказа' : 'Оформить заказ'}
         </Button>
       </div>
 
-      {error && <p className={` ${styles.error}`}>{error}</p>}
-
-      {isModalVisible && orderId != null && (
-        <Modal onClose={handleModalClose}>
-          <OrderDetails orderId={orderId} />
-        </Modal>
+      {state.isModalVisible && (
+        <Modal onClose={handleModalClose}>{getModalContent()}</Modal>
       )}
     </>
   );
