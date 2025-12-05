@@ -17,7 +17,7 @@ export const FormWrapper = ({
   slotErrors,
   onSubmit,
 }: TAuthFormProps): React.JSX.Element => {
-  const handleSubmit = (e: React.SyntheticEvent): void => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
     void onSubmit?.();

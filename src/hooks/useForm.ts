@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 type TUseFormReturnType<State> = {
   formState: State;
   isFormDirty: boolean;
-  onFormInputChange: (e: React.SyntheticEvent) => void;
+  onFormInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   resetForm: (state?: State) => void;
 };
 
@@ -12,8 +12,8 @@ export const useForm = <State extends Record<string, string | number>>(
 ): TUseFormReturnType<State> => {
   const [formState, setFormState] = useState<State>(initialState);
 
-  const onFormInputChange = useCallback((e: React.SyntheticEvent) => {
-    const target = e.target as HTMLInputElement;
+  const onFormInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.target;
 
     setFormState((prev) => ({
       ...prev,
