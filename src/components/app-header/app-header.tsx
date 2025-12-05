@@ -5,7 +5,7 @@ import {
   Logo,
   ProfileIcon,
 } from '@krgaa/react-developer-burger-ui-components';
-import { NavLink } from 'react-router';
+import { Link, NavLink } from 'react-router';
 
 import type { NavLinkRenderProps } from 'react-router';
 
@@ -38,9 +38,9 @@ export const AppHeader = (): React.JSX.Element => {
           </NavLink>
         </div>
 
-        <div className={styles.logo}>
+        <Link className={styles.logo} to={RouterPaths.home}>
           <Logo />
-        </div>
+        </Link>
 
         <div className={`${styles.menu_part} ${styles.menu_part_right}`}>
           <NavLink className={getLinkClassName} to={RouterPaths.profile}>
