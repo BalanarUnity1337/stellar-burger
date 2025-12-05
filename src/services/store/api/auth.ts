@@ -81,9 +81,11 @@ const authApi = baseApi.injectEndpoints({
 
           if (data.success) {
             dispatch(resetAuth());
+            localStorage.removeItem(ACCESS_TOKEN_KEY);
             localStorage.removeItem(REFRESH_TOKEN_KEY);
           }
         } catch (e) {
+          localStorage.removeItem(ACCESS_TOKEN_KEY);
           localStorage.removeItem(REFRESH_TOKEN_KEY);
 
           console.error(e);
