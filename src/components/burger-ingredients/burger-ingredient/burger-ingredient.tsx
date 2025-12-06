@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { selectIngredientsQtyMap } from '@services/store/slices/burger-constructor.ts';
 
-import type { TIngredient } from '@shared/types.ts';
+import type { TIngredient } from '@shared/types/entities.ts';
 
 import styles from './burger-ingredient.module.css';
 

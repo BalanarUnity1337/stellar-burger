@@ -4,7 +4,7 @@ import {
 } from '@krgaa/react-developer-burger-ui-components';
 import { memo, useCallback, useMemo } from 'react';
 
-import type { TConstructorIngredient } from '@shared/types.ts';
+import type { TConstructorIngredient } from '@shared/types/entities.ts';
 
 import styles from './constructor-element-ui.module.css';
 

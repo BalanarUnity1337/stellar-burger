@@ -1,10 +1,18 @@
-import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
-import { useMemo, useState } from 'react';
+import { RouterPaths } from '@/router';
+import {
+  Button,
+  CurrencyIcon,
+  Preloader,
+} from '@krgaa/react-developer-burger-ui-components';
+import { useReducer } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
-import { useCreateOrderMutation } from '@services/store/api/order';
+import { Text } from '@components/ui/text/text.tsx';
+import { useCreateOrderMutation } from '@services/store/api';
+import { selectIsAuthenticated } from '@services/store/slices/auth.ts';
 import {
   clearBurgerConstructor,
   selectBun,
@@ -18,69 +26,144 @@ type TBurgerConstructorOrderProps = {
   className?: string;
 };
 
+type TOrderState = {
+  orderId: number | null;
+  error: string;
+  isProcessing: boolean;
+  isModalVisible: boolean;
+};
+
+type TPayloadAction =
+  | { type: 'ORDER_REQUEST' }
+  | { type: 'ORDER_SUCCESS'; payload: number }
+  | { type: 'ORDER_ERROR'; payload: string }
+  | { type: 'CLOSE_MODAL' };
+
+const orderReducer = (state: TOrderState, action: TPayloadAction): TOrderState => {
+  switch (action.type) {
+    case 'ORDER_REQUEST': {
+      return { ...state, isProcessing: true, isModalVisible: true };
+    }
+    case 'ORDER_SUCCESS': {
+      return { ...state, orderId: action.payload, isProcessing: false };
+    }
+    case 'ORDER_ERROR': {
+      return { ...state, error: action.payload, isProcessing: false };
+    }
+    case 'CLOSE_MODAL': {
+      return { ...state, isModalVisible: false };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
 export const BurgerConstructorOrder = ({
   className = '',
 }: TBurgerConstructorOrderProps): React.JSX.Element => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const totalCost = useSelector(selectTotalCost);
   const burgerBun = useSelector(selectBun);
   const burgerIngredients = useSelector(selectBurgerIngredients);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+
   const [createOrder, { reset, isLoading }] = useCreateOrderMutation();
 
-  const [state, setState] = useState({
+  const [state, stateReducer] = useReducer(orderReducer, {
     orderId: null as number | null,
     isProcessing: false,
     error: '',
     isModalVisible: false,
   });
 
-  const isSubmitButtonDisabled = useMemo(
-    () =>
-      burgerBun == null ||
-      burgerIngredients.length === 0 ||
-      isLoading ||
-      state.isProcessing,
-    [burgerBun, burgerIngredients, isLoading, state.isProcessing]
-  );
+  const isSubmitButtonDisabled =
+    burgerBun == null ||
+    burgerIngredients.length === 0 ||
+    isLoading ||
+    state.isProcessing;
 
-  const handleSubmitOrder = (): void => {
+  const handleSubmitOrder = async (): Promise<void> => {
     if (!isSubmitButtonDisabled) {
-      setState((prev) => ({ ...prev, error: '', isProcessing: true }));
+      stateReducer({ type: 'ORDER_REQUEST' });
+      dispatch(clearBurgerConstructor());
 
       const ingredients: string[] = [
-        burgerBun!._id,
+        burgerBun._id,
         ...burgerIngredients.map((ingredient) => ingredient._id),
-        burgerBun!._id,
+        burgerBun._id,
       ];
 
-      createOrder({ ingredients })
-        .unwrap()
-        .then((response) => {
-          setState((prev) => ({
-            ...prev,
-            orderId: response.order.number,
-            isModalVisible: true,
-          }));
-        })
-        .catch((_e) => {
-          setState((prev) => ({
-            ...prev,
-            error: 'Произошла ошибка при создании заказа',
-          }));
-        })
-        .finally(() => {
-          setState((prev) => ({ ...prev, isProcessing: false }));
+      try {
+        const data = await createOrder({ ingredients }).unwrap();
+
+        if (data.success) {
+          stateReducer({ type: 'ORDER_SUCCESS', payload: data.order.number });
+        } else {
+          stateReducer({
+            type: 'ORDER_ERROR',
+            payload: 'Произошла ошибка при создании заказа',
+          });
+        }
+      } catch (e) {
+        stateReducer({
+          type: 'ORDER_ERROR',
+          payload: 'Произошла ошибка при создании заказа',
         });
+
+        console.error(e);
+      }
     }
   };
 
+  const onSubmit = (): void => {
+    if (!isAuthenticated) {
+      void navigate(RouterPaths.login, { state: { redirect: location.pathname } });
+
+      return;
+    }
+
+    void handleSubmitOrder();
+  };
+
   const handleModalClose = (): void => {
-    setState((prev) => ({ ...prev, isModalVisible: false }));
-    dispatch(clearBurgerConstructor());
+    stateReducer({ type: 'CLOSE_MODAL' });
+
     reset();
   };
 
-  const { orderId, error, isModalVisible } = state;
+  const { orderId, isProcessing, error } = state;
+
+  const getModalContent = (): React.ReactElement | null => {
+    if (isProcessing) {
+      return (
+        <>
+          <Text color="primary" size="large" extraClass={`mb-10`}>
+            Оформляем заказ
+          </Text>
+
+          <Preloader />
+        </>
+      );
+    }
+
+    if (error) {
+      return (
+        <Text color="error" size="medium">
+          {error}
+        </Text>
+      );
+    }
+
+    if (orderId != null) {
+      return <OrderDetails orderId={orderId} />;
+    }
+
+    return null;
+  };
 
   return (
     <>
@@ -94,18 +177,14 @@ export const BurgerConstructorOrder = ({
           disabled={isSubmitButtonDisabled}
           htmlType="button"
           size="large"
-          onClick={handleSubmitOrder}
+          onClick={onSubmit}
         >
-          Оформить заказ
+          {isProcessing ? 'Оформление заказа' : 'Оформить заказ'}
         </Button>
       </div>
 
-      {error && <p className={` ${styles.error}`}>{error}</p>}
-
-      {isModalVisible && orderId != null && (
-        <Modal onClose={handleModalClose}>
-          <OrderDetails orderId={orderId} />
-        </Modal>
+      {state.isModalVisible && (
+        <Modal onClose={handleModalClose}>{getModalContent()}</Modal>
       )}
     </>
   );

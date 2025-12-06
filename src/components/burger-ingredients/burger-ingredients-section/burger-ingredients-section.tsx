@@ -1,11 +1,11 @@
+import { createIngredientPageRoute } from '@/router';
 import { memo, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router';
 
 import { BurgerIngredient } from '@components/burger-ingredients/burger-ingredient/burger-ingredient.tsx';
 import { DraggableIngredient } from '@components/burger-ingredients/burger-ingredient/draggable-ingredient/draggable-ingredient.tsx';
-import { setSelectedIngredient } from '@services/store/slices/selected-ingredient.ts';
 
-import type { TIngredient, TIngredientType } from '@shared/types.ts';
+import type { TIngredient, TIngredientType } from '@shared/types/entities.ts';
 
 import styles from './burger-ingredients-section.module.css';
 
@@ -22,14 +22,14 @@ export const BurgerIngredientsSection = memo(function BurgerIngredientsSection({
   headerId,
   setHeaderRef,
 }: TBurgerIngredientsSectionProps): React.JSX.Element {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleIngredientClick = useCallback(
-    (ingredient: TIngredient): void => {
-      dispatch(setSelectedIngredient(ingredient));
-    },
-    [dispatch]
-  );
+  const handleIngredientClick = useCallback((ingredient: TIngredient): void => {
+    void navigate(createIngredientPageRoute(ingredient._id), {
+      state: { background: location },
+    });
+  }, []);
 
   return (
     <section>

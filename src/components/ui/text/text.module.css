@@ -1,0 +1,19 @@
+.text_primary {
+  color: var(--text-primary-color);
+}
+
+.text_inactive {
+  color: var(--colors-button-inactive);
+}
+
+.text_accent {
+  color: var(--colors-interface-accent);
+}
+
+.text_error {
+  color: var(--colors-interface-error);
+}
+
+.text_success {
+  color: var(--colors-interface-success);
+}

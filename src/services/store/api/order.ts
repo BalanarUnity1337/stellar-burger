@@ -3,7 +3,7 @@ import { baseApi } from '@services/store/api/index.ts';
 import type {
   TCreateOrderApiRequestParams,
   TCreateOrderApiResponse,
-} from '@shared/types.ts';
+} from '@shared/types/api.ts';
 
 const orderApi = baseApi.injectEndpoints({
   endpoints: (build) => ({

@@ -1,0 +1,12 @@
+.page {
+  composes: pt-10 pb-5 from global;
+  height: calc(100% - 60px);
+}
+
+.content {
+  composes: pt-5 from global;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 40px;
+  height: 100%;
+}

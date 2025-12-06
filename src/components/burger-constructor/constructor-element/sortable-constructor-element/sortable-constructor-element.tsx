@@ -1,7 +1,10 @@
 import { memo, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
-import type { TEndMoveElementPayload, TMoveElementPayload } from '@shared/types.ts';
+import type {
+  TEndMoveElementPayload,
+  TMoveElementPayload,
+} from '@shared/types/global.ts';
 import type { XYCoord } from 'dnd-core';
 
 import styles from './sortable-constructor-element.module.css';

@@ -13,13 +13,12 @@ import {
   setBun,
 } from '@services/store/slices/burger-constructor.ts';
 
+import type { TConstructorIngredient, TIngredient } from '@shared/types/entities.ts';
 import type {
   BurgerConstructorDnDType,
-  TConstructorIngredient,
   TEndMoveElementPayload,
-  TIngredient,
   TMoveElementPayload,
-} from '@shared/types.ts';
+} from '@shared/types/global.ts';
 
 import styles from './burger-constructor.module.css';
 
