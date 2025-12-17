@@ -1,7 +1,7 @@
 import { RouterPaths } from '@/router';
-import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router';
 
+import { useAppSelector } from '@services/store/hooks.ts';
 import { selectIsAuthenticated } from '@services/store/slices/auth.ts';
 
 type TProtectedRouteProps = {
@@ -14,7 +14,7 @@ export const ProtectedRoute = ({
   onlyAuth = true,
 }: TProtectedRouteProps): React.ReactElement | null => {
   const location = useLocation();
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
   if (onlyAuth && !isAuthenticated) {
     return (

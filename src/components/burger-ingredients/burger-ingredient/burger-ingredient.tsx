@@ -1,7 +1,7 @@
 import { CurrencyIcon, Counter } from '@krgaa/react-developer-burger-ui-components';
 import { memo } from 'react';
-import { useSelector } from 'react-redux';
 
+import { useAppSelector } from '@services/store/hooks.ts';
 import { selectIngredientsQtyMap } from '@services/store/slices/burger-constructor.ts';
 
 import type { TIngredient } from '@shared/types/entities.ts';
@@ -17,7 +17,7 @@ export const BurgerIngredient = memo(function BurgerIngredient({
   ingredient,
   onClick,
 }: TBurgerIngredientProps): React.JSX.Element {
-  const ingredientsQty = useSelector(selectIngredientsQtyMap);
+  const ingredientsQty = useAppSelector(selectIngredientsQtyMap);
 
   const handleClick = (e: React.MouseEvent<HTMLElement>): void => {
     e.stopPropagation();

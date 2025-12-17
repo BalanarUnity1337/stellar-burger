@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { BurgerConstructorOrder } from '@components/burger-constructor/burger-constructor-order/burger-constructor-order.tsx';
 import { ConstructorDropTarget } from '@components/burger-constructor/constructor-drop-target/constructor-drop-target.tsx';
 import { ConstructorElement } from '@components/burger-constructor/constructor-element/constructor-element.tsx';
+import { useAppDispatch, useAppSelector } from '@services/store/hooks.ts';
 import {
   addBurgerIngredient,
   deleteBurgerIngredient,
@@ -23,9 +23,9 @@ import type {
 import styles from './burger-constructor.module.css';
 
 export const BurgerConstructor = (): React.JSX.Element => {
-  const dispatch = useDispatch();
-  const selectedBun = useSelector(selectBun);
-  const ingredients = useSelector(selectBurgerIngredients);
+  const dispatch = useAppDispatch();
+  const selectedBun = useAppSelector(selectBun);
+  const ingredients = useAppSelector(selectBurgerIngredients);
   const [localIngredients, setLocalIngredients] = useState<TConstructorIngredient[]>([]);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { createSelector, createSlice } from '@reduxjs/toolkit';
+import { createSlice, createDraftSafeSelector } from '@reduxjs/toolkit';
 import { mapIngredientToConstructorIngredient } from '@shared/utils';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -14,6 +14,9 @@ const initialState: TBurgerConstructorState = {
   bun: null,
   ingredients: [],
 };
+
+const createTypedDraftSafeSelector =
+  createDraftSafeSelector.withTypes<TBurgerConstructorState>();
 
 const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
@@ -62,10 +65,10 @@ const burgerConstructorSlice = createSlice({
   selectors: {
     selectBun: (state) => state.bun,
     selectBurgerIngredients: (state) => state.ingredients,
-    selectTotalCost: createSelector(
+    selectTotalCost: createTypedDraftSafeSelector(
       [
-        (state: TBurgerConstructorState): TConstructorIngredient | null => state.bun,
-        (state: TBurgerConstructorState): TConstructorIngredient[] => state.ingredients,
+        (state): TConstructorIngredient | null => state.bun,
+        (state): TConstructorIngredient[] => state.ingredients,
       ],
       (bun, ingredients) => {
         const bunPrice = bun?.price ?? 0;
@@ -77,10 +80,10 @@ const burgerConstructorSlice = createSlice({
         return bunPrice * 2 + ingredientsPrice;
       }
     ),
-    selectIngredientsQtyMap: createSelector(
+    selectIngredientsQtyMap: createTypedDraftSafeSelector(
       [
-        (state: TBurgerConstructorState): TConstructorIngredient | null => state.bun,
-        (state: TBurgerConstructorState): TConstructorIngredient[] => state.ingredients,
+        (state): TConstructorIngredient | null => state.bun,
+        (state): TConstructorIngredient[] => state.ingredients,
       ],
       (bun, ingredients) => {
         const result: Record<string, number> = {};
