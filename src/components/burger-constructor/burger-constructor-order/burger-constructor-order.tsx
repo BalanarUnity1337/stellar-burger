@@ -5,13 +5,13 @@ import {
   Preloader,
 } from '@krgaa/react-developer-burger-ui-components';
 import { useReducer } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
 import { Text } from '@components/ui/text/text.tsx';
 import { useCreateOrderMutation } from '@services/store/api';
+import { useAppDispatch, useAppSelector } from '@services/store/hooks.ts';
 import { selectIsAuthenticated } from '@services/store/slices/auth.ts';
 import {
   clearBurgerConstructor,
@@ -62,14 +62,14 @@ const orderReducer = (state: TOrderState, action: TPayloadAction): TOrderState =
 export const BurgerConstructorOrder = ({
   className = '',
 }: TBurgerConstructorOrderProps): React.JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const totalCost = useSelector(selectTotalCost);
-  const burgerBun = useSelector(selectBun);
-  const burgerIngredients = useSelector(selectBurgerIngredients);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const totalCost = useAppSelector(selectTotalCost);
+  const burgerBun = useAppSelector(selectBun);
+  const burgerIngredients = useAppSelector(selectBurgerIngredients);
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
   const [createOrder, { reset, isLoading }] = useCreateOrderMutation();
 

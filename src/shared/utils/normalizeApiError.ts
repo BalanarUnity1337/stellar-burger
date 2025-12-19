@@ -11,7 +11,7 @@ const isFBQError = (error: unknown): error is FetchBaseQueryError =>
   error !== null && typeof error === 'object' && 'status' in error;
 
 const isSerializedError = (error: unknown): error is SerializedError =>
-  error != null && typeof error === 'object' && 'message' in error;
+  error !== null && typeof error === 'object' && 'message' in error;
 
 export const normalizeApiError = (error: unknown): TNormalizedApiError => {
   if (error == null) {

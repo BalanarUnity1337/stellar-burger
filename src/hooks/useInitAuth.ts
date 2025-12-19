@@ -1,8 +1,8 @@
 import { REFRESH_TOKEN_KEY } from '@shared/constants.ts';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useLazyGetUserInfoQuery } from '@services/store/api';
+import { useAppDispatch } from '@services/store/hooks.ts';
 import {
   authInitStart,
   authInitFinish,
@@ -10,7 +10,7 @@ import {
 } from '@services/store/slices/auth.ts';
 
 export const useInitAuth = (): void => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [getUserInfo] = useLazyGetUserInfoQuery();
 

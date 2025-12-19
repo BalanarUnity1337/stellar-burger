@@ -7,15 +7,15 @@ import {
 } from '@krgaa/react-developer-burger-ui-components';
 import { normalizeApiError } from '@shared/utils';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { FormWrapper } from '@components/form-wrapper/form-wrapper.tsx';
 import { Text } from '@components/ui/text/text.tsx';
 import { useUpdateUserInfoMutation } from '@services/store/api';
+import { useAppSelector } from '@services/store/hooks.ts';
 import { selectUser } from '@services/store/slices/auth.ts';
 
 export const ProfileEdit = (): React.JSX.Element => {
-  const userInfo = useSelector(selectUser);
+  const userInfo = useAppSelector(selectUser);
 
   const { formState, onFormInputChange, isFormDirty, resetForm } = useForm({
     name: userInfo!.name,
