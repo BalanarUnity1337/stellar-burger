@@ -3,7 +3,8 @@ import { throttle } from 'lodash-es';
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 
 import { BurgerIngredientsSection } from '@components/burger-ingredients/burger-ingredients-section/burger-ingredients-section.tsx';
-import { useGetIngredientsQuery } from '@services/store/api';
+import { ingredientsSelectors, useGetIngredientsQuery } from '@services/store/api';
+import { useAppSelector } from '@services/store/hooks.ts';
 
 import type { TIngredient, TIngredientType } from '@shared/types/entities.ts';
 
@@ -25,7 +26,8 @@ export const BurgerIngredients = (): React.JSX.Element => {
 
   const [activeTab, setActiveTab] = useState<TIngredientType>('bun');
 
-  const { data: ingredients, isLoading, isSuccess, isError } = useGetIngredientsQuery();
+  const { isLoading, isSuccess, isError } = useGetIngredientsQuery();
+  const ingredients = useAppSelector(ingredientsSelectors.selectAll);
 
   const setHeaderRef = useCallback(
     (key: TIngredientType, headerRef: HTMLHeadingElement) => {
