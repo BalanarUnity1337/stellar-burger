@@ -11,13 +11,13 @@ import { Text } from '@components/ui/text/text.tsx';
 import { ingredientsSelectors } from '@services/store/api';
 import { useAppSelector } from '@services/store/hooks.ts';
 
-import type { TOrderItem } from '@shared/types/entities.ts';
+import type { TOrderDetails } from '@shared/types/entities.ts';
 
 import styles from './order-feed-card.module.css';
 
 type TOrderFeedCardProps = {
-  order: TOrderItem;
-  onClick?: (order: TOrderItem) => void;
+  order: TOrderDetails;
+  onClick?: (order: TOrderDetails) => void;
 };
 
 export const OrderFeedCard = ({

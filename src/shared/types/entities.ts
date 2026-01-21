@@ -29,7 +29,7 @@ export type TConstructorIngredient = {
   uid: string;
 };
 
-export type TOrderItem = {
+export type TOrderDetails = {
   _id: string;
   name: string;
   ingredients: string[];

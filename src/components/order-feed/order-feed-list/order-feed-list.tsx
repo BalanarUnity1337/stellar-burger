@@ -3,19 +3,19 @@ import { useLocation, useNavigate } from 'react-router';
 
 import { OrderFeedCard } from '@components/order-feed/order-feed-card/order-feed-card.tsx';
 
-import type { TOrderItem } from '@shared/types/entities.ts';
+import type { TOrderDetails } from '@shared/types/entities.ts';
 
 import styles from './order-feed-list.module.css';
 
 type TOrderFeedListProps = {
-  orders: TOrderItem[];
+  orders: TOrderDetails[];
 };
 
 export const OrderFeedList = ({ orders }: TOrderFeedListProps): React.JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleOrderClick = (order: TOrderItem): void => {
+  const handleOrderClick = (order: TOrderDetails): void => {
     void navigate(createFeedOrderPageRoute(order.number), {
       state: { background: location },
     });

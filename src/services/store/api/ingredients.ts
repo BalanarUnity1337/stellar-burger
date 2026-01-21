@@ -27,10 +27,10 @@ const ingredientsApi = baseApi.injectEndpoints({
   }),
 });
 
-const getIngredientsResult = ingredientsApi.endpoints.getIngredients.select();
+const selectIngredientsResult = ingredientsApi.endpoints.getIngredients.select();
 
 const selectIngredientsData = createSelector(
-  getIngredientsResult,
+  selectIngredientsResult,
   (result) => result.data ?? ingredientsAdapter.getInitialState()
 );
 

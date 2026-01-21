@@ -4,7 +4,12 @@ import { OrderFeedDashboard } from '@components/order-feed/order-feed-dashboard/
 import { OrderFeedList } from '@components/order-feed/order-feed-list/order-feed-list.tsx';
 import { PageTitle } from '@components/ui/page-title/page-title.tsx';
 import { Text } from '@components/ui/text/text.tsx';
-import { useGetIngredientsQuery, useGetOrdersQuery } from '@services/store/api';
+import {
+  ordersSelectors,
+  useGetIngredientsQuery,
+  useGetOrdersQuery,
+} from '@services/store/api';
+import { useAppSelector } from '@services/store/hooks.ts';
 
 import styles from './feed.module.css';
 
@@ -12,6 +17,7 @@ export const FeedPage = (): React.JSX.Element => {
   const { isSuccess: isIngredientsSuccess, isLoading: isIngredientsLoading } =
     useGetIngredientsQuery();
   const { data: ordersData, isSuccess: isGetOrdersSuccess } = useGetOrdersQuery();
+  const orders = useAppSelector(ordersSelectors.selectAll);
 
   const isLoading = isIngredientsLoading || Boolean(ordersData?.isWSLoading);
 
@@ -25,9 +31,9 @@ export const FeedPage = (): React.JSX.Element => {
         </div>
       ) : isIngredientsSuccess && isGetOrdersSuccess && ordersData.success ? (
         <div className={`${styles.content}`}>
-          <OrderFeedList orders={ordersData.orders} />
+          <OrderFeedList orders={orders} />
           <OrderFeedDashboard
-            orders={ordersData.orders}
+            orders={orders}
             total={ordersData.total}
             totalToday={ordersData.totalToday}
           />

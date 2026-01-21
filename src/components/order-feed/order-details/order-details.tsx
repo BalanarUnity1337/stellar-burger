@@ -11,12 +11,12 @@ import { Text } from '@components/ui/text/text.tsx';
 import { ingredientsSelectors, useGetIngredientsQuery } from '@services/store/api';
 import { useAppSelector } from '@services/store/hooks.ts';
 
-import type { TOrderDetailsIngredient, TOrderItem } from '@shared/types/entities.ts';
+import type { TOrderDetailsIngredient, TOrderDetails } from '@shared/types/entities.ts';
 
 import styles from './order-details.module.css';
 
 type TOrderDetailsProps = {
-  order: TOrderItem;
+  order: TOrderDetails;
   showOrderNumber?: boolean;
 };
 

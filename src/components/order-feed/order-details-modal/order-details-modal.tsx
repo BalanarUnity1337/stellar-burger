@@ -2,16 +2,17 @@ import { useNavigate, useParams } from 'react-router';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-feed/order-details/order-details.tsx';
-import { useGetOrdersQuery } from '@services/store/api';
+import { ordersSelectors, useGetOrdersQuery } from '@services/store/api';
+import { useAppSelector } from '@services/store/hooks.ts';
 
 export const OrderDetailsModal = (): React.JSX.Element | null => {
   const navigate = useNavigate();
   const { id: orderNumber } = useParams<{ id: string }>();
 
-  const { data } = useGetOrdersQuery();
-
-  const order =
-    data?.orders.find((order) => String(order.number) === orderNumber) ?? null;
+  useGetOrdersQuery();
+  const order = useAppSelector((state) =>
+    ordersSelectors.selectById(state, Number(orderNumber))
+  );
 
   return (
     order && (

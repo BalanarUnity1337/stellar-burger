@@ -1,4 +1,5 @@
-import type { TOrderItem, TUser } from '@shared/types/entities.ts';
+import type { EntityState } from '@reduxjs/toolkit';
+import type { TOrderDetails, TUser } from '@shared/types/entities.ts';
 import type { TAccessToken, TRefreshToken } from '@shared/types/global.ts';
 
 export type TApiCommonResponse<T> = {
@@ -98,17 +99,18 @@ export type TCreateOrderApiResponse = {
 };
 
 export type TGetOrdersApiResponse = {
-  orders: TOrderItem[];
+  orders: TOrderDetails[];
   success: boolean;
   total: number;
   totalToday: number;
 };
 
-export type TGetOrdersWithWSLoading = TGetOrdersApiResponse & {
+export type TGetOrdersWithWSLoading = Omit<TGetOrdersApiResponse, 'orders'> & {
+  orders: EntityState<TOrderDetails, number>;
   isWSLoading: boolean;
 };
 
 export type TGetOrderByNumberApiResponse = {
-  orders: [TOrderItem];
+  orders: [TOrderDetails];
   success: boolean;
 };

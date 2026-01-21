@@ -1,7 +1,9 @@
+import { createEntityAdapter, createSelector } from '@reduxjs/toolkit';
 import { WEBSOCKET_URL } from '@shared/constants.ts';
 
 import { baseApi } from '@services/store/api/index.ts';
 
+import type { RootState } from '@services/store';
 import type {
   TCreateOrderApiRequestParams,
   TCreateOrderApiResponse,
@@ -9,7 +11,11 @@ import type {
   TGetOrdersApiResponse,
   TGetOrdersWithWSLoading,
 } from '@shared/types/api.ts';
-import type { TOrderItem } from '@shared/types/entities.ts';
+import type { TOrderDetails } from '@shared/types/entities.ts';
+
+const ordersAdapter = createEntityAdapter<TOrderDetails, number>({
+  selectId: (order: TOrderDetails) => order.number,
+});
 
 const ordersApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -21,7 +27,7 @@ const ordersApi = baseApi.injectEndpoints({
       }),
     }),
 
-    getOrderByNumber: build.query<TOrderItem | null, number | string>({
+    getOrderByNumber: build.query<TOrderDetails | null, number | string>({
       query: (orderNumber) => ({ url: `orders/${orderNumber}` }),
       transformResponse: (response: TGetOrderByNumberApiResponse) =>
         response.orders[0] ?? null,
@@ -30,7 +36,7 @@ const ordersApi = baseApi.injectEndpoints({
     getOrders: build.query<TGetOrdersWithWSLoading, void>({
       queryFn: () => ({
         data: {
-          orders: [],
+          orders: ordersAdapter.getInitialState(),
           total: 0,
           success: true,
           totalToday: 0,
@@ -43,10 +49,10 @@ const ordersApi = baseApi.injectEndpoints({
         // eslint-disable-next-line @typescript-eslint/unbound-method
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
-        const ws = new WebSocket(`${WEBSOCKET_URL}/orders/all`);
+        let ws: WebSocket | null = null;
 
-        try {
-          await cacheDataLoaded;
+        const connect = (): void => {
+          ws = new WebSocket(`${WEBSOCKET_URL}/orders/all`);
 
           ws.addEventListener('open', () => {
             updateCachedData((draft) => {
@@ -66,7 +72,11 @@ const ordersApi = baseApi.injectEndpoints({
                 const data = JSON.parse(event.data) as TGetOrdersApiResponse;
 
                 updateCachedData((draft) => {
-                  Object.assign(draft, data);
+                  const { orders, ...fields } = data;
+                  Object.assign(draft, fields);
+
+                  ordersAdapter.setAll(draft.orders, orders);
+
                   draft.isWSLoading = false;
                 });
               }
@@ -78,21 +88,36 @@ const ordersApi = baseApi.injectEndpoints({
               });
             }
           });
+        };
+
+        try {
+          connect();
+
+          await cacheDataLoaded;
         } catch (e) {
-          console.error('Ошибка WebSocket', e);
+          console.error('Ошибка при подключении к WebSocket', e);
 
           updateCachedData((draft) => {
             draft.isWSLoading = false;
           });
         } finally {
           await cacheEntryRemoved;
-
-          ws.close();
         }
+
+        (ws as unknown as WebSocket)?.close();
       },
     }),
   }),
 });
+
+const selectOrdersResult = ordersApi.endpoints.getOrders.select();
+
+const selectOrdersData = createSelector(
+  selectOrdersResult,
+  (result) => result.data?.orders ?? ordersAdapter.getInitialState()
+);
+
+export const ordersSelectors = ordersAdapter.getSelectors<RootState>(selectOrdersData);
 
 export const { useCreateOrderMutation, useGetOrdersQuery, useGetOrderByNumberQuery } =
   ordersApi;

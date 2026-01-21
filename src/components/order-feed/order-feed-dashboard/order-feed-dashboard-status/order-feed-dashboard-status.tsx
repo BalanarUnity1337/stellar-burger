@@ -3,12 +3,12 @@ import { createChunks } from '@shared/utils';
 import { Digits } from '@components/ui/digits/digits.tsx';
 import { Text } from '@components/ui/text/text.tsx';
 
-import type { TOrderItem } from '@shared/types/entities.ts';
+import type { TOrderDetails } from '@shared/types/entities.ts';
 
 import styles from './order-feed-dashboard-status.module.css';
 
 type TOrderFeedDashboardStatusProps = {
-  orders: TOrderItem[];
+  orders: TOrderDetails[];
 };
 
 export const OrderFeedDashboardStatus = ({

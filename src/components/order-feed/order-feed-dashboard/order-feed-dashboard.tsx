@@ -2,12 +2,12 @@ import { OrderFeedDashboardStatus } from '@components/order-feed/order-feed-dash
 import { OrderFeedDashboardToday } from '@components/order-feed/order-feed-dashboard/order-feed-dashboard-today/order-feed-dashboard-today.tsx';
 import { OrderFeedDashboardTotal } from '@components/order-feed/order-feed-dashboard/order-feed-dashboard-total/order-feed-dashboard-total.tsx';
 
-import type { TOrderItem } from '@shared/types/entities.ts';
+import type { TOrderDetails } from '@shared/types/entities.ts';
 
 import styles from './order-feed-dashboard.module.css';
 
 type TOrderFeedDashboardProps = {
-  orders: TOrderItem[];
+  orders: TOrderDetails[];
   total: number;
   totalToday: number;
 };

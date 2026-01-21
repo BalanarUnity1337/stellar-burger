@@ -1,8 +1,8 @@
 import { Text } from '@components/ui/text/text.tsx';
 
-import type { TOrderItem } from '@shared/types/entities.ts';
+import type { TOrderDetails } from '@shared/types/entities.ts';
 
-type TStatus = TOrderItem['status'];
+type TStatus = TOrderDetails['status'];
 
 type TOrderStatusProps = {
   status: TStatus;
