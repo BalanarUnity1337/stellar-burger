@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ACCESS_TOKEN_KEY, BASE_API_URL, REFRESH_TOKEN_KEY } from '@shared/constants.ts';
+import { ACCESS_TOKEN_KEY, API_BASE_URL, REFRESH_TOKEN_KEY } from '@shared/constants.ts';
 
 import { resetAuth } from '@services/store/slices/auth.ts';
 
@@ -14,7 +14,7 @@ import type {
 } from '@shared/types/api.ts';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: BASE_API_URL,
+  baseUrl: API_BASE_URL,
   prepareHeaders: (headers) => {
     const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
 

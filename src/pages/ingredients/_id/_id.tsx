@@ -10,7 +10,7 @@ import styles from './_id.module.css';
 
 export const IngredientPage = (): React.JSX.Element | null => {
   const { isLoading, isSuccess, isError } = useGetIngredientsQuery();
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
   const ingredient = useAppSelector((state) =>
     ingredientsSelectors.selectById(state, id!)

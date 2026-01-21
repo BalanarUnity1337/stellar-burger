@@ -80,7 +80,7 @@ const burgerConstructorSlice = createSlice({
         return bunPrice * 2 + ingredientsPrice;
       }
     ),
-    selectIngredientsQtyMap: createTypedDraftSafeSelector(
+    selectIngredientsQtyById: createTypedDraftSafeSelector(
       [
         (state): TConstructorIngredient | null => state.bun,
         (state): TConstructorIngredient[] => state.ingredients,
@@ -114,7 +114,7 @@ export const {
   selectBun,
   selectBurgerIngredients,
   selectTotalCost,
-  selectIngredientsQtyMap,
+  selectIngredientsQtyById,
 } = burgerConstructorSlice.selectors;
 
 export default burgerConstructorSlice;

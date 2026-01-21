@@ -4,7 +4,9 @@ import { RouterPaths } from '@/router';
 import { Route, Routes, useLocation } from 'react-router';
 
 import { IngredientModal } from '@components/burger-ingredients/ingredient-modal/ingredient-modal.tsx';
+import { OrderDetailsModal } from '@components/order-feed/order-details-modal/order-details-modal.tsx';
 import { ProtectedRoute } from '@components/router/protected-route/protected-route.tsx';
+import { FeedOrderPage } from '@pages/feed/_id/_id.tsx';
 import { FeedPage } from '@pages/feed/feed.tsx';
 import { ForgotPasswordPage } from '@pages/forgot-password/forgot-password.tsx';
 import { HomePage } from '@pages/home/home.tsx';
@@ -55,6 +57,7 @@ export const AppRouter = (): React.JSX.Element => {
           </Route>
           <Route path={RouterPaths.ingredientPage} Component={IngredientPage} />
           <Route path={RouterPaths.feed} Component={FeedPage} />
+          <Route path={RouterPaths.feedOrderPage} Component={FeedOrderPage} />
 
           <Route path={RouterPaths.notFound} Component={NotFoundPage} />
         </Route>
@@ -63,6 +66,7 @@ export const AppRouter = (): React.JSX.Element => {
       {background && (
         <Routes>
           <Route path={RouterPaths.ingredientPage} Component={IngredientModal} />
+          <Route path={RouterPaths.feedOrderPage} Component={OrderDetailsModal} />
         </Routes>
       )}
     </>

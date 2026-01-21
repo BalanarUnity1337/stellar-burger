@@ -1,0 +1,7 @@
+.dashboard {
+  composes: custom-scroll from global;
+  display: flex;
+  flex-direction: column;
+  row-gap: 60px;
+  overflow-y: auto;
+}

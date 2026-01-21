@@ -8,8 +8,12 @@ export const RouterPaths = {
   orders: '/profile/orders',
   ingredientPage: '/ingredients/:id',
   feed: '/feed',
+  feedOrderPage: '/feed/:id',
   notFound: '*',
 };
 
 export const createIngredientPageRoute = (id: string): string =>
   RouterPaths.ingredientPage.replace(':id', id);
+
+export const createFeedOrderPageRoute = (id: string | number): string =>
+  RouterPaths.feedOrderPage.replace(':id', String(id));

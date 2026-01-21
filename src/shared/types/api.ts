@@ -1,4 +1,4 @@
-import type { TUser } from '@shared/types/entities.ts';
+import type { TOrderItem, TUser } from '@shared/types/entities.ts';
 import type { TAccessToken, TRefreshToken } from '@shared/types/global.ts';
 
 export type TApiCommonResponse<T> = {
@@ -94,5 +94,21 @@ export type TCreateOrderApiResponse = {
   order: {
     number: number;
   };
+  success: boolean;
+};
+
+export type TGetOrdersApiResponse = {
+  orders: TOrderItem[];
+  success: boolean;
+  total: number;
+  totalToday: number;
+};
+
+export type TGetOrdersWithWSLoading = TGetOrdersApiResponse & {
+  isWSLoading: boolean;
+};
+
+export type TGetOrderByNumberApiResponse = {
+  orders: [TOrderItem];
   success: boolean;
 };

@@ -28,3 +28,21 @@ export type TConstructorIngredient = {
   image: string;
   uid: string;
 };
+
+export type TOrderItem = {
+  _id: string;
+  name: string;
+  ingredients: string[];
+  number: number;
+  status: 'done' | 'in_progress' | 'reject';
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TOrderDetailsIngredient = {
+  id: string;
+  name: string;
+  image: string;
+  price: number;
+  qty: number;
+};

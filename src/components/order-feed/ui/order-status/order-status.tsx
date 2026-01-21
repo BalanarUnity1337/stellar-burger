@@ -1,0 +1,29 @@
+import { Text } from '@components/ui/text/text.tsx';
+
+import type { TOrderItem } from '@shared/types/entities.ts';
+
+type TStatus = TOrderItem['status'];
+
+type TOrderStatusProps = {
+  status: TStatus;
+};
+
+const StatusTranslates: Record<TStatus, string> = {
+  done: 'Выполнен',
+  in_progress: 'Готовится',
+  reject: 'Отменен',
+};
+
+const StatusColors: Record<TStatus, 'success' | 'primary' | 'error'> = {
+  done: 'success',
+  in_progress: 'primary',
+  reject: 'error',
+};
+
+export const OrderStatus = ({ status }: TOrderStatusProps): React.JSX.Element => {
+  return (
+    <Text as="span" color={StatusColors[status]}>
+      {StatusTranslates[status]}
+    </Text>
+  );
+};

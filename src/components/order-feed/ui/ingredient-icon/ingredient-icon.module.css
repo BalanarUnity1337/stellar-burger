@@ -1,0 +1,23 @@
+.ingredientIcon {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+  background-image: linear-gradient(45deg, #801ab2, #4c4cff);
+  border-radius: 50%;
+
+  &::before {
+    position: absolute;
+    inset: 2px;
+    background-color: var(--background-alt);
+    border-radius: 50%;
+    content: '';
+  }
+
+  img {
+    position: relative;
+    z-index: 1;
+  }
+}

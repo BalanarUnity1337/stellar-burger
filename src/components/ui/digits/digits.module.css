@@ -1,0 +1,30 @@
+.digits {
+  composes: text from global;
+  word-break: break-all;
+}
+
+.digits_primary {
+  color: var(--text-primary-color);
+}
+
+.digits_inactive {
+  color: var(--text-inactive-color);
+}
+
+.digits_accent {
+  color: var(--colors-interface-accent);
+}
+
+.digits_error {
+  color: var(--colors-interface-error);
+}
+
+.digits_success {
+  color: var(--colors-interface-success);
+}
+
+.glow {
+  filter: drop-shadow(0 0 16px rgb(51 51 255 / 25%))
+    drop-shadow(0 0 8px rgb(51 51 255 / 25%))
+    drop-shadow(0 4px 32px rgb(51 51 255 / 50%));
+}

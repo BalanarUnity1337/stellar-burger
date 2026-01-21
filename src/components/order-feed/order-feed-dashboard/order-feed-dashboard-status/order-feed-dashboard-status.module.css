@@ -1,0 +1,25 @@
+.wrapper {
+  display: flex;
+  column-gap: 36px;
+}
+
+.statusColumn {
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+  width: 50%;
+}
+
+.statusColumns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  white-space: nowrap;
+}
+
+.statusColumn_list {
+  composes: list-reset from global;
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
