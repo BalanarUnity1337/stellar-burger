@@ -1,4 +1,3 @@
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@shared/constants.ts';
 import { setAccessToken, setRefreshToken } from '@shared/utils';
 
 import { baseApi } from '@services/store/api';
@@ -82,12 +81,12 @@ const authApi = baseApi.injectEndpoints({
 
           if (data.success) {
             dispatch(resetAuth());
-            localStorage.removeItem(ACCESS_TOKEN_KEY);
-            localStorage.removeItem(REFRESH_TOKEN_KEY);
+            setAccessToken(null);
+            setRefreshToken(null);
           }
         } catch (e) {
-          localStorage.removeItem(ACCESS_TOKEN_KEY);
-          localStorage.removeItem(REFRESH_TOKEN_KEY);
+          setAccessToken(null);
+          setRefreshToken(null);
 
           console.error(e);
         }
