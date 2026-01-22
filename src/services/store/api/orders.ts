@@ -1,5 +1,6 @@
 import { createEntityAdapter, createSelector } from '@reduxjs/toolkit';
-import { ACCESS_TOKEN_KEY, WEBSOCKET_URL } from '@shared/constants.ts';
+import { WEBSOCKET_URL } from '@shared/constants.ts';
+import { getAccessToken } from '@shared/utils';
 
 import { baseApi } from '@services/store/api/index.ts';
 
@@ -8,15 +9,15 @@ import type {
   TCreateOrderApiRequestParams,
   TCreateOrderApiResponse,
   TGetOrderByNumberApiResponse,
-  TGetOrdersApiResponse,
-  TGetOrdersWithWSLoading,
+  TGetFeedOrdersApiResponse,
+  TGetFeedOrdersWithWSLoading,
   TGetUserOrdersApiResponse,
   TGetUserOrdersWithWSLoading,
 } from '@shared/types/api.ts';
 import type { TOrderDetails } from '@shared/types/entities.ts';
 
 // @TODO: rename allOrdersAdapter
-const ordersAdapter = createEntityAdapter<TOrderDetails, number>({
+const feedOrdersAdapter = createEntityAdapter<TOrderDetails, number>({
   selectId: (order: TOrderDetails) => order.number,
 });
 
@@ -42,16 +43,15 @@ const ordersApi = baseApi.injectEndpoints({
         response.orders[0] ?? null,
     }),
 
-    // @TODO: rename getAllOrders
-    getOrders: build.query<TGetOrdersWithWSLoading, void>({
+    getFeedOrders: build.query<TGetFeedOrdersWithWSLoading, void>({
       queryFn: () => ({
         data: {
-          orders: ordersAdapter.getInitialState(),
+          orders: feedOrdersAdapter.getInitialState(),
           total: 0,
           totalToday: 0,
           success: true,
           isWSLoading: true,
-        } satisfies TGetOrdersWithWSLoading,
+        } satisfies TGetFeedOrdersWithWSLoading,
       }),
 
       onCacheEntryAdded: async (
@@ -79,13 +79,13 @@ const ordersApi = baseApi.injectEndpoints({
           ws.addEventListener('message', (event: MessageEvent) => {
             try {
               if (typeof event.data === 'string') {
-                const data = JSON.parse(event.data) as TGetOrdersApiResponse;
+                const data = JSON.parse(event.data) as TGetFeedOrdersApiResponse;
 
                 updateCachedData((draft) => {
                   const { orders, ...fields } = data;
                   Object.assign(draft, fields);
 
-                  ordersAdapter.setAll(draft.orders, orders);
+                  feedOrdersAdapter.setAll(draft.orders, orders);
 
                   draft.isWSLoading = false;
                 });
@@ -137,7 +137,7 @@ const ordersApi = baseApi.injectEndpoints({
         let ws: WebSocket | null = null;
 
         const connect = (): void => {
-          const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+          const accessToken = getAccessToken();
 
           ws = new WebSocket(`${WEBSOCKET_URL}/orders?token=${accessToken}`);
 
@@ -202,11 +202,11 @@ const ordersApi = baseApi.injectEndpoints({
 });
 
 // @TODO: Вынести в отдельные файлы, м.б.
-const selectOrdersResult = ordersApi.endpoints.getOrders.select();
+const selectFeedOrdersResult = ordersApi.endpoints.getFeedOrders.select();
 
-const selectOrdersData = createSelector(
-  selectOrdersResult,
-  (result) => result.data?.orders ?? ordersAdapter.getInitialState()
+const selectFeedOrdersData = createSelector(
+  selectFeedOrdersResult,
+  (result) => result.data?.orders ?? feedOrdersAdapter.getInitialState()
 );
 
 // @TODO: Вынести в отдельные файлы, м.б.
@@ -217,14 +217,15 @@ const selectUserOrdersData = createSelector(
   (result) => result.data?.orders ?? userOrdersAdapter.getInitialState()
 );
 
-export const ordersSelectors = ordersAdapter.getSelectors<RootState>(selectOrdersData);
+export const feedOrdersSelectors =
+  feedOrdersAdapter.getSelectors<RootState>(selectFeedOrdersData);
 
 export const userOrdersSelectors =
   userOrdersAdapter.getSelectors<RootState>(selectUserOrdersData);
 
 export const {
   useCreateOrderMutation,
-  useGetOrdersQuery,
+  useGetFeedOrdersQuery,
   useGetOrderByNumberQuery,
   useGetUserOrdersQuery,
 } = ordersApi;

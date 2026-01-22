@@ -98,14 +98,14 @@ export type TCreateOrderApiResponse = {
   success: boolean;
 };
 
-export type TGetOrdersApiResponse = {
+export type TGetFeedOrdersApiResponse = {
   orders: TOrderDetails[];
   success: boolean;
   total: number;
   totalToday: number;
 };
 
-export type TGetOrdersWithWSLoading = Omit<TGetOrdersApiResponse, 'orders'> & {
+export type TGetFeedOrdersWithWSLoading = Omit<TGetFeedOrdersApiResponse, 'orders'> & {
   orders: EntityState<TOrderDetails, number>;
   isWSLoading: boolean;
 };
@@ -115,5 +115,5 @@ export type TGetOrderByNumberApiResponse = {
   success: boolean;
 };
 
-export type TGetUserOrdersApiResponse = TGetOrdersApiResponse;
-export type TGetUserOrdersWithWSLoading = TGetOrdersWithWSLoading;
+export type TGetUserOrdersApiResponse = TGetFeedOrdersApiResponse;
+export type TGetUserOrdersWithWSLoading = TGetFeedOrdersWithWSLoading;

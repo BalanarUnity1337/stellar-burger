@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-feed/order-details/order-details.tsx';
-import { ordersSelectors, userOrdersSelectors } from '@services/store/api';
+import { feedOrdersSelectors, userOrdersSelectors } from '@services/store/api';
 import { useAppSelector } from '@services/store/hooks.ts';
 
 export const OrderDetailsModal = (): React.JSX.Element | null => {
@@ -10,7 +10,7 @@ export const OrderDetailsModal = (): React.JSX.Element | null => {
   const { id: orderNumber } = useParams<{ id: string }>();
 
   const order = useAppSelector((state) =>
-    ordersSelectors.selectById(state, Number(orderNumber))
+    feedOrdersSelectors.selectById(state, Number(orderNumber))
   );
 
   const userOrder = useAppSelector((state) =>

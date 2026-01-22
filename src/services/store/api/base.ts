@@ -1,6 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ACCESS_TOKEN_KEY, API_BASE_URL, REFRESH_TOKEN_KEY } from '@shared/constants.ts';
-import { setAccessToken, setRefreshToken } from '@shared/utils';
+import {
+  getAccessToken,
+  getRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+} from '@shared/utils';
 
 import { resetAuth } from '@services/store/slices/auth.ts';
 
@@ -17,7 +22,7 @@ import type {
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
   prepareHeaders: (headers) => {
-    const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+    const accessToken = getAccessToken();
 
     if (accessToken != null) {
       headers.set('Authorization', `Bearer ${accessToken}`);
@@ -35,7 +40,7 @@ const baseQueryWithReAuth: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error && [401, 403].includes(result.error.status as number)) {
-    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+    const refreshToken = getRefreshToken();
 
     if (refreshToken === null) {
       api.dispatch(resetAuth());

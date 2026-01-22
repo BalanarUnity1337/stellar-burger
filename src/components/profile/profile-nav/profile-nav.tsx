@@ -1,5 +1,5 @@
 import { RouterPaths } from '@/router';
-import { REFRESH_TOKEN_KEY } from '@shared/constants.ts';
+import { getRefreshToken } from '@shared/utils';
 import { NavLink, useLocation, useNavigate } from 'react-router';
 
 import { Text } from '@components/ui/text/text.tsx';
@@ -27,7 +27,7 @@ export const ProfileNav = (): React.JSX.Element => {
 
   const logoutHandler = async (): Promise<void> => {
     try {
-      const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+      const refreshToken = getRefreshToken();
 
       const data = await logout({ token: refreshToken ?? '' }).unwrap();
 

@@ -7,9 +7,9 @@ import { OrderFeedList } from '@components/order-feed/order-feed-list/order-feed
 import { PageTitle } from '@components/ui/page-title/page-title.tsx';
 import { Text } from '@components/ui/text/text.tsx';
 import {
-  ordersSelectors,
+  feedOrdersSelectors,
   useGetIngredientsQuery,
-  useGetOrdersQuery,
+  useGetFeedOrdersQuery,
 } from '@services/store/api';
 import { useAppSelector } from '@services/store/hooks.ts';
 
@@ -24,8 +24,8 @@ export const FeedPage = (): React.JSX.Element => {
   const { isSuccess: isIngredientsSuccess, isLoading: isIngredientsLoading } =
     useGetIngredientsQuery();
 
-  const { data: ordersData, isSuccess: isOrdersSuccess } = useGetOrdersQuery();
-  const orders = useAppSelector(ordersSelectors.selectAll);
+  const { data: ordersData, isSuccess: isOrdersSuccess } = useGetFeedOrdersQuery();
+  const orders = useAppSelector(feedOrdersSelectors.selectAll);
 
   const isLoading = isIngredientsLoading || Boolean(ordersData?.isWSLoading);
   const isSuccess = isIngredientsSuccess && isOrdersSuccess && ordersData.success;
