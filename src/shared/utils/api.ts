@@ -1,6 +1,7 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_BASE_URL } from '@shared/constants.ts';
 import { getAccessToken, updateAuthTokens } from '@shared/utils';
+import { Mutex } from 'async-mutex';
 
 import { resetAuth } from '@services/store/slices/auth.ts';
 
@@ -9,6 +10,8 @@ import type {
   FetchArgs,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query';
+
+const mutex = new Mutex();
 
 export const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -28,15 +31,29 @@ export const baseQueryWithReAuth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
+  await mutex.waitForUnlock();
+
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error && [401, 403].includes(result.error.status as number)) {
-    const tokens = await updateAuthTokens();
+    if (!mutex.isLocked()) {
+      const release = await mutex.acquire();
 
-    if (tokens.success) {
-      result = await baseQuery(args, api, extraOptions);
+      try {
+        const tokens = await updateAuthTokens();
+
+        if (tokens.success) {
+          result = await baseQuery(args, api, extraOptions);
+        } else {
+          api.dispatch(resetAuth());
+        }
+      } finally {
+        release();
+      }
     } else {
-      api.dispatch(resetAuth());
+      await mutex.waitForUnlock();
+
+      result = await baseQuery(args, api, extraOptions);
     }
   }
 
