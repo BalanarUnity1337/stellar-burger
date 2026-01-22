@@ -1,1 +1,6 @@
-export { RouterPaths, createIngredientPageRoute } from './paths.ts';
+export {
+  RouterPaths,
+  createIngredientPageRoute,
+  createFeedOrderPageRoute,
+  createProfileOrderPageRoute,
+} from './paths.ts';

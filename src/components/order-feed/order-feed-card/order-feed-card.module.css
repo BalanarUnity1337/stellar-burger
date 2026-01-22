@@ -1,7 +1,6 @@
 .card {
   display: flex;
   flex-direction: column;
-  row-gap: 24px;
   background-color: var(--background);
   border-radius: 40px;
   composes: p-6 from global;
@@ -12,11 +11,13 @@
 }
 
 .card_header {
+  composes: mb-6 from global;
   display: flex;
   justify-content: space-between;
 }
 
 .card_footer {
+  composes: mt-6 from global;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

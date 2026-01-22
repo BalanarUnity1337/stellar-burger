@@ -114,3 +114,6 @@ export type TGetOrderByNumberApiResponse = {
   orders: [TOrderDetails];
   success: boolean;
 };
+
+export type TGetUserOrdersApiResponse = TGetOrdersApiResponse;
+export type TGetUserOrdersWithWSLoading = TGetOrdersWithWSLoading;

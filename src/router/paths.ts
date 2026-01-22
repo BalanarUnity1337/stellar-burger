@@ -5,7 +5,8 @@ export const RouterPaths = {
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
   profile: '/profile',
-  orders: '/profile/orders',
+  profileOrders: '/profile/orders',
+  profileOrderPage: '/profile/orders/:id',
   ingredientPage: '/ingredients/:id',
   feed: '/feed',
   feedOrderPage: '/feed/:id',
@@ -15,5 +16,8 @@ export const RouterPaths = {
 export const createIngredientPageRoute = (id: string): string =>
   RouterPaths.ingredientPage.replace(':id', id);
 
-export const createFeedOrderPageRoute = (id: string | number): string =>
-  RouterPaths.feedOrderPage.replace(':id', String(id));
+export const createFeedOrderPageRoute = (orderNumber: string | number): string =>
+  RouterPaths.feedOrderPage.replace(':id', String(orderNumber));
+
+export const createProfileOrderPageRoute = (orderNumber: string | number): string =>
+  RouterPaths.profileOrderPage.replace(':id', String(orderNumber));

@@ -15,7 +15,7 @@ const links = [
   },
   {
     name: 'История заказов',
-    path: RouterPaths.orders,
+    path: RouterPaths.profileOrders,
     description: 'В этом разделе вы можете просмотреть свою историю заказов',
   },
 ];

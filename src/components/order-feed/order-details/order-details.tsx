@@ -24,46 +24,9 @@ export const OrderDetails = ({
   order,
   showOrderNumber = true,
 }: TOrderDetailsProps): React.JSX.Element => {
-  const {
-    isLoading: isIngredientsLoading,
-    isSuccess: isIngredientsSuccess,
-    isError: isIngredientsError,
-  } = useGetIngredientsQuery();
+  const { isLoading: isIngredientsLoading, isError: isIngredientsError } =
+    useGetIngredientsQuery();
   const ingredientsById = useAppSelector(ingredientsSelectors.selectEntities);
-
-  const qtyById = order.ingredients.reduce(
-    (acc, ingredientId) => ({
-      ...acc,
-
-      [ingredientId]: (acc[ingredientId] ?? 0) + 1,
-    }),
-    {} as Record<string, number>
-  );
-
-  const ingredients = isIngredientsSuccess
-    ? ([...new Set(order.ingredients)]
-        .map((ingredientId) => {
-          const ingredient = ingredientsById[ingredientId];
-
-          return ingredient
-            ? {
-                image: ingredient.image,
-                name: ingredient.name,
-                id: ingredient._id,
-                price: ingredient.price,
-                qty: qtyById[ingredientId],
-              }
-            : null;
-        })
-        .filter(Boolean) as TOrderDetailsIngredient[])
-    : [];
-
-  const price = isIngredientsSuccess
-    ? order.ingredients.reduce(
-        (acc, ingredientId) => acc + ingredientsById[ingredientId].price,
-        0
-      )
-    : 0;
 
   if (isIngredientsLoading) {
     return (
@@ -76,6 +39,36 @@ export const OrderDetails = ({
   if (isIngredientsError) {
     return <Text size="large">Не удалось получить данные о заказе</Text>;
   }
+
+  const qtyById = order.ingredients.reduce(
+    (acc, ingredientId) => ({
+      ...acc,
+
+      [ingredientId]: (acc[ingredientId] ?? 0) + 1,
+    }),
+    {} as Record<string, number>
+  );
+
+  const ingredients = [...new Set(order.ingredients)]
+    .map((ingredientId) => {
+      const ingredient = ingredientsById[ingredientId];
+
+      return ingredient
+        ? {
+            image: ingredient.image,
+            name: ingredient.name,
+            id: ingredient._id,
+            price: ingredient.price,
+            qty: qtyById[ingredientId],
+          }
+        : null;
+    })
+    .filter(Boolean) as TOrderDetailsIngredient[];
+
+  const price = order.ingredients.reduce(
+    (acc, ingredientId) => acc + ingredientsById[ingredientId].price,
+    0
+  );
 
   return (
     <article className={`${styles.order}`}>

@@ -6,6 +6,7 @@ type TStatus = TOrderDetails['status'];
 
 type TOrderStatusProps = {
   status: TStatus;
+  extraClass?: string;
 };
 
 const StatusTranslates: Record<TStatus, string> = {
@@ -20,9 +21,12 @@ const StatusColors: Record<TStatus, 'success' | 'primary' | 'error'> = {
   reject: 'error',
 };
 
-export const OrderStatus = ({ status }: TOrderStatusProps): React.JSX.Element => {
+export const OrderStatus = ({
+  status,
+  extraClass = '',
+}: TOrderStatusProps): React.JSX.Element => {
   return (
-    <Text as="span" color={StatusColors[status]}>
+    <Text as="span" color={StatusColors[status]} extraClass={extraClass}>
       {StatusTranslates[status]}
     </Text>
   );

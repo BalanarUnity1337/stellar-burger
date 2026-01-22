@@ -7,8 +7,9 @@ import { useGetOrderByNumberQuery } from '@services/store/api';
 
 import styles from './_id.module.css';
 
-export const FeedOrderPage = (): React.JSX.Element => {
+export const ProfileOrderPage = (): React.JSX.Element | null => {
   const { id: orderNumber } = useParams<{ id: string }>();
+
   const { data, isLoading, isSuccess } = useGetOrderByNumberQuery(orderNumber!);
 
   if (isLoading) {

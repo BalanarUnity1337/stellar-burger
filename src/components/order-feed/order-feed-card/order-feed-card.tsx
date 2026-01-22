@@ -6,6 +6,7 @@ import { nanoid } from '@reduxjs/toolkit';
 import { useMemo } from 'react';
 
 import { IngredientIcon } from '@components/order-feed/ui/ingredient-icon/ingredient-icon.tsx';
+import { OrderStatus } from '@components/order-feed/ui/order-status/order-status.tsx';
 import { Digits } from '@components/ui/digits/digits.tsx';
 import { Text } from '@components/ui/text/text.tsx';
 import { ingredientsSelectors } from '@services/store/api';
@@ -17,11 +18,13 @@ import styles from './order-feed-card.module.css';
 
 type TOrderFeedCardProps = {
   order: TOrderDetails;
+  showStatus?: boolean;
   onClick?: (order: TOrderDetails) => void;
 };
 
 export const OrderFeedCard = ({
   order,
+  showStatus = false,
   onClick,
 }: TOrderFeedCardProps): React.JSX.Element => {
   const ingredientsById = useAppSelector(ingredientsSelectors.selectEntities);
@@ -69,14 +72,11 @@ export const OrderFeedCard = ({
         </Text>
       </header>
 
-      <div>
-        <Text as="h2" size="medium">
-          {order.name}
-        </Text>
+      <Text as="h2" size="medium">
+        {order.name}
+      </Text>
 
-        {/* Статус */}
-        {/*<span></span>*/}
-      </div>
+      {showStatus && <OrderStatus status={order.status} extraClass={`mt-2`} />}
 
       <footer className={`${styles.card_footer}`}>
         <ul className={`${styles.card_ingredients}`}>
