@@ -27,12 +27,19 @@ export const setRefreshToken = (token: string | null): void => {
 export const getRefreshToken = (): string | null =>
   localStorage.getItem(REFRESH_TOKEN_KEY);
 
+export const clearAuthTokens = (): void => {
+  setAccessToken(null);
+  setRefreshToken(null);
+};
+
 export const updateAuthTokens = async (): Promise<
   Pick<TUpdateTokenApiResponse, 'success'>
 > => {
   const refreshToken = getRefreshToken();
 
   if (refreshToken == null) {
+    clearAuthTokens();
+
     return { success: false };
   }
 
@@ -45,22 +52,24 @@ export const updateAuthTokens = async (): Promise<
       } as TUpdateTokenApiRequestParams),
     });
 
-    const data = (await result.json()) as TUpdateTokenApiResponse;
-
-    if (data.success) {
-      setAccessToken(data.accessToken);
-      setRefreshToken(data.refreshToken);
+    if (!result.ok) {
+      throw new Error();
     }
 
-    setAccessToken(null);
-    setRefreshToken(null);
+    const data = (await result.json()) as TUpdateTokenApiResponse;
 
-    return { success: data.success };
+    if (!data.success) {
+      throw new Error();
+    }
+
+    setAccessToken(data.accessToken);
+    setRefreshToken(data.refreshToken);
+
+    return { success: true };
   } catch {
     console.error('Не удалось обновить RefreshToken');
 
-    setAccessToken(null);
-    setRefreshToken(null);
+    clearAuthTokens();
 
     return { success: false };
   }

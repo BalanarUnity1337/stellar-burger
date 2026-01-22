@@ -1,4 +1,4 @@
-import { setAccessToken, setRefreshToken } from '@shared/utils';
+import { clearAuthTokens, setAccessToken, setRefreshToken } from '@shared/utils';
 
 import { baseApi } from '@services/store/api';
 import { resetAuth, setUser } from '@services/store/slices/auth.ts';
@@ -81,12 +81,10 @@ const authApi = baseApi.injectEndpoints({
 
           if (data.success) {
             dispatch(resetAuth());
-            setAccessToken(null);
-            setRefreshToken(null);
+            clearAuthTokens();
           }
         } catch (e) {
-          setAccessToken(null);
-          setRefreshToken(null);
+          clearAuthTokens();
 
           console.error(e);
         }
