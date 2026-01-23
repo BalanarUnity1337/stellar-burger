@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSelector } from '@reduxjs/toolkit';
 import { WEBSOCKET_URL } from '@shared/constants.ts';
-import { getAccessToken } from '@shared/utils';
+import { connectWebSocket, getAccessToken, updateAuthTokens } from '@shared/utils';
 
 import { baseApi } from '@services/store/api/index.ts';
 
@@ -11,8 +11,8 @@ import type {
   TGetOrderByNumberApiResponse,
   TGetFeedOrdersApiResponse,
   TGetFeedOrdersWithWSLoading,
-  TGetUserOrdersApiResponse,
   TGetUserOrdersWithWSLoading,
+  TGetUserOrdersApiResponse,
 } from '@shared/types/api.ts';
 import type { TOrderDetails } from '@shared/types/entities.ts';
 
@@ -54,29 +54,27 @@ const ordersApi = baseApi.injectEndpoints({
         } satisfies TGetFeedOrdersWithWSLoading,
       }),
 
+      keepUnusedDataFor: 10,
+
       onCacheEntryAdded: async (
         _,
         // eslint-disable-next-line @typescript-eslint/unbound-method
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) => {
-        let ws: WebSocket | null = null;
-
-        const connect = (): void => {
-          ws = new WebSocket(`${WEBSOCKET_URL}/orders/all`);
-
-          ws.addEventListener('open', () => {
+        const { closeWS } = connectWebSocket(`${WEBSOCKET_URL}/orders/all`, {
+          enablePing: true,
+          reconnectOnClose: true,
+          onOpen: () => {
             updateCachedData((draft) => {
               draft.isWSLoading = true;
             });
-          });
-
-          ws.addEventListener('close', () => {
+          },
+          onClose: () => {
             updateCachedData((draft) => {
               draft.isWSLoading = false;
             });
-          });
-
-          ws.addEventListener('message', (event: MessageEvent) => {
+          },
+          onMessage: (event: MessageEvent) => {
             try {
               if (typeof event.data === 'string') {
                 const data = JSON.parse(event.data) as TGetFeedOrdersApiResponse;
@@ -97,23 +95,19 @@ const ordersApi = baseApi.injectEndpoints({
                 draft.isWSLoading = false;
               });
             }
-          });
-        };
+          },
+        });
 
         try {
-          connect();
-
           await cacheDataLoaded;
-        } catch (e) {
-          console.error('Ошибка при подключении к WebSocket', e);
-
+        } catch {
           updateCachedData((draft) => {
             draft.isWSLoading = false;
           });
         } finally {
           await cacheEntryRemoved;
 
-          (ws as unknown as WebSocket)?.close();
+          closeWS();
         }
       },
     }),
@@ -129,72 +123,76 @@ const ordersApi = baseApi.injectEndpoints({
         } as TGetUserOrdersWithWSLoading,
       }),
 
+      keepUnusedDataFor: 10,
+
       onCacheEntryAdded: async (
         _,
         // eslint-disable-next-line @typescript-eslint/unbound-method
         { cacheDataLoaded, updateCachedData, cacheEntryRemoved }
       ) => {
-        let ws: WebSocket | null = null;
-
-        const connect = (): void => {
-          const accessToken = getAccessToken();
-
-          ws = new WebSocket(`${WEBSOCKET_URL}/orders?token=${accessToken}`);
-
-          if (ws != null) {
-            ws.addEventListener('open', () => {
+        const { closeWS, reconnectWS } = connectWebSocket(
+          `${WEBSOCKET_URL}/orders?token=${getAccessToken()}`,
+          {
+            enablePing: true,
+            reconnectOnClose: true,
+            onOpen: () => {
               updateCachedData((draft) => {
                 draft.isWSLoading = true;
               });
-            });
-
-            ws.addEventListener('close', () => {
+            },
+            onClose: () => {
               updateCachedData((draft) => {
                 draft.isWSLoading = false;
               });
-            });
+            },
+            onMessage: (event: MessageEvent) => {
+              const listener = async (): Promise<void> => {
+                try {
+                  if (typeof event.data === 'string') {
+                    const data = JSON.parse(event.data) as TGetUserOrdersApiResponse;
 
-            ws.addEventListener('message', (event: MessageEvent) => {
-              try {
-                if (typeof event.data === 'string') {
-                  const data = JSON.parse(event.data) as TGetUserOrdersApiResponse;
+                    if (!data.success && data.message === 'Invalid or missing token') {
+                      closeWS();
+
+                      const tokens = await updateAuthTokens();
+
+                      if (tokens.success) {
+                        reconnectWS(`${WEBSOCKET_URL}/orders?token=${getAccessToken()}`);
+                      }
+                    } else if (data.success) {
+                      updateCachedData((draft) => {
+                        const { orders, ...fields } = data;
+                        Object.assign(draft, fields);
+
+                        userOrdersAdapter.setAll(draft.orders, orders);
+                        draft.isWSLoading = false;
+                      });
+                    }
+                  }
+                } catch (e) {
+                  console.error('Ошибка при чтении данных из WebSocket ->', e);
 
                   updateCachedData((draft) => {
-                    const { orders, ...fields } = data;
-                    Object.assign(draft, fields);
-
-                    userOrdersAdapter.setAll(draft.orders, orders);
-
-                    updateCachedData((draft) => {
-                      draft.isWSLoading = false;
-                    });
+                    draft.isWSLoading = false;
                   });
                 }
-              } catch (e) {
-                console.error('Ошибка при чтении данных из WebSocket', e);
+              };
 
-                updateCachedData((draft) => {
-                  draft.isWSLoading = false;
-                });
-              }
-            });
+              void listener();
+            },
           }
-        };
+        );
 
         try {
-          connect();
-
           await cacheDataLoaded;
-        } catch (e) {
-          console.error('Ошибка при подключении к WebSocket', e);
-
+        } catch {
           updateCachedData((draft) => {
             draft.isWSLoading = false;
           });
         } finally {
           await cacheEntryRemoved;
 
-          (ws as unknown as WebSocket)?.close();
+          closeWS();
         }
       },
     }),

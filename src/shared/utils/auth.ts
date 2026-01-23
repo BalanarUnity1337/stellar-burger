@@ -53,13 +53,13 @@ export const updateAuthTokens = async (): Promise<
     });
 
     if (!result.ok) {
-      throw new Error();
+      throw new Error('Ошибка при обновлении токенов');
     }
 
     const data = (await result.json()) as TUpdateTokenApiResponse;
 
     if (!data.success) {
-      throw new Error();
+      throw new Error('Ошибка при обновлении токенов');
     }
 
     setAccessToken(data.accessToken);

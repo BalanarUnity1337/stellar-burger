@@ -4,3 +4,4 @@ export { formatNumber } from './formatNumber';
 export { createChunks } from './createChunks';
 export * from './auth';
 export * from './api';
+export { connectWebSocket } from './connectWebSocket';

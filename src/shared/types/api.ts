@@ -115,5 +115,20 @@ export type TGetOrderByNumberApiResponse = {
   success: boolean;
 };
 
-export type TGetUserOrdersApiResponse = TGetFeedOrdersApiResponse;
-export type TGetUserOrdersWithWSLoading = TGetFeedOrdersWithWSLoading;
+export type TGetUserOrdersSuccessApiResponse = TGetFeedOrdersApiResponse & {
+  success: true;
+};
+
+export type TGetUserOrdersErrorApiResponse = {
+  success: false;
+  message: 'Invalid or missing token';
+};
+
+export type TGetUserOrdersApiResponse =
+  | TGetUserOrdersSuccessApiResponse
+  | TGetUserOrdersErrorApiResponse;
+
+export type TGetUserOrdersWithWSLoading = Omit<TGetUserOrdersApiResponse, 'orders'> & {
+  orders: EntityState<TOrderDetails, number>;
+  isWSLoading: boolean;
+};
