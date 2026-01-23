@@ -84,7 +84,7 @@ export const connectWebSocket = (
         return;
       }
 
-      if (reconnectOnClose != null) {
+      if (reconnectOnClose) {
         const { maxRetries, interval } = {
           ...reconnectDefaultOptions,
           ...reconnectOnCloseOptions,
