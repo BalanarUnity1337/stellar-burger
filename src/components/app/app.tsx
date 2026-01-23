@@ -12,7 +12,7 @@ export const App = (): React.JSX.Element => {
 
   if (isAuthLoading) {
     return (
-      <div className={`fullscreen-loader`}>
+      <div className={`fullscreen-preloader`}>
         <Preloader />
       </div>
     );

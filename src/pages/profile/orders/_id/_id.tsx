@@ -14,7 +14,7 @@ export const ProfileOrderPage = (): React.JSX.Element | null => {
 
   if (isLoading) {
     return (
-      <div className={`fullscreen-loader`}>
+      <div className={`content-preloader`}>
         <Preloader />
       </div>
     );

@@ -4,12 +4,9 @@ import { useLocation, useNavigate } from 'react-router';
 
 import { OrderFeedList } from '@components/order-feed/order-feed-list/order-feed-list.tsx';
 import { Text } from '@components/ui/text/text.tsx';
-import {
-  useGetIngredientsQuery,
-  useGetUserOrdersQuery,
-  userOrdersSelectors,
-} from '@services/store/api';
+import { useGetIngredientsQuery, useGetUserOrdersQuery } from '@services/store/api';
 import { useAppSelector } from '@services/store/hooks.ts';
+import { userOrdersSelectors } from '@services/store/selectors';
 
 import type { TOrderDetails } from '@shared/types/entities.ts';
 
@@ -33,13 +30,14 @@ export const ProfileOrdersPage = (): React.JSX.Element => {
 
   if (isLoading) {
     return (
-      <div className={`fullscreen-loader`}>
+      <div className={`content-preloader`}>
         <Preloader />
       </div>
     );
   }
 
-  const isSuccess = isIngredientsSuccess && isOrdersSuccess && ordersData.success;
+  const isSuccess =
+    isIngredientsSuccess && isOrdersSuccess && ordersData.success && orders.length > 0;
 
   if (isSuccess) {
     return (

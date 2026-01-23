@@ -6,12 +6,9 @@ import { OrderFeedDashboard } from '@components/order-feed/order-feed-dashboard/
 import { OrderFeedList } from '@components/order-feed/order-feed-list/order-feed-list.tsx';
 import { PageTitle } from '@components/ui/page-title/page-title.tsx';
 import { Text } from '@components/ui/text/text.tsx';
-import {
-  feedOrdersSelectors,
-  useGetIngredientsQuery,
-  useGetFeedOrdersQuery,
-} from '@services/store/api';
+import { useGetIngredientsQuery, useGetFeedOrdersQuery } from '@services/store/api';
 import { useAppSelector } from '@services/store/hooks.ts';
+import { feedOrdersSelectors } from '@services/store/selectors';
 
 import type { TOrderDetails } from '@shared/types/entities.ts';
 
@@ -28,7 +25,8 @@ export const FeedPage = (): React.JSX.Element => {
   const orders = useAppSelector(feedOrdersSelectors.selectAll);
 
   const isLoading = isIngredientsLoading || Boolean(ordersData?.isWSLoading);
-  const isSuccess = isIngredientsSuccess && isOrdersSuccess && ordersData.success;
+  const isSuccess =
+    isIngredientsSuccess && isOrdersSuccess && ordersData.success && orders.length > 0;
 
   const onOrderClick = (order: TOrderDetails): void => {
     void navigate(createFeedOrderPageRoute(order.number), {
@@ -41,7 +39,7 @@ export const FeedPage = (): React.JSX.Element => {
       <PageTitle>Лента заказов</PageTitle>
 
       {isLoading ? (
-        <div className={`fullscreen-loader`}>
+        <div className={`content-preloader`}>
           <Preloader />
         </div>
       ) : isSuccess ? (

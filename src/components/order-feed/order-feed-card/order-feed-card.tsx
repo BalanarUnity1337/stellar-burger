@@ -9,8 +9,8 @@ import { IngredientIcon } from '@components/order-feed/ui/ingredient-icon/ingred
 import { OrderStatus } from '@components/order-feed/ui/order-status/order-status.tsx';
 import { Digits } from '@components/ui/digits/digits.tsx';
 import { Text } from '@components/ui/text/text.tsx';
-import { ingredientsSelectors } from '@services/store/api';
 import { useAppSelector } from '@services/store/hooks.ts';
+import { ingredientsSelectors } from '@services/store/selectors';
 
 import type { TOrderDetails } from '@shared/types/entities.ts';
 

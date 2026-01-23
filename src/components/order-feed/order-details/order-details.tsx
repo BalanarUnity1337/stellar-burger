@@ -8,8 +8,9 @@ import { OrderDetailsIngredient } from '@components/order-feed/order-details/ord
 import { OrderStatus } from '@components/order-feed/ui/order-status/order-status.tsx';
 import { Digits } from '@components/ui/digits/digits.tsx';
 import { Text } from '@components/ui/text/text.tsx';
-import { ingredientsSelectors, useGetIngredientsQuery } from '@services/store/api';
+import { useGetIngredientsQuery } from '@services/store/api';
 import { useAppSelector } from '@services/store/hooks.ts';
+import { ingredientsSelectors } from '@services/store/selectors';
 
 import type { TOrderDetailsIngredient, TOrderDetails } from '@shared/types/entities.ts';
 
@@ -30,8 +31,8 @@ export const OrderDetails = ({
 
   if (isIngredientsLoading) {
     return (
-      <div className={`fullscreen-loader`}>
-        <Preloader />;
+      <div className={`content-preloader`}>
+        <Preloader />
       </div>
     );
   }

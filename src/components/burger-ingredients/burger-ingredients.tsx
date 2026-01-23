@@ -3,8 +3,9 @@ import { throttle } from 'lodash-es';
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 
 import { BurgerIngredientsSection } from '@components/burger-ingredients/burger-ingredients-section/burger-ingredients-section.tsx';
-import { ingredientsSelectors, useGetIngredientsQuery } from '@services/store/api';
+import { useGetIngredientsQuery } from '@services/store/api';
 import { useAppSelector } from '@services/store/hooks.ts';
+import { ingredientsSelectors } from '@services/store/selectors';
 
 import type { TIngredient, TIngredientType } from '@shared/types/entities.ts';
 

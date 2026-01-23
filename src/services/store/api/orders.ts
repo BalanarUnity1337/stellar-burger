@@ -1,10 +1,9 @@
-import { createEntityAdapter, createSelector } from '@reduxjs/toolkit';
 import { WEBSOCKET_URL } from '@shared/constants.ts';
 import { connectWebSocket, getAccessToken, updateAuthTokens } from '@shared/utils';
 
+import { feedOrdersAdapter, userOrdersAdapter } from '@services/store/adapters';
 import { baseApi } from '@services/store/api/index.ts';
 
-import type { RootState } from '@services/store';
 import type {
   TCreateOrderApiRequestParams,
   TCreateOrderApiResponse,
@@ -16,18 +15,7 @@ import type {
 } from '@shared/types/api.ts';
 import type { TOrderDetails } from '@shared/types/entities.ts';
 
-// @TODO: rename allOrdersAdapter
-const feedOrdersAdapter = createEntityAdapter<TOrderDetails, number>({
-  selectId: (order: TOrderDetails) => order.number,
-});
-
-const userOrdersAdapter = createEntityAdapter<TOrderDetails, number>({
-  selectId: (order: TOrderDetails) => order.number,
-  sortComparer: (a, b) =>
-    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-});
-
-const ordersApi = baseApi.injectEndpoints({
+export const ordersApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createOrder: build.mutation<TCreateOrderApiResponse, TCreateOrderApiRequestParams>({
       query: (body) => ({
@@ -198,28 +186,6 @@ const ordersApi = baseApi.injectEndpoints({
     }),
   }),
 });
-
-// @TODO: Вынести в отдельные файлы, м.б.
-const selectFeedOrdersResult = ordersApi.endpoints.getFeedOrders.select();
-
-const selectFeedOrdersData = createSelector(
-  selectFeedOrdersResult,
-  (result) => result.data?.orders ?? feedOrdersAdapter.getInitialState()
-);
-
-// @TODO: Вынести в отдельные файлы, м.б.
-const selectUserOrdersResult = ordersApi.endpoints.getUserOrders.select();
-
-const selectUserOrdersData = createSelector(
-  selectUserOrdersResult,
-  (result) => result.data?.orders ?? userOrdersAdapter.getInitialState()
-);
-
-export const feedOrdersSelectors =
-  feedOrdersAdapter.getSelectors<RootState>(selectFeedOrdersData);
-
-export const userOrdersSelectors =
-  userOrdersAdapter.getSelectors<RootState>(selectUserOrdersData);
 
 export const {
   useCreateOrderMutation,

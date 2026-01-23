@@ -13,7 +13,7 @@ export const FeedOrderPage = (): React.JSX.Element => {
 
   if (isLoading) {
     return (
-      <div className={`fullscreen-loader`}>
+      <div className={`content-preloader`}>
         <Preloader />
       </div>
     );

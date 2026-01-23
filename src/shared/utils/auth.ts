@@ -44,7 +44,7 @@ export const updateAuthTokens = async (): Promise<
   }
 
   try {
-    const result = await fetch(`${API_BASE_URL}auth/token`, {
+    const response = await fetch(`${API_BASE_URL}auth/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -52,11 +52,11 @@ export const updateAuthTokens = async (): Promise<
       } as TUpdateTokenApiRequestParams),
     });
 
-    if (!result.ok) {
+    if (!response.ok) {
       throw new Error('Ошибка при обновлении токенов');
     }
 
-    const data = (await result.json()) as TUpdateTokenApiResponse;
+    const data = (await response.json()) as TUpdateTokenApiResponse;
 
     if (!data.success) {
       throw new Error('Ошибка при обновлении токенов');
