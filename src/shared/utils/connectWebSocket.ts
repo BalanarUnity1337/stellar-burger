@@ -1,3 +1,5 @@
+import { omitBy } from 'lodash-es';
+
 type TWebSocketOptions = {
   onOpen?: () => void;
   onClose?: () => void;
@@ -87,7 +89,7 @@ export const connectWebSocket = (
       if (reconnectOnClose) {
         const { maxRetries, interval } = {
           ...reconnectDefaultOptions,
-          ...reconnectOnCloseOptions,
+          ...omitBy(reconnectOnCloseOptions, (option) => typeof option === 'undefined'),
         };
 
         if (reconnectAttempts < maxRetries) {
