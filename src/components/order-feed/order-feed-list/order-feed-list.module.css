@@ -1,0 +1,11 @@
+.wrapper {
+  composes: custom-scroll pr-2 from global;
+  overflow-y: auto;
+}
+
+.list {
+  composes: list-reset from global;
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+}

@@ -1,4 +1,5 @@
-import type { TUser } from '@shared/types/entities.ts';
+import type { EntityState } from '@reduxjs/toolkit';
+import type { TOrderDetails, TUser } from '@shared/types/entities.ts';
 import type { TAccessToken, TRefreshToken } from '@shared/types/global.ts';
 
 export type TApiCommonResponse<T> = {
@@ -95,4 +96,39 @@ export type TCreateOrderApiResponse = {
     number: number;
   };
   success: boolean;
+};
+
+export type TGetFeedOrdersApiResponse = {
+  orders: TOrderDetails[];
+  success: boolean;
+  total: number;
+  totalToday: number;
+};
+
+export type TGetFeedOrdersWithWSLoading = Omit<TGetFeedOrdersApiResponse, 'orders'> & {
+  orders: EntityState<TOrderDetails, number>;
+  isWSLoading: boolean;
+};
+
+export type TGetOrderByNumberApiResponse = {
+  orders: [TOrderDetails];
+  success: boolean;
+};
+
+export type TGetUserOrdersSuccessApiResponse = TGetFeedOrdersApiResponse & {
+  success: true;
+};
+
+export type TGetUserOrdersErrorApiResponse = {
+  success: false;
+  message: 'Invalid or missing token';
+};
+
+export type TGetUserOrdersApiResponse =
+  | TGetUserOrdersSuccessApiResponse
+  | TGetUserOrdersErrorApiResponse;
+
+export type TGetUserOrdersWithWSLoading = Omit<TGetUserOrdersApiResponse, 'orders'> & {
+  orders: EntityState<TOrderDetails, number>;
+  isWSLoading: boolean;
 };

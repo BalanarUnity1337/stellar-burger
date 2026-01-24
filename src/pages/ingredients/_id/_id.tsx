@@ -4,14 +4,18 @@ import { useParams } from 'react-router';
 import { IngredientDetails } from '@components/burger-ingredients/ingredient-details/ingredient-details.tsx';
 import { Text } from '@components/ui/text/text.tsx';
 import { useGetIngredientsQuery } from '@services/store/api';
+import { useAppSelector } from '@services/store/hooks.ts';
+import { ingredientsSelectors } from '@services/store/selectors';
 
 import styles from './_id.module.css';
 
 export const IngredientPage = (): React.JSX.Element | null => {
-  const { data: ingredients, isLoading, isSuccess, isError } = useGetIngredientsQuery();
-  const { id } = useParams();
+  const { isLoading, isSuccess, isError } = useGetIngredientsQuery();
+  const { id } = useParams<{ id: string }>();
 
-  const ingredient = ingredients?.find((ingredient) => ingredient._id === id) ?? null;
+  const ingredient = useAppSelector((state) =>
+    ingredientsSelectors.selectById(state, id!)
+  );
 
   if (isLoading) {
     return <Preloader />;

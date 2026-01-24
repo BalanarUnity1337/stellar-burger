@@ -8,7 +8,7 @@ import { useReducer } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
 import { Modal } from '@components/modal/modal.tsx';
-import { OrderDetails } from '@components/order-details/order-details.tsx';
+import { NewOrderDetails } from '@components/new-order-details/new-order-details.tsx';
 import { Text } from '@components/ui/text/text.tsx';
 import { useCreateOrderMutation } from '@services/store/api';
 import { useAppDispatch, useAppSelector } from '@services/store/hooks.ts';
@@ -159,7 +159,7 @@ export const BurgerConstructorOrder = ({
     }
 
     if (orderId != null) {
-      return <OrderDetails orderId={orderId} />;
+      return <NewOrderDetails orderId={orderId} />;
     }
 
     return null;

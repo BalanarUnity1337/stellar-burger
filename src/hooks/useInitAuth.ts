@@ -1,4 +1,4 @@
-import { REFRESH_TOKEN_KEY } from '@shared/constants.ts';
+import { getRefreshToken } from '@shared/utils';
 import { useEffect } from 'react';
 
 import { useLazyGetUserInfoQuery } from '@services/store/api';
@@ -15,7 +15,7 @@ export const useInitAuth = (): void => {
   const [getUserInfo] = useLazyGetUserInfoQuery();
 
   useEffect(() => {
-    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+    const refreshToken = getRefreshToken();
 
     if (refreshToken == null) {
       dispatch(resetAuth());

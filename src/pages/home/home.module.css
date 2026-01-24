@@ -1,6 +1,6 @@
 .page {
-  composes: pt-10 pb-5 from global;
-  height: calc(100% - 60px);
+  composes: pt-10 pb-10 from global;
+  height: calc(100% - 40px);
 }
 
 .content {

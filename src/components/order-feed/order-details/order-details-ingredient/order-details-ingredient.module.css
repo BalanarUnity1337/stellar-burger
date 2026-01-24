@@ -1,0 +1,16 @@
+.ingredient {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+}
+
+.title {
+  max-width: 320px;
+}
+
+.cost {
+  composes: text text_type_digits-default ml-auto from global;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}

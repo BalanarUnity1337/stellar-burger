@@ -1,0 +1,56 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background);
+  border-radius: 40px;
+  composes: p-6 from global;
+}
+
+.interactive {
+  cursor: pointer;
+}
+
+.card_header {
+  composes: mb-6 from global;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card_footer {
+  composes: mt-6 from global;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.card_ingredients {
+  composes: list-reset from global;
+  display: flex;
+}
+
+.card_ingredient {
+  position: relative;
+
+  &:not(:first-of-type) {
+    margin-left: -16px;
+  }
+}
+
+.card_ingredients_rest {
+  position: absolute;
+  inset: 2px;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(from var(--background) r g b / 60%);
+  border-radius: 50%;
+}
+
+.card_price {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}

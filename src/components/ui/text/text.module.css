@@ -3,7 +3,7 @@
 }
 
 .text_inactive {
-  color: var(--colors-button-inactive);
+  color: var(--text-inactive-color);
 }
 
 .text_accent {

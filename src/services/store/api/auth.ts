@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@shared/constants.ts';
+import { clearAuthTokens, setAccessToken, setRefreshToken } from '@shared/utils';
 
 import { baseApi } from '@services/store/api';
 import { resetAuth, setUser } from '@services/store/slices/auth.ts';
@@ -36,8 +36,8 @@ const authApi = baseApi.injectEndpoints({
           if (data.success) {
             dispatch(setUser(data.user));
 
-            localStorage.setItem(ACCESS_TOKEN_KEY, data.accessToken);
-            localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+            setAccessToken(data.accessToken);
+            setRefreshToken(data.refreshToken);
           }
         } catch (e) {
           console.error(e);
@@ -59,8 +59,8 @@ const authApi = baseApi.injectEndpoints({
           if (data.success) {
             dispatch(setUser(data.user));
 
-            localStorage.setItem(ACCESS_TOKEN_KEY, data.accessToken);
-            localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+            setAccessToken(data.accessToken);
+            setRefreshToken(data.refreshToken);
           }
         } catch (e) {
           console.error(e);
@@ -81,12 +81,10 @@ const authApi = baseApi.injectEndpoints({
 
           if (data.success) {
             dispatch(resetAuth());
-            localStorage.removeItem(ACCESS_TOKEN_KEY);
-            localStorage.removeItem(REFRESH_TOKEN_KEY);
+            clearAuthTokens();
           }
         } catch (e) {
-          localStorage.removeItem(ACCESS_TOKEN_KEY);
-          localStorage.removeItem(REFRESH_TOKEN_KEY);
+          clearAuthTokens();
 
           console.error(e);
         }

@@ -1,6 +1,7 @@
 .layout {
-  composes: pt-30 from global;
+  composes: pt-30 pb-10 from global;
   display: grid;
   grid-template-columns: 320px 1fr;
   grid-column-gap: 60px;
+  height: calc(100vh - var(--header-height));
 }

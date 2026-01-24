@@ -1,14 +1,22 @@
+import { ingredientsAdapter } from '@services/store/adapters';
 import { baseApi } from '@services/store/api/index.ts';
 
+import type { EntityState } from '@reduxjs/toolkit';
 import type { TApiCommonResponse } from '@shared/types/api.ts';
 import type { TIngredient } from '@shared/types/entities.ts';
 
-const ingredientsApi = baseApi.injectEndpoints({
+export const ingredientsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getIngredients: build.query<TIngredient[], void>({
+    getIngredients: build.query<EntityState<TIngredient, string>, void>({
       query: () => ({ url: 'ingredients' }),
       providesTags: ['Ingredients'],
-      transformResponse: (response: TApiCommonResponse<TIngredient[]>) => response.data,
+      keepUnusedDataFor: 300,
+      transformResponse: (response: TApiCommonResponse<TIngredient[]>) => {
+        return ingredientsAdapter.setAll(
+          ingredientsAdapter.getInitialState(),
+          response.data
+        );
+      },
     }),
   }),
 });
