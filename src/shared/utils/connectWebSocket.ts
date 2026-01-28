@@ -49,7 +49,7 @@ export const connectWebSocket = (
     }
   };
 
-  const reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+  let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
   const clearReconnectInterval = (): void => {
     if (reconnectTimeout !== null) {
       clearTimeout(reconnectTimeout);
@@ -95,7 +95,7 @@ export const connectWebSocket = (
         if (reconnectAttempts < maxRetries) {
           reconnectAttempts++;
 
-          setTimeout(() => {
+          reconnectTimeout = setTimeout(() => {
             connect(url);
           }, interval);
         }
