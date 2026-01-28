@@ -10,14 +10,16 @@ type TOrderStatusProps = {
 };
 
 const StatusTranslates: Record<TStatus, string> = {
+  created: 'Создан',
+  pending: 'Готовится',
   done: 'Выполнен',
-  in_progress: 'Готовится',
   reject: 'Отменен',
 };
 
 const StatusColors: Record<TStatus, 'success' | 'primary' | 'error'> = {
+  created: 'primary',
+  pending: 'primary',
   done: 'success',
-  in_progress: 'primary',
   reject: 'error',
 };
 
