@@ -5,6 +5,10 @@ import burgerConstructorSlice, {
   clearBurgerConstructor,
   deleteBurgerIngredient,
   moveIngredient,
+  selectBun,
+  selectBurgerIngredients,
+  selectIngredientsQtyById,
+  selectTotalCost,
   setBun,
 } from '@services/store/slices/burger-constructor.ts';
 
@@ -168,6 +172,102 @@ describe('burger-constructor slice', () => {
           ingredient4,
           ingredient2,
         ]);
+      });
+    });
+  });
+
+  describe('selectors', () => {
+    describe('selectBun', () => {
+      const initialState = {
+        bun: mockBun,
+        ingredients: [],
+      } as unknown as TBurgerConstructorState;
+
+      test('should return bun, reference has not changed', () => {
+        const result = selectBun({ burgerConstructor: initialState });
+
+        expect(result).toEqual(initialState.bun);
+        expect(result).toBe(initialState.bun);
+      });
+    });
+
+    describe('selectBurgerIngredients', () => {
+      const initialState = {
+        bun: null,
+        ingredients: [mockIngredient, mockIngredient],
+      } as TBurgerConstructorState;
+
+      test('should return ingredients, reference has not changed', () => {
+        const result = selectBurgerIngredients({ burgerConstructor: initialState });
+
+        expect(result).toEqual(initialState.ingredients);
+        expect(result).toBe(initialState.ingredients);
+        expect(result).toHaveLength(2);
+      });
+    });
+
+    describe('selectTotalCost', () => {
+      test('should return total burger cost with bun', () => {
+        const initialState = {
+          bun: mockBun,
+          ingredients: [mockIngredient, mockIngredient],
+        } as TBurgerConstructorState;
+
+        const result = selectTotalCost({ burgerConstructor: initialState });
+
+        expect(result).toBe(1337 * 2 + 550 * 2);
+      });
+
+      test('should return total burger cost without bun', () => {
+        const initialState = {
+          bun: null,
+          ingredients: [mockIngredient, mockIngredient],
+        } as TBurgerConstructorState;
+
+        const result = selectTotalCost({ burgerConstructor: initialState });
+
+        expect(result).toBe(550 * 2);
+      });
+
+      test('should return total burger cost is 0', () => {
+        const initialState = {
+          bun: null,
+          ingredients: [],
+        } as TBurgerConstructorState;
+
+        const result = selectTotalCost({ burgerConstructor: initialState });
+
+        expect(result).toBe(0);
+      });
+    });
+
+    describe('selectIngredientsQtyById', () => {
+      const initialState = {
+        bun: mockBun,
+        ingredients: [
+          { ...mockIngredient, _id: 'ingredient-1' },
+          { ...mockIngredient, _id: 'ingredient-2' },
+          { ...mockIngredient, _id: 'ingredient-1' },
+        ],
+      } as TBurgerConstructorState;
+
+      const result = selectIngredientsQtyById({ burgerConstructor: initialState });
+      const sameResult = selectIngredientsQtyById({
+        burgerConstructor: initialState,
+      });
+
+      test('should return ingredients quantity by id', () => {
+        const expected = {
+          bun: 2,
+          'ingredient-1': 2,
+          'ingredient-2': 1,
+        };
+
+        expect(result).toEqual(expected);
+      });
+
+      test('should return same reference', () => {
+        expect(result).toBe(sameResult);
       });
     });
   });
