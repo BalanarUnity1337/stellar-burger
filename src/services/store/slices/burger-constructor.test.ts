@@ -31,14 +31,14 @@ describe('burger-constructor slice', () => {
     price: 550,
   } satisfies TMockIngredient;
 
-  describe('reducers', () => {
-    test('should return initial state', () => {
-      expect(burgerConstructorSlice.getInitialState()).toEqual({
-        bun: null,
-        ingredients: [],
-      } satisfies TBurgerConstructorState);
-    });
+  test('should return initial state', () => {
+    expect(burgerConstructorSlice.getInitialState()).toEqual({
+      bun: null,
+      ingredients: [],
+    } satisfies TBurgerConstructorState);
+  });
 
+  describe('reducers', () => {
     describe('setBun', () => {
       const state = burgerConstructorSlice.reducer(
         undefined,
