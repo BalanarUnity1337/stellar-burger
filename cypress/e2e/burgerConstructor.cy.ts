@@ -1,0 +1,84 @@
+/// <reference types="cypress" />
+
+import { API_BASE_URL, REFRESH_TOKEN_KEY } from '@/shared/constants.ts';
+
+const dragBun = (selector: string): void => {
+  cy.get(selector).trigger('dragstart');
+  cy.get('[data-cy="drop-target-bun"]').trigger('drop');
+};
+
+const dragIngredient = (selector: string): void => {
+  cy.get(selector).trigger('dragstart');
+  cy.get('[data-cy="drop-target-ingredients"]').trigger('drop');
+};
+
+describe('burgerConstructor', () => {
+  beforeEach(() => {
+    cy.viewport(1600, 900);
+
+    cy.intercept('GET', `${API_BASE_URL}ingredients`, {
+      fixture: 'ingredients.json',
+    }).as('getIngredients');
+
+    cy.intercept('GET', `${API_BASE_URL}auth/user`, {
+      fixture: 'auth/user.json',
+    }).as('getUser');
+
+    cy.intercept('POST', `${API_BASE_URL}orders`, {
+      fixture: 'orders/create.json',
+    }).as('createOrder');
+
+    localStorage.setItem(REFRESH_TOKEN_KEY, 'refresh-token');
+
+    cy.visit('/');
+  });
+
+  it('Visit burger constructor page', () => {
+    cy.contains('Соберите бургер');
+  });
+
+  it('"Checkout" button is not available without ingredients', () => {
+    cy.wait(['@getIngredients', '@getUser']);
+    cy.get('[data-cy="create-order-button"]').should('be.disabled');
+  });
+
+  describe('Drag & Drop works correctly', () => {
+    beforeEach(() => {
+      cy.wait(['@getIngredients', '@getUser']);
+    });
+
+    it('Bun is dragged and dropped', () => {
+      dragBun('[data-cy="draggable-bun-1"]');
+
+      cy.get('[data-cy="drop-target-bun"]').get('[data-cy*="bun"]').should('exist');
+    });
+
+    it('Ingredients are dragged and dropped', () => {
+      dragIngredient('[data-cy="draggable-main-1"]');
+      dragIngredient('[data-cy="draggable-sauce-1"]');
+
+      cy.get('[data-cy="drop-target-ingredients"]')
+        .get('[data-cy^="ingredient"]')
+        .should('have.length', 2);
+    });
+  });
+
+  describe('Order processing', () => {
+    it('Should create order and open modal', () => {
+      cy.wait(['@getIngredients', '@getUser']);
+
+      dragBun('[data-cy="draggable-bun-1"]');
+      dragIngredient('[data-cy="draggable-main-1"]');
+      dragIngredient('[data-cy="draggable-sauce-1"]');
+
+      cy.get('[data-cy="create-order-button"]').as('createOrderButton');
+
+      cy.get('@createOrderButton').should('not.be.disabled');
+      cy.get('@createOrderButton').click();
+
+      cy.wait('@createOrder');
+
+      cy.get('[data-cy="modal-create-order"]').should('be.visible');
+    });
+  });
+});

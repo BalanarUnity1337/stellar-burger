@@ -10,7 +10,7 @@ type DraggableIngredientProps = {
   children: React.ReactNode;
   type: BurgerConstructorDnDType;
   ingredient: TIngredient;
-};
+} & React.ComponentPropsWithoutRef<'div'>;
 
 type TCollectedProps = { isDragging: boolean };
 
@@ -18,6 +18,7 @@ export const DraggableIngredient = ({
   type,
   ingredient,
   children,
+  ...restProps
 }: DraggableIngredientProps): React.JSX.Element => {
   const [{ isDragging }, dragConnector] = useDrag(() => ({
     type,
@@ -33,7 +34,7 @@ export const DraggableIngredient = ({
   const className = `${styles.draggableIngredient} ${isDragging ? styles.isDragging : ''}`;
 
   return (
-    <div ref={dragRef} className={className}>
+    <div ref={dragRef} className={className} {...restProps}>
       {children}
     </div>
   );

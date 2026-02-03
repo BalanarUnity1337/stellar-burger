@@ -50,6 +50,7 @@ export const ConstructorElement = memo(function ConstructorElement(
           position={position}
           isSortable={isSortable}
           onDelete={onDelete}
+          data-cy={`ingredient-${ingredient._id}`}
         />
       </SortableConstructorElement>
     );
@@ -62,6 +63,7 @@ export const ConstructorElement = memo(function ConstructorElement(
       onDelete={onDelete}
       position={position}
       isSortable={isSortable}
+      data-cy={`ingredient-${ingredient._id}`}
     />
   );
 });

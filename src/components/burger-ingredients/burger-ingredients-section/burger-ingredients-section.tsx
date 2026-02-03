@@ -49,6 +49,7 @@ export const BurgerIngredientsSection = memo(function BurgerIngredientsSection({
             <DraggableIngredient
               ingredient={ingredient}
               type={ingredient.type === 'bun' ? 'bun' : 'ingredient'}
+              data-cy={`draggable-${ingredient._id}`}
             >
               <BurgerIngredient
                 ingredient={ingredient}
