@@ -8,75 +8,65 @@ import authSlice, {
   selectIsAuthLoading,
   selectUser,
   setUser,
+  initialState,
 } from '@services/store/slices/auth.ts';
 
-import type { TAuthState } from '@services/store/slices/auth.ts';
 import type { TUser } from '@shared/types/entities.ts';
 
+const mockUser = {
+  email: 'mail@email.com',
+  name: 'John Doe',
+} satisfies TUser;
+
 describe('auth slice', () => {
-  const mockUser = {
-    email: 'mail@email.com',
-    name: 'John Doe',
-  } satisfies TUser;
-
-  test('should return initial state', () => {
-    expect(authSlice.getInitialState()).toEqual({
-      user: null,
-      isLoading: true,
-    } as TAuthState);
-  });
-
   describe('reducers', () => {
+    describe('unknown action', () => {
+      test('should return initial state', () => {
+        const state = authSlice.reducer(undefined, { type: 'unknown' });
+
+        expect(state).toEqual(initialState);
+      });
+    });
+
     describe('authInitStart', () => {
       test('should set isLoading to true', () => {
-        const state = authSlice.reducer(undefined, authInitStart());
+        const state = authSlice.reducer(initialState, authInitStart());
 
-        expect(state.isLoading).toBe(true);
+        expect(state).toEqual({ ...initialState, isLoading: true });
       });
     });
 
     describe('authInitFinish', () => {
       test('should set isLoading to false', () => {
-        const state = authSlice.reducer(undefined, authInitFinish());
+        const state = authSlice.reducer(initialState, authInitFinish());
 
-        expect(state.isLoading).toBe(false);
+        expect(state).toEqual({ ...initialState, isLoading: false });
       });
     });
 
     describe('setUser', () => {
       test('should set user', () => {
-        const state = authSlice.reducer(undefined, setUser(mockUser));
+        const state = authSlice.reducer(initialState, setUser(mockUser));
 
-        expect(state.user).toEqual(mockUser);
+        expect(state).toEqual({ ...initialState, user: mockUser });
       });
     });
 
     describe('resetAuth', () => {
       test('should set [user->null], [isLoading->false]', () => {
-        const initialState = {
-          user: mockUser,
-          isLoading: false,
-        } satisfies TAuthState;
-
-        const expected = {
-          user: null,
-          isLoading: false,
-        } satisfies TAuthState;
-
-        expect(authSlice.reducer(initialState, resetAuth())).toMatchObject(expected);
+        expect(
+          authSlice.reducer({ ...initialState, user: mockUser }, resetAuth())
+        ).toEqual({ ...initialState, user: null, isLoading: false });
       });
     });
   });
 
   describe('selectors', () => {
     describe('selectIsAuthLoading', () => {
-      test('should return isLoading', () => {
-        const initialState = {
-          user: mockUser,
-          isLoading: false,
-        } satisfies TAuthState;
-
-        const result = selectIsAuthLoading({ auth: initialState });
+      test('should return isLoading -> false', () => {
+        const result = selectIsAuthLoading({
+          auth: { ...initialState, isLoading: false },
+        });
 
         expect(result).toBe(false);
       });
@@ -84,27 +74,18 @@ describe('auth slice', () => {
 
     describe('selectIsAuthenticated', () => {
       test('should return authenticated state', () => {
-        const initialState = {
-          user: mockUser,
-          isLoading: false,
-        } satisfies TAuthState;
-
-        const result = selectIsAuthenticated({ auth: initialState });
+        const result = selectIsAuthenticated({
+          auth: { ...initialState, user: mockUser },
+        });
 
         expect(result).toBe(true);
       });
     });
 
     describe('selectUser', () => {
-      const initialState = {
-        user: mockUser,
-        isLoading: false,
-      } satisfies TAuthState;
-
-      const result = selectUser({ auth: initialState });
-      const sameResult = selectUser({ auth: initialState });
-
       test('should return user', () => {
+        const result = selectUser({ auth: { ...initialState, user: mockUser } });
+
         expect(result).toEqual(mockUser);
       });
 
@@ -113,6 +94,9 @@ describe('auth slice', () => {
       });
 
       test('should return same reference', () => {
+        const result = selectUser({ auth: { ...initialState, user: mockUser } });
+        const sameResult = selectUser({ auth: { ...initialState, user: mockUser } });
+
         expect(result).toBe(sameResult);
       });
     });

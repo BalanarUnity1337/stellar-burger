@@ -8,7 +8,7 @@ export type TAuthState = {
   isLoading: boolean;
 };
 
-const initialState: TAuthState = {
+export const initialState: TAuthState = {
   user: null,
   isLoading: true,
 };

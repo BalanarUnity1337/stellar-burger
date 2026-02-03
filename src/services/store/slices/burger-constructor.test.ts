@@ -10,6 +10,7 @@ import burgerConstructorSlice, {
   selectIngredientsQtyById,
   selectTotalCost,
   setBun,
+  initialState,
 } from '@services/store/slices/burger-constructor.ts';
 
 import type { TBurgerConstructorState } from '@services/store/slices/burger-constructor.ts';
@@ -18,30 +19,31 @@ import type { TConstructorIngredient, TIngredient } from '@shared/types/entities
 type TMockIngredient = Pick<TIngredient, '_id' | 'type' | 'price'>;
 type TMockConstructorIngredient = Pick<TConstructorIngredient, '_id' | 'type' | 'price'>;
 
+const mockBun = {
+  _id: 'bun',
+  type: 'bun',
+  price: 1337,
+} satisfies TMockIngredient;
+
+const mockIngredient = {
+  _id: 'ingredient',
+  type: 'main',
+  price: 550,
+} satisfies TMockIngredient;
+
 describe('burger-constructor slice', () => {
-  const mockBun = {
-    _id: 'bun',
-    type: 'bun',
-    price: 1337,
-  } satisfies TMockIngredient;
-
-  const mockIngredient = {
-    _id: 'ingredient',
-    type: 'main',
-    price: 550,
-  } satisfies TMockIngredient;
-
-  test('should return initial state', () => {
-    expect(burgerConstructorSlice.getInitialState()).toEqual({
-      bun: null,
-      ingredients: [],
-    } satisfies TBurgerConstructorState);
-  });
-
   describe('reducers', () => {
+    describe('unknown action', () => {
+      test('should return initial state', () => {
+        const state = burgerConstructorSlice.reducer(undefined, { type: 'unknown' });
+
+        expect(state).toEqual(initialState);
+      });
+    });
+
     describe('setBun', () => {
       const state = burgerConstructorSlice.reducer(
-        undefined,
+        initialState,
         setBun(mockBun as unknown as TIngredient)
       );
 
@@ -61,12 +63,12 @@ describe('burger-constructor slice', () => {
     });
 
     describe('addBurgerIngredient', () => {
-      let state = burgerConstructorSlice.reducer(
-        undefined,
-        addBurgerIngredient(mockIngredient as unknown as TIngredient)
-      );
-
       test('should add ingredient', () => {
+        const state = burgerConstructorSlice.reducer(
+          initialState,
+          addBurgerIngredient(mockIngredient as unknown as TIngredient)
+        );
+
         const expected = [
           {
             _id: mockIngredient._id,
@@ -75,17 +77,28 @@ describe('burger-constructor slice', () => {
           },
         ] satisfies TMockConstructorIngredient[];
 
-        expect(state.ingredients).toMatchObject(expected);
         expect(state.ingredients).toHaveLength(1);
+        expect(state.ingredients).toMatchObject(expected);
       });
 
       test('ingredient has property [uid]', () => {
+        const state = burgerConstructorSlice.reducer(
+          initialState,
+          addBurgerIngredient(mockIngredient as unknown as TIngredient)
+        );
+
+        expect(state.ingredients).toHaveLength(1);
         expect(state.ingredients[0]).toHaveProperty('uid');
       });
 
       test('when new ingredient is added, array is not overwritten', () => {
-        state = burgerConstructorSlice.reducer(
-          state,
+        const prevState = burgerConstructorSlice.reducer(
+          initialState,
+          addBurgerIngredient(mockIngredient as unknown as TIngredient)
+        );
+
+        const state = burgerConstructorSlice.reducer(
+          prevState,
           addBurgerIngredient(mockIngredient as unknown as TIngredient)
         );
 
@@ -102,50 +115,40 @@ describe('burger-constructor slice', () => {
           },
         ] satisfies TMockConstructorIngredient[];
 
-        expect(state.ingredients).toMatchObject(expected);
         expect(state.ingredients).toHaveLength(2);
+        expect(state.ingredients).toMatchObject(expected);
       });
     });
 
     describe('deleteBurgerIngredient', () => {
-      const initialState = {
-        bun: null,
-        ingredients: [
-          { ...mockIngredient, uid: 'uid-1' },
-          { ...mockIngredient, uid: 'uid-2' },
-        ],
-      } as TBurgerConstructorState;
-
       test('should delete ingredient by uid', () => {
         const state = burgerConstructorSlice.reducer(
-          initialState,
+          {
+            ...initialState,
+            ingredients: [
+              { ...mockIngredient, uid: 'uid-1' },
+              { ...mockIngredient, uid: 'uid-2' },
+            ] as TConstructorIngredient[],
+          },
           deleteBurgerIngredient('uid-1')
         );
 
         expect(state.ingredients).toHaveLength(1);
         expect(state).toEqual({
-          bun: null,
-          ingredients: [{ ...mockIngredient, uid: 'uid-2' }],
-        } as TBurgerConstructorState);
+          ...initialState,
+          ingredients: [{ ...mockIngredient, uid: 'uid-2' } as TConstructorIngredient],
+        });
       });
     });
 
     describe('clearBurgerConstructor', () => {
-      const initialState = {
-        bun: mockBun,
-        ingredients: [mockIngredient],
-      } as TBurgerConstructorState;
-
       test('should set state to initial state', () => {
         const state = burgerConstructorSlice.reducer(
-          initialState,
+          { ...initialState, ingredients: [mockIngredient as TConstructorIngredient] },
           clearBurgerConstructor()
         );
 
-        expect(state).toEqual({
-          bun: null,
-          ingredients: [],
-        } satisfies TBurgerConstructorState);
+        expect(state).toEqual(initialState);
       });
     });
 
@@ -155,14 +158,17 @@ describe('burger-constructor slice', () => {
       const ingredient3 = { ...mockIngredient, uid: 'uid-3' };
       const ingredient4 = { ...mockIngredient, uid: 'uid-4' };
 
-      const initialState = {
-        bun: null,
-        ingredients: [ingredient1, ingredient2, ingredient3, ingredient4],
-      } as TBurgerConstructorState;
-
       test('should move ingredient to target index', () => {
         const state = burgerConstructorSlice.reducer(
-          initialState,
+          {
+            ...initialState,
+            ingredients: [
+              ingredient1,
+              ingredient2,
+              ingredient3,
+              ingredient4,
+            ] as TConstructorIngredient[],
+          },
           moveIngredient({ dragItemId: 'uid-2', targetIndex: 3 })
         );
 
@@ -178,71 +184,79 @@ describe('burger-constructor slice', () => {
 
   describe('selectors', () => {
     describe('selectBun', () => {
-      const initialState = {
-        bun: mockBun,
-        ingredients: [],
-      } as unknown as TBurgerConstructorState;
-
       test('should return bun, reference has not changed', () => {
-        const result = selectBun({ burgerConstructor: initialState });
+        const preparedState = {
+          ...initialState,
+          bun: mockBun,
+        } as TBurgerConstructorState;
 
-        expect(result).toEqual(initialState.bun);
-        expect(result).toBe(initialState.bun);
+        const result = selectBun({
+          burgerConstructor: { ...preparedState },
+        });
+
+        expect(result).toEqual(preparedState.bun);
+        expect(result).toBe(preparedState.bun);
       });
     });
 
     describe('selectBurgerIngredients', () => {
-      const initialState = {
-        bun: null,
-        ingredients: [mockIngredient, mockIngredient],
-      } as TBurgerConstructorState;
-
       test('should return ingredients, reference has not changed', () => {
-        const result = selectBurgerIngredients({ burgerConstructor: initialState });
+        const preparedState = {
+          ...initialState,
+          ingredients: [mockIngredient, mockIngredient],
+        } as TBurgerConstructorState;
 
-        expect(result).toEqual(initialState.ingredients);
-        expect(result).toBe(initialState.ingredients);
+        const result = selectBurgerIngredients({
+          burgerConstructor: { ...preparedState },
+        });
+
         expect(result).toHaveLength(2);
+        expect(result).toEqual(preparedState.ingredients);
+        expect(result).toBe(preparedState.ingredients);
       });
     });
 
     describe('selectTotalCost', () => {
       test('should return total burger cost with bun', () => {
-        const initialState = {
+        const preparedState = {
+          ...initialState,
           bun: mockBun,
           ingredients: [mockIngredient, mockIngredient],
         } as TBurgerConstructorState;
 
-        const result = selectTotalCost({ burgerConstructor: initialState });
+        const result = selectTotalCost({ burgerConstructor: { ...preparedState } });
 
         expect(result).toBe(1337 * 2 + 550 * 2);
       });
 
       test('should return total burger cost without bun', () => {
-        const initialState = {
+        const preparedState = {
+          ...initialState,
           bun: null,
           ingredients: [mockIngredient, mockIngredient],
         } as TBurgerConstructorState;
 
-        const result = selectTotalCost({ burgerConstructor: initialState });
+        const result = selectTotalCost({ burgerConstructor: { ...preparedState } });
 
         expect(result).toBe(550 * 2);
       });
 
       test('should return total burger cost is 0', () => {
-        const initialState = {
+        const preparedState = {
+          ...initialState,
           bun: null,
           ingredients: [],
         } as TBurgerConstructorState;
 
-        const result = selectTotalCost({ burgerConstructor: initialState });
+        const result = selectTotalCost({ burgerConstructor: { ...preparedState } });
 
         expect(result).toBe(0);
       });
     });
 
     describe('selectIngredientsQtyById', () => {
-      const initialState = {
+      const preparedState = {
+        ...initialState,
         bun: mockBun,
         ingredients: [
           { ...mockIngredient, _id: 'ingredient-1' },
@@ -251,9 +265,12 @@ describe('burger-constructor slice', () => {
         ],
       } as TBurgerConstructorState;
 
-      const result = selectIngredientsQtyById({ burgerConstructor: initialState });
+      const result = selectIngredientsQtyById({
+        burgerConstructor: { ...preparedState },
+      });
+
       const sameResult = selectIngredientsQtyById({
-        burgerConstructor: initialState,
+        burgerConstructor: { ...preparedState },
       });
 
       test('should return ingredients quantity by id', () => {
