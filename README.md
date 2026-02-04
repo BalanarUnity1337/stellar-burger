@@ -1,4 +1,8 @@
-# Стартер на TypeScript для проекта Stellar Burger
+# Stellar Burger
+
+## Конструктор космических бургеров
+
+> Сайт - https://stellar-burger.eliz57.nomorepartiessbs.ru/
 
 ## Процедура создания коммита с проверками
 
