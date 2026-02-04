@@ -17,7 +17,10 @@ export const IngredientDetails = ({
   ];
 
   return (
-    <article className={`${styles.card}`}>
+    <article
+      className={`${styles.card}`}
+      data-cy={`ingredient-details-${ingredient._id}`}
+    >
       <figure className={`${styles.photo_wrapper}`}>
         <img
           className={`${styles.photo}`}

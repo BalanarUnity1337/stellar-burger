@@ -6,6 +6,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   e2e: {
+    viewportWidth: 1600,
+    viewportHeight: 900,
     baseUrl: 'http://localhost:5173',
     async setupNodeEvents(_, config) {
       const { register } = await import('ts-node');

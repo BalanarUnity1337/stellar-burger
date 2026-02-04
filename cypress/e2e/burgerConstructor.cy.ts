@@ -12,10 +12,8 @@ const dragIngredient = (selector: string): void => {
   cy.get('[data-cy="drop-target-ingredients"]').trigger('drop');
 };
 
-describe('burgerConstructor', () => {
+describe('Burger Constructor Page', () => {
   beforeEach(() => {
-    cy.viewport(1600, 900);
-
     cy.intercept('GET', `${API_BASE_URL}ingredients`, {
       fixture: 'ingredients.json',
     }).as('getIngredients');

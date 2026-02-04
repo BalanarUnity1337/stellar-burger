@@ -26,7 +26,11 @@ export const BurgerIngredient = memo(function BurgerIngredient({
   };
 
   return (
-    <article className={styles.card} onClick={handleClick}>
+    <article
+      className={styles.card}
+      data-cy={`ingredient-${ingredient._id}`}
+      onClick={handleClick}
+    >
       {ingredientsQtyById[ingredient._id] && (
         <Counter count={ingredientsQtyById[ingredient._id]} />
       )}
