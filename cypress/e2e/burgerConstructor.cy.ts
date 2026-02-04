@@ -4,12 +4,12 @@ import { API_BASE_URL, REFRESH_TOKEN_KEY } from '@/shared/constants.ts';
 
 const dragBun = (selector: string): void => {
   cy.get(selector).trigger('dragstart');
-  cy.get('[data-cy="drop-target-bun"]').trigger('drop');
+  cy.get('[data-cy="drop-target-bun"]').eq(0).trigger('drop');
 };
 
 const dragIngredient = (selector: string): void => {
   cy.get(selector).trigger('dragstart');
-  cy.get('[data-cy="drop-target-ingredients"]').trigger('drop');
+  cy.get('[data-cy="drop-target-ingredient"]').trigger('drop');
 };
 
 describe('Burger Constructor Page', () => {
@@ -48,15 +48,18 @@ describe('Burger Constructor Page', () => {
     it('Bun is dragged and dropped', () => {
       dragBun('[data-cy="draggable-bun-1"]');
 
-      cy.get('[data-cy="drop-target-bun"]').get('[data-cy*="bun"]').should('exist');
+      cy.get('[data-cy="drop-target-bun"]')
+        .eq(0)
+        .get('[data-cy*="bun"]')
+        .should('exist');
     });
 
     it('Ingredients are dragged and dropped', () => {
       dragIngredient('[data-cy="draggable-main-1"]');
       dragIngredient('[data-cy="draggable-sauce-1"]');
 
-      cy.get('[data-cy="drop-target-ingredients"]')
-        .get('[data-cy^="ingredient"]')
+      cy.get('[data-cy="drop-target-ingredient"]')
+        .find('[data-cy^="ingredient"]')
         .should('have.length', 2);
     });
   });

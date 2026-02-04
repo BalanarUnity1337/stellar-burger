@@ -14,7 +14,7 @@ type TConstructorElementUiProps = {
   isSortable?: boolean;
   isLocked?: boolean;
   onDelete?: (ingredient: TConstructorIngredient) => void;
-} & React.ComponentPropsWithoutRef<'div'>;
+};
 
 const MemoConstructorElement = memo(ConstructorElement);
 
@@ -24,7 +24,6 @@ export const ConstructorElementUi = memo(function ConstructorElementUi({
   isSortable,
   isLocked,
   onDelete,
-  ...restProps
 }: TConstructorElementUiProps) {
   const text = useMemo(() => {
     if (ingredient.type === 'bun') {
@@ -45,7 +44,7 @@ export const ConstructorElementUi = memo(function ConstructorElementUi({
   }, [ingredient.uid, onDelete]);
 
   return (
-    <div className={`${styles.element}`} {...restProps}>
+    <div className={`${styles.element}`} data-cy={`ingredient-${ingredient._id}`}>
       {isSortable && <DragIcon className={`${styles.dragIcon}`} type="primary" />}
 
       <MemoConstructorElement

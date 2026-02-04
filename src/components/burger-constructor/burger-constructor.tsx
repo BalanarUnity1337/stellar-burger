@@ -100,7 +100,6 @@ export const BurgerConstructor = (): React.JSX.Element => {
         placeholderText="Перетащите булку сюда"
         extraClass={`mb-4`}
         onDropElement={handleIngredientDrop}
-        data-cy="drop-target-bun"
       >
         {selectedBun && (
           <ConstructorElement
@@ -116,7 +115,6 @@ export const BurgerConstructor = (): React.JSX.Element => {
         acceptType="ingredient"
         placeholderText="Перетащите соус или начинку сюда"
         onDropElement={handleIngredientDrop}
-        data-cy="drop-target-ingredients"
       >
         {ingredientsListContent}
       </ConstructorDropTarget>

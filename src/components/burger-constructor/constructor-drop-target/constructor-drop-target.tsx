@@ -6,7 +6,7 @@ import type { BurgerConstructorDnDType } from '@shared/types/global.ts';
 
 import styles from './constructor-drop-target.module.css';
 
-type TConstructorEmptyElementProps = React.ComponentPropsWithoutRef<'div'> & {
+type TConstructorEmptyElementProps = {
   children: React.ReactNode;
   position?: 'top' | 'bottom';
   acceptType: BurgerConstructorDnDType;
@@ -32,7 +32,6 @@ export const ConstructorDropTarget = ({
   extraClass,
   placeholderText,
   onDropElement,
-  ...restProps
 }: TConstructorEmptyElementProps): React.JSX.Element => {
   const [{ isCanDrop, isOver }, dropConnector] = useDrop(() => ({
     accept: acceptType,
@@ -60,7 +59,7 @@ export const ConstructorDropTarget = ({
   ].join(' ');
 
   return (
-    <div ref={dropRef} className={className} {...restProps}>
+    <div ref={dropRef} className={className} data-cy={`drop-target-${acceptType}`}>
       {children ?? <div className={`${styles.placeholder}`}>{placeholderText}</div>}
     </div>
   );
