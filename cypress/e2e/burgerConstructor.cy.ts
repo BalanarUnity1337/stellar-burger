@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { API_BASE_URL, REFRESH_TOKEN_KEY } from '@/shared/constants.ts';
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/shared/constants.ts';
 
 const dragBun = (selector: string): void => {
   cy.get(selector).trigger('dragstart');
@@ -14,18 +14,19 @@ const dragIngredient = (selector: string): void => {
 
 describe('Burger Constructor Page', () => {
   beforeEach(() => {
-    cy.intercept('GET', `${API_BASE_URL}ingredients`, {
+    cy.intercept('GET', 'api/ingredients', {
       fixture: 'ingredients.json',
     }).as('getIngredients');
 
-    cy.intercept('GET', `${API_BASE_URL}auth/user`, {
+    cy.intercept('GET', 'api/auth/user', {
       fixture: 'auth/user.json',
     }).as('getUser');
 
-    cy.intercept('POST', `${API_BASE_URL}orders`, {
+    cy.intercept('POST', 'api/orders', {
       fixture: 'orders/create.json',
     }).as('createOrder');
 
+    localStorage.setItem(ACCESS_TOKEN_KEY, 'access-token');
     localStorage.setItem(REFRESH_TOKEN_KEY, 'refresh-token');
 
     cy.visit('/');

@@ -1,10 +1,8 @@
 /// <reference types="cypress" />
 
-import { API_BASE_URL } from '@/shared/constants.ts';
-
 describe('Ingredient Modal', () => {
   beforeEach(() => {
-    cy.intercept('GET', `${API_BASE_URL}ingredients`, {
+    cy.intercept('GET', 'api/ingredients', {
       fixture: 'ingredients.json',
     }).as('getIngredients');
 
