@@ -32,6 +32,38 @@ export const connectWebSocket = (
 ): TConnectWebSocketReturn => {
   let socket: WebSocket | null = null;
 
+  let onOpenListener: ((event: Event) => void) | null = null;
+  let onCloseListener: ((event: Event) => void) | null = null;
+  let onErrorListener: ((event: Event) => void) | null = null;
+  let onMessageListener: ((event: MessageEvent) => void) | null = null;
+
+  const removeListeners = (): void => {
+    if (!socket) {
+      return;
+    }
+
+    if (typeof onOpenListener === 'function') {
+      socket.removeEventListener('open', onOpenListener);
+    }
+
+    if (typeof onCloseListener === 'function') {
+      socket.removeEventListener('close', onCloseListener);
+    }
+
+    if (typeof onErrorListener === 'function') {
+      socket.removeEventListener('error', onErrorListener);
+    }
+
+    if (typeof onMessageListener === 'function') {
+      socket.removeEventListener('message', onMessageListener);
+    }
+
+    onOpenListener = null;
+    onCloseListener = null;
+    onErrorListener = null;
+    onMessageListener = null;
+  };
+
   const {
     enablePing,
     reconnectOnClose,
@@ -46,13 +78,15 @@ export const connectWebSocket = (
   const clearPingInterval = (): void => {
     if (pingInterval !== null) {
       clearInterval(pingInterval);
+      pingInterval = null;
     }
   };
 
-  const reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+  let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
   const clearReconnectInterval = (): void => {
     if (reconnectTimeout !== null) {
       clearTimeout(reconnectTimeout);
+      reconnectTimeout = null;
     }
   };
 
@@ -61,21 +95,25 @@ export const connectWebSocket = (
 
   const connect = (url: string): void => {
     manuallyClosed = false;
+    removeListeners();
+
     socket = new WebSocket(url);
 
     if (!socket) {
       return;
     }
 
-    socket.addEventListener('open', () => {
+    onOpenListener = (): void => {
       reconnectAttempts = 0;
 
       if (typeof onOpen === 'function') {
         onOpen();
       }
-    });
+    };
 
-    socket.addEventListener('close', () => {
+    socket.addEventListener('open', onOpenListener);
+
+    onCloseListener = (): void => {
       clearPingInterval();
 
       if (typeof onClose === 'function') {
@@ -95,24 +133,29 @@ export const connectWebSocket = (
         if (reconnectAttempts < maxRetries) {
           reconnectAttempts++;
 
-          setTimeout(() => {
+          reconnectTimeout = setTimeout(() => {
             connect(url);
           }, interval);
         }
       }
-    });
+    };
 
-    socket.addEventListener('error', () => {
+    socket.addEventListener('close', onCloseListener);
+
+    onErrorListener = (): void => {
       console.error('Ошибка при подключении к WebSocket');
 
       if (typeof onError === 'function') {
         onError();
       }
-    });
+    };
 
-    if (typeof onMessage === 'function') {
-      socket.addEventListener('message', onMessage);
-    }
+    socket.addEventListener('error', onErrorListener);
+
+    onMessageListener = (event: MessageEvent): void => {
+      onMessage(event);
+    };
+    socket.addEventListener('message', onMessageListener);
 
     if (enablePing) {
       pingInterval = setInterval(() => {
@@ -123,7 +166,11 @@ export const connectWebSocket = (
 
   const close = (): void => {
     manuallyClosed = true;
+
+    removeListeners();
     socket?.close();
+    socket = null;
+
     clearPingInterval();
     clearReconnectInterval();
   };

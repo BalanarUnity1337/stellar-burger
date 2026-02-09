@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react';
 import { checker } from 'vite-plugin-checker';
 import readableClassnames from 'vite-plugin-readable-classnames';
@@ -19,7 +20,7 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
-  base: '',
+  base: '/',
   test: {
     globals: true,
     environment: 'jsdom',

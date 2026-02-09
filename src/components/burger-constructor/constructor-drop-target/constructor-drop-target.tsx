@@ -12,7 +12,7 @@ type TConstructorEmptyElementProps = {
   acceptType: BurgerConstructorDnDType;
   placeholderText?: string;
   extraClass?: string;
-  onDrop?: (ingredient: TIngredient, type: BurgerConstructorDnDType) => void;
+  onDropElement?: (ingredient: TIngredient, type: BurgerConstructorDnDType) => void;
 };
 
 type TCollectedProps = {
@@ -31,12 +31,12 @@ export const ConstructorDropTarget = ({
   acceptType,
   extraClass,
   placeholderText,
-  onDrop,
+  onDropElement,
 }: TConstructorEmptyElementProps): React.JSX.Element => {
   const [{ isCanDrop, isOver }, dropConnector] = useDrop(() => ({
     accept: acceptType,
     drop: (item: TDropItemProps): TDropItemProps => {
-      onDrop?.(item.ingredient, item.type);
+      onDropElement?.(item.ingredient, item.type);
 
       return item;
     },
@@ -59,7 +59,7 @@ export const ConstructorDropTarget = ({
   ].join(' ');
 
   return (
-    <div ref={dropRef} className={className}>
+    <div ref={dropRef} className={className} data-cy={`drop-target-${acceptType}`}>
       {children ?? <div className={`${styles.placeholder}`}>{placeholderText}</div>}
     </div>
   );

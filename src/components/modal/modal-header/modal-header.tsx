@@ -15,7 +15,12 @@ export const ModalHeader = ({
     <div className={`${styles.header}`}>
       {title && <h3 className={`text text_type_main-large`}>{title}</h3>}
 
-      <button className={`${styles.close_btn}`} type="button" onClick={onClose}>
+      <button
+        className={`${styles.close_btn}`}
+        data-cy="modal-close-button"
+        type="button"
+        onClick={onClose}
+      >
         <CloseIcon type="primary" />
       </button>
     </div>

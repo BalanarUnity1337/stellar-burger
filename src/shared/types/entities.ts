@@ -34,7 +34,7 @@ export type TOrderDetails = {
   name: string;
   ingredients: string[];
   number: number;
-  status: 'done' | 'in_progress' | 'reject';
+  status: 'created' | 'pending' | 'done' | 'reject';
   createdAt: string;
   updatedAt: string;
 };

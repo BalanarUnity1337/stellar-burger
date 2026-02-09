@@ -18,7 +18,11 @@ export const IngredientModal = (): React.JSX.Element | null => {
 
   return (
     ingredient && (
-      <Modal title="Детали ингредиента" onClose={() => void navigate(-1)}>
+      <Modal
+        data-cy="modal-ingredient"
+        title="Детали ингредиента"
+        onClose={() => void navigate(-1)}
+      >
         <IngredientDetails ingredient={ingredient} />
       </Modal>
     )

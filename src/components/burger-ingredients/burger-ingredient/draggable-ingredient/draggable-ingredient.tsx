@@ -33,7 +33,7 @@ export const DraggableIngredient = ({
   const className = `${styles.draggableIngredient} ${isDragging ? styles.isDragging : ''}`;
 
   return (
-    <div ref={dragRef} className={className}>
+    <div data-cy={`draggable-${ingredient._id}`} ref={dragRef} className={className}>
       {children}
     </div>
   );

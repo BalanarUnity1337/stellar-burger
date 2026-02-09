@@ -5,5 +5,11 @@ type ModalOverlayProps = {
 };
 
 export const ModalOverlay = ({ onClose }: ModalOverlayProps): React.JSX.Element => {
-  return <div className={`${styles.modal_overlay}`} onClick={onClose}></div>;
+  return (
+    <div
+      className={`${styles.modal_overlay}`}
+      data-cy="modal-overlay"
+      onClick={onClose}
+    ></div>
+  );
 };

@@ -99,7 +99,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
         position="top"
         placeholderText="Перетащите булку сюда"
         extraClass={`mb-4`}
-        onDrop={handleIngredientDrop}
+        onDropElement={handleIngredientDrop}
       >
         {selectedBun && (
           <ConstructorElement
@@ -114,7 +114,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
       <ConstructorDropTarget
         acceptType="ingredient"
         placeholderText="Перетащите соус или начинку сюда"
-        onDrop={handleIngredientDrop}
+        onDropElement={handleIngredientDrop}
       >
         {ingredientsListContent}
       </ConstructorDropTarget>
@@ -124,7 +124,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
         position="bottom"
         placeholderText="Перетащите булку сюда"
         extraClass={`mt-4`}
-        onDrop={handleIngredientDrop}
+        onDropElement={handleIngredientDrop}
       >
         {selectedBun && (
           <ConstructorElement

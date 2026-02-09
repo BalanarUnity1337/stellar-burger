@@ -44,7 +44,7 @@ export const ConstructorElementUi = memo(function ConstructorElementUi({
   }, [ingredient.uid, onDelete]);
 
   return (
-    <div className={`${styles.element}`}>
+    <div className={`${styles.element}`} data-cy={`ingredient-${ingredient._id}`}>
       {isSortable && <DragIcon className={`${styles.dragIcon}`} type="primary" />}
 
       <MemoConstructorElement

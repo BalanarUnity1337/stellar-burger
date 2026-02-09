@@ -5,12 +5,12 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { TConstructorIngredient, TIngredient } from '@shared/types/entities.ts';
 import type { TEndMoveElementPayload } from '@shared/types/global.ts';
 
-type TBurgerConstructorState = {
+export type TBurgerConstructorState = {
   bun: TConstructorIngredient | null;
   ingredients: TConstructorIngredient[];
 };
 
-const initialState: TBurgerConstructorState = {
+export const initialState: TBurgerConstructorState = {
   bun: null,
   ingredients: [],
 };

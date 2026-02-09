@@ -174,6 +174,7 @@ export const BurgerConstructorOrder = ({
         </output>
 
         <Button
+          data-cy="create-order-button"
           disabled={isSubmitButtonDisabled}
           htmlType="button"
           size="large"
@@ -184,7 +185,9 @@ export const BurgerConstructorOrder = ({
       </div>
 
       {state.isModalVisible && (
-        <Modal onClose={handleModalClose}>{getModalContent()}</Modal>
+        <Modal data-cy="modal-create-order" onClose={handleModalClose}>
+          {getModalContent()}
+        </Modal>
       )}
     </>
   );

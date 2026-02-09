@@ -6,14 +6,20 @@ import { ModalOverlay } from '@components/modal/modal-overlay/modal-overlay.tsx'
 
 import styles from './modal.module.css';
 
-type TModalProps = React.PropsWithChildren<{
+type TModalProps = {
+  children: React.ReactNode;
   title?: string;
   onClose: () => void;
-}>;
+} & React.ComponentPropsWithoutRef<'div'>;
 
 const modalsRoot = document.getElementById('modals');
 
-export const Modal = ({ title, onClose, children }: TModalProps): React.JSX.Element => {
+export const Modal = ({
+  title,
+  onClose,
+  children,
+  ...restProps
+}: TModalProps): React.JSX.Element => {
   const handleKeydown = (e: KeyboardEvent): void => {
     if (e.key === 'Escape') {
       onClose();
@@ -30,7 +36,7 @@ export const Modal = ({ title, onClose, children }: TModalProps): React.JSX.Elem
     <>
       <ModalOverlay onClose={onClose} />
 
-      <div className={`${styles.modal}`}>
+      <div className={`${styles.modal}`} {...restProps}>
         <ModalHeader title={title} onClose={onClose} />
 
         <div className={`${styles.content}`}>{children}</div>

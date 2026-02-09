@@ -3,12 +3,12 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { TUser } from '@shared/types/entities.ts';
 
-type TAuthState = {
+export type TAuthState = {
   user: TUser | null;
   isLoading: boolean;
 };
 
-const initialState: TAuthState = {
+export const initialState: TAuthState = {
   user: null,
   isLoading: true,
 };

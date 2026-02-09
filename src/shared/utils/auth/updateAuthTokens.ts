@@ -1,36 +1,15 @@
-import { ACCESS_TOKEN_KEY, API_BASE_URL, REFRESH_TOKEN_KEY } from '@shared/constants.ts';
+import { API_BASE_URL } from '@shared/constants.ts';
+import {
+  clearAuthTokens,
+  getRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+} from '@shared/utils';
 
 import type {
   TUpdateTokenApiRequestParams,
   TUpdateTokenApiResponse,
 } from '@shared/types/api.ts';
-
-export const setAccessToken = (token: string | null): void => {
-  if (token === null) {
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
-  } else {
-    localStorage.setItem(ACCESS_TOKEN_KEY, token.replace('Bearer ', ''));
-  }
-};
-
-export const getAccessToken = (): string | null =>
-  localStorage.getItem(ACCESS_TOKEN_KEY);
-
-export const setRefreshToken = (token: string | null): void => {
-  if (token === null) {
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
-  } else {
-    localStorage.setItem(REFRESH_TOKEN_KEY, token);
-  }
-};
-
-export const getRefreshToken = (): string | null =>
-  localStorage.getItem(REFRESH_TOKEN_KEY);
-
-export const clearAuthTokens = (): void => {
-  setAccessToken(null);
-  setRefreshToken(null);
-};
 
 export const updateAuthTokens = async (): Promise<
   Pick<TUpdateTokenApiResponse, 'success'>

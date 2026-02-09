@@ -20,7 +20,7 @@ export const OrderFeedDashboardStatus = ({
     .map((order) => order.number);
 
   const inProgressOrders = orders
-    .filter((order) => order.status === 'in_progress')
+    .filter((order) => order.status === 'pending')
     .slice(0, 14)
     .map((order) => order.number);
 

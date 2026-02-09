@@ -1,5 +1,9 @@
-export const createChunks = <T>(arr: T[], size: number): T[][] =>
-  arr.reduce((acc, item, index) => {
+export const createChunks = <T>(arr: T[], size: number): T[][] => {
+  if (size <= 0) {
+    throw new Error('Chunk size must be greater than 0');
+  }
+
+  return arr.reduce((acc, item, index) => {
     if (index % size === 0) {
       acc.push([item]);
     } else {
@@ -8,3 +12,4 @@ export const createChunks = <T>(arr: T[], size: number): T[][] =>
 
     return acc;
   }, [] as T[][]);
+};
